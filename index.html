@@ -1071,6 +1071,49 @@ const DB = {
   ["data","object","NN","","Domen ma'lumotlari — event turiga xos"]]}
 ]},
 
+"event-katalog":{
+ group:"Platforma",
+ desc:"KATALOG — qaysi service qanday event chiqaradi va kim iste'mol qiladi. Har bir 'jadval' = bitta producer service. Qator: event nomi | aggregate | iste'molchilar va qachon chiqishi. Topic: crm.{service}.{aggregate}.{event}",
+ tables:[
+ {name:"lead_service_events",noaudit:true,desc:"lead-service chiqaradigan eventlar. Topic prefiksi: crm.lead.*",cols:[
+  ["lead.created","LEAD","","","Yangi lead yaratilganda → notification (mas'ul sotuvchiga xabar)"],
+  ["lead.won","LEAD","","","Lead yutilganda → contract-service (shartnoma jarayonini boshlash), notification"],
+  ["lead.lost","LEAD","","","Lead yo'qotilganda → notification"],
+  ["customer.created","CUSTOMER","","","Yangi mijoz ro'yxatga olinganda → (kelajakda analytics)"]]},
+ {name:"social_integration_events",noaudit:true,desc:"social-integration-service chiqaradigan eventlar. Topic prefiksi: crm.social.*",cols:[
+  ["message.received","MESSAGE","","","Ijtimoiy tarmoqdan xabar kelganda → lead-service (lead yaratish yoki aktivlik qo'shish), notification (operatorga)"]]},
+ {name:"contract_service_events",noaudit:true,desc:"contract-service chiqaradigan eventlar. Topic prefiksi: crm.contract.*",cols:[
+  ["contract.signed","CONTRACT","","","Shartnoma imzolanganda → project-service (loyiha ochish), notification"],
+  ["contract.cancelled","CONTRACT","","","Shartnoma bekor qilinganda → project-service, notification"],
+  ["payment.received","PAYMENT","","","To'lov kelib tushganda → notification (mas'ulga)"],
+  ["payment.overdue","PAYMENT","","","To'lov muddati o'tganda (scheduler aniqlaydi) → notification (eslatma)"]]},
+ {name:"project_service_events",noaudit:true,desc:"project-service chiqaradigan eventlar. Topic prefiksi: crm.project.*",cols:[
+  ["project.created","PROJECT","","","Loyiha yaratilganda → contract-service (project_id to'ldirish), support-service (bot tayyorlash), notification"],
+  ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
+  ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
+  ["issue.completed","ISSUE","","","Vazifa done kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt: point/estimated_minutes), notification"],
+  ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
+ {name:"support_service_events",noaudit:true,desc:"support-service chiqaradigan eventlar. Topic prefiksi: crm.support.*",cols:[
+  ["ticket.created","TICKET","","","Ticket ochilganda → notification (operatorga)"],
+  ["ticket.closed","TICKET","","","Ticket yopilganda → kpi-service (TICKET_RESOLUTION fakt), notification (mijozga feedback so'rovi)"],
+  ["ticket.sla_breached","TICKET","","","SLA buzilganda → notification (eskalatsiya xabari rahbarga)"],
+  ["feedback.received","FEEDBACK","","","Mijoz feedback berganda → kpi-service (CUSTOMER_FEEDBACK fakt)"]]},
+ {name:"callcenter_service_events",noaudit:true,desc:"callcenter-service chiqaradigan eventlar. Topic prefiksi: crm.callcenter.*",cols:[
+  ["call.completed","CALL","","","Qo'ng'iroq tugaganda → lead-service (aktivlik logi), support-service (kontekst)"],
+  ["call.escalated","CALL","","","Operator eskalatsiya qilganda → support-service (ticket yaratish)"],
+  ["call.ai_scored","CALL","","","AI scoring tugaganda → kpi-service (CALL_QUALITY fakt)"]]},
+ {name:"inventory_service_events",noaudit:true,desc:"inventory-service chiqaradigan eventlar. Topic prefiksi: crm.inventory.*",cols:[
+  ["item.assigned","ITEM","","","Jihoz xodimga berilganda → notification (xodimga xabar)"],
+  ["item.returned","ITEM","","","Jihoz qaytarilganda → notification"]]},
+ {name:"kpi_service_events",noaudit:true,desc:"kpi-service chiqaradigan eventlar. Topic prefiksi: crm.kpi.*",cols:[
+  ["kpi.calculated","KPI_RESULT","","","Davr yopilib KPI hisoblanganda → notification (xodim va rahbarga natija)"]]},
+ {name:"hrm_service_events",noaudit:true,desc:"hrm-service (MAVJUD) — hozircha outbox/event chiqarmaydi. Keyingi bosqichda rejalashtirilgan eventlar quyida; CRM servicelar bularni tinglashi kerak bo'ladi.",cols:[
+  ["assignment.ended","ASSIGNMENT","","","(REJA) Tayinlov tugaganda → project/support/callcenter (ochiq vazifalarni qayta taqsimlash)"],
+  ["employee.blocked","EMPLOYEE","","","(REJA) Xodim bloklanganda → barcha servicelar (kirishni cheklash)"]]},
+ {name:"notification_consumer",noaudit:true,desc:"notification-service — SOF ISTE'MOLCHI: o'zi domen event chiqarmaydi, deyarli barcha topiclarga obuna bo'lib xabarnoma yuboradi. Consumer group: notification-service-main",cols:[
+  ["obuna","*","","","crm.lead.*, crm.contract.*, crm.project.*, crm.support.*, crm.inventory.*, crm.kpi.* — template short_code bo'yicha xabarnoma shakllantiradi"]]}
+]},
+
 "settings-service":{
  group:"Mavjud tizim",
  desc:"MAVJUD — settings_service_db. 4 jadval, 2 FK, 8 sequence. Frontend jadval metadatasi va i18n tarjimalar.",
