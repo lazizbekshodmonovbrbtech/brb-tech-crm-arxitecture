@@ -82,6 +82,23 @@ body{
   margin-left:auto;font-size:10px;color:var(--faint);
   background:var(--panel);padding:1px 6px;border-radius:8px;
 }
+.menu-item.doc{font-style:normal}
+.menu-item.doc .dot{
+  background:transparent;border:1.2px dashed var(--faint);
+  width:9px;height:9px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:7px;color:var(--pk);line-height:1;
+}
+.menu-item.doc.active .dot{border-color:var(--pk);color:var(--pk)}
+.menu-item.doc .cnt{color:var(--pk);background:rgba(255,200,97,.08)}
+.doc-badge{
+  font-size:9px;font-weight:600;letter-spacing:.08em;
+  color:var(--pk);background:rgba(255,200,97,.12);
+  border:1px dashed rgba(255,200,97,.4);
+  padding:2px 7px;border-radius:4px;vertical-align:2px;margin-left:8px;
+}
+.doc-mode .tbl{border-style:dashed}
+.doc-mode .tbl:hover{border-style:solid}
 #sidebar-foot{
   padding:10px 14px;border-top:1px solid var(--line-soft);
   font-size:10px;color:var(--faint);line-height:1.6;font-family:var(--mono);
@@ -1039,7 +1056,8 @@ const DB = {
 ]},
 
 "kafka-event-standart":{
- group:"Platforma",
+ kind:"doc",
+ group:"Standartlar & hujjatlar",
  desc:"STANDART — Kafka + Outbox pattern. Quyidagi ikki table HAR BIR service bazasida bir xil nusxada bo'ladi (audit ustunlari kabi platforma naqshi). Topic nomlash: crm.{service}.{aggregate}.{event} (masalan crm.project.issue.completed). Partition key = aggregate_id (tartib kafolati). Yetkazish: at-least-once + idempotent consumer. DLQ: {topic}.dlq",
  tables:[
  {name:"outbox_events",noaudit:true,desc:"OUTBOX — event biznes o'zgarish bilan BITTA tranzaksiyada shu tablega yoziladi, keyin alohida publisher (transactional poller yoki Debezium CDC) Kafka'ga uzatadi. Dual-write muammosini yo'q qiladi. Audit ustunlari yo'q — texnik jadval, aktor ma'lumoti payload ichida.",cols:[
@@ -1072,7 +1090,8 @@ const DB = {
 ]},
 
 "event-katalog":{
- group:"Platforma",
+ kind:"doc",
+ group:"Standartlar & hujjatlar",
  desc:"KATALOG — qaysi service qanday event chiqaradi va kim iste'mol qiladi. Har bir 'jadval' = bitta producer service. Qator: event nomi | aggregate | iste'molchilar va qachon chiqishi. Topic: crm.{service}.{aggregate}.{event}",
  tables:[
  {name:"lead_service_events",noaudit:true,desc:"lead-service chiqaradigan eventlar. Topic prefiksi: crm.lead.*",cols:[
@@ -1232,8 +1251,9 @@ let currentSvc=null,focused=null;
     const h=document.createElement('div');h.className='menu-group';h.textContent=g;menu.appendChild(h);
     items.forEach(k=>{
       const el=document.createElement('div');
-      el.className='menu-item';el.dataset.svc=k;
-      el.innerHTML=`<span class="dot"></span>${k}<span class="cnt">${DB[k].tables.length}</span>`;
+      const isDoc=DB[k].kind==='doc';
+      el.className='menu-item'+(isDoc?' doc':'');el.dataset.svc=k;
+      el.innerHTML=`<span class="dot">${isDoc?'§':''}</span>${k}<span class="cnt">${isDoc?'doc':DB[k].tables.length}</span>`;
       el.onclick=()=>{selectService(k);if(innerWidth<=820)$('#sidebar').classList.remove('open')};
       menu.appendChild(el);
     });
@@ -1244,8 +1264,10 @@ let currentSvc=null,focused=null;
 function selectService(key){
   currentSvc=key;focused=null;
   document.querySelectorAll('.menu-item').forEach(m=>m.classList.toggle('active',m.dataset.svc===key));
-  $('#svc-title').textContent=key;
+  const isDoc=DB[key].kind==='doc';
+  $('#svc-title').innerHTML=key+(isDoc?' <span class="doc-badge">HUJJAT — service emas</span>':'');
   $('#svc-desc').textContent=DB[key].desc;
+  wrap.classList.toggle('doc-mode',isDoc);
   closeDrawer();
   render(key);
   wrap.scrollTo(0,0);
