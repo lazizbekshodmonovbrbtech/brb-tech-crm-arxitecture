@@ -331,16 +331,26 @@ const DB = {
  tables:[
  {name:"pipelines",desc:"Sotuv voronkalari — turli yo'nalishlar uchun alohida pipeline bo'lishi mumkin.",cols:[
   ["id","uuid","PK","","Pipeline identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["name","varchar(255)","NN","","Pipeline nomi"],
   ["is_default","boolean","NN","","Standart pipeline'mi"]]},
  {name:"pipeline_stages",desc:"Pipeline bosqichlari (yangi → aloqa → taklif → yopilgan).",cols:[
   ["id","uuid","PK","","Bosqich identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["pipeline_id","uuid","FK,NN","pipelines.id","Qaysi pipeline'ga tegishli"],
   ["name","varchar(255)","NN","","Bosqich nomi"],
   ["position","int","NN","","Tartib raqami"],
   ["probability","int","","","Yutish ehtimoli (%)"]]},
+ {name:"lead_statuses",desc:"Migration'da seed qilinadigan statuslar (open, won, lost). short_code o'zgartirilmaydi, is_system=true yozuvlar o'chirilmaydi; UI'dan faqat nom/tartib boshqariladi va yangi status qo'shiladi.",cols:[
+  ["id","uuid","PK","","Status identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi (event, trigger) shunga qurilgan, UPDATE taqiqlangan"],
+  ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
+  ["position","int","NN","","Tartib raqami"],
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],
+  ["is_active","boolean","NN","","Faolmi"]]},
  {name:"lead_sources",desc:"Lead manbalari — qayerdan kelgani (sayt, instagram, tavsiya...).",cols:[
   ["id","uuid","PK","","Manba identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["name","varchar(100)","NN","","Manba nomi"],
   ["channel_type_id","uuid","EXT","ext:global-reference.ref_items.id","Kanal turi — ref_items (lead_channel_types), UI'da boshqariladi"]]},
  {name:"customers",desc:"Mijozlar — jismoniy yoki yuridik shaxslar. Contract service ham shu tablega tashqi ref orqali bog'lanadi.",cols:[
@@ -368,7 +378,7 @@ const DB = {
   ["amount","numeric(18,2)","","","Taxminiy bitim summasi"],
   ["currency_id","uuid","EXT","ext:global-reference.currencies.id","Valyuta"],
   ["assigned_to","uuid","EXT,NN","ext:hrm.assignments.id","Mas'ul sotuvchi (tayinlov)"],
-  ["status","varchar(20)","NN","","open / won / lost"],
+  ["status_id","uuid","FK,NN","lead_statuses.id","Joriy status — logika short_code bo'yicha"],
   ["external_ref","varchar(255)","","","Tashqi tizimdagi ID (social user va h.k.)"],
   ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
  {name:"lead_activities",desc:"Lead bo'yicha barcha faoliyat tarixi — qo'ng'iroq, xabar, uchrashuv, izoh.",cols:[
@@ -386,10 +396,11 @@ const DB = {
  tables:[
  {name:"platforms",desc:"Qo'llab-quvvatlanadigan platformalar ro'yxati.",cols:[
   ["id","uuid","PK","","Platforma identifikatori"],
-  ["code","varchar(30)","UK,NN","","instagram / facebook / telegram / whatsapp"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod (instagram, facebook, telegram, whatsapp) — seed, o'zgartirilmaydi"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"]]},
  {name:"accounts",desc:"Kompaniyaning platformalardagi hisoblari (sahifa, bot, biznes akkaunt).",cols:[
   ["id","uuid","PK","","Hisob identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["platform_id","uuid","FK,NN","platforms.id","Qaysi platforma"],
   ["name","varchar(255)","NN","","Hisob nomi"],
   ["credentials","jsonb","NN","","Token/kalitlar — shifrlangan saqlanadi"],
@@ -422,6 +433,13 @@ const DB = {
  group:"CRM yadro",
  desc:"Shartnomalar, hujjatlar va to'lov jadvali boshqaruvi.",
  tables:[
+ {name:"contract_statuses",desc:"Migration'da seed qilinadigan statuslar (draft, signed, active, closed, cancelled). short_code o'zgartirilmaydi, is_system=true yozuvlar o'chirilmaydi; UI'dan faqat nom/tartib boshqariladi va yangi status qo'shiladi.",cols:[
+  ["id","uuid","PK","","Status identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi (event, trigger) shunga qurilgan, UPDATE taqiqlangan"],
+  ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
+  ["position","int","NN","","Tartib raqami"],
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],
+  ["is_active","boolean","NN","","Faolmi"]]},
  {name:"contracts",desc:"Shartnomalar — yutilgan leaddan yaratiladi. Imzolanganda project-service'ga event chiqaradi.",cols:[
   ["id","uuid","PK","","Shartnoma identifikatori"],
   ["number","varchar(50)","UK,NN","","Shartnoma raqami"],
@@ -435,7 +453,7 @@ const DB = {
   ["signed_at","date","","","Imzolangan sana"],
   ["start_date","date","","","Amal qilish boshlanishi"],
   ["end_date","date","","","Amal qilish tugashi"],
-  ["status","varchar(20)","NN","","draft / signed / active / closed / cancelled"]]},
+  ["status_id","uuid","FK,NN","contract_statuses.id","Joriy status — logika short_code bo'yicha"]]},
  {name:"contract_documents",desc:"Shartnomaga biriktirilgan hujjatlar. Fayl file-service'da saqlanadi.",cols:[
   ["id","uuid","PK","","Yozuv identifikatori"],
   ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnomaga tegishli"],
@@ -459,8 +477,8 @@ const DB = {
  {name:"contract_status_history",desc:"Shartnoma statuslari o'zgarish tarixi — audit uchun.",cols:[
   ["id","uuid","PK","","Yozuv identifikatori"],
   ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnoma"],
-  ["old_status","varchar(20)","","","Oldingi status"],
-  ["new_status","varchar(20)","NN","","Yangi status"],
+  ["old_status_id","uuid","FK","contract_statuses.id","Oldingi status"],
+  ["new_status_id","uuid","FK,NN","contract_statuses.id","Yangi status"],
   ["changed_by","uuid","EXT","ext:hrm.assignments.id","Kim o'zgartirdi"],
   ["changed_at","timestamptz","NN","","O'zgargan vaqt"]]}
 ]},
@@ -486,6 +504,7 @@ const DB = {
   ["default_board_id","uuid","FK","boards.id","Standart board"]]},
  {name:"project_member_roles",desc:"Loyiha ichidagi rollar (PM, Developer, QA, Viewer...).",cols:[
   ["id","uuid","PK","","Rol identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["name","varchar(50)","UK,NN","","Rol nomi"],
   ["permissions","jsonb","NN","","Rol ruxsatlari"]]},
  {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi (lavozim o'zgarsa yangi assignment bilan qayta biriktiriladi).",cols:[
@@ -496,13 +515,14 @@ const DB = {
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
  {name:"priorities",desc:"Muhimlik darajalari — UI'dan boshqariladi (qo'shish, rang, tartib). code ustuni logika uchun barqaror qoladi.",cols:[
   ["id","uuid","PK","","Daraja identifikatori"],
-  ["code","varchar(30)","UK,NN","","Barqaror kod (low, medium, high, critical) — kod logikasi shunga tayanadi"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod (low, medium, high, critical) — seed, tizim logikasi shunga qurilgan, o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'dan o'zgartiriladi"],
   ["color","varchar(7)","NN","","Rang (hex)"],
   ["position","int","NN","","Tartib raqami"],
   ["is_active","boolean","NN","","Faolmi"]]},
  {name:"issue_types",desc:"Vazifa turlari — Epic, Story, Task, Bug, Subtask. UI'dan yangi tur qo'shish mumkin. Ierarxiya darajasini belgilaydi.",cols:[
   ["id","uuid","PK","","Tur identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Tur nomi"],
   ["level","int","NN","","Ierarxiya darajasi: 0=Epic, 1=Story/Task/Bug, 2=Subtask"],
   ["icon","varchar(50)","","","Ikonka kodi"],
@@ -510,6 +530,7 @@ const DB = {
  {name:"project_statuses",desc:"Loyihaga xos statuslar (To Do, In Progress, Review, Done...).",cols:[
   ["id","uuid","PK","","Status identifikatori"],
   ["project_id","uuid","FK,NN","projects.id","Qaysi loyihaga tegishli"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod (UK: project_id + short_code) — workflow logikasi shunga tayanadi, o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Status nomi"],
   ["category","varchar(20)","NN","","todo / in_progress / done — hisobotlar uchun"],
   ["position","int","NN","","Tartib raqami"]]},
@@ -590,6 +611,7 @@ const DB = {
   ["uploaded_at","timestamptz","NN","","Yuklangan vaqt"]]},
  {name:"labels",desc:"Teglar — moslashuvchan filtrlash uchun.",cols:[
   ["id","uuid","PK","","Teg identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["project_id","uuid","FK,NN","projects.id","Qaysi loyihaga tegishli"],
   ["name","varchar(50)","NN","","Teg nomi"],
   ["color","varchar(7)","NN","","Rang (hex)"]]},
@@ -607,8 +629,16 @@ const DB = {
  group:"Operatsiyalar",
  desc:"Loyihalar supporti — ticketlar, SLA va har bir loyihaning o'z Telegram boti orqali muloqot.",
  tables:[
+ {name:"ticket_statuses",desc:"Migration'da seed qilinadigan statuslar (open, in_progress, resolved, closed). short_code o'zgartirilmaydi, is_system=true yozuvlar o'chirilmaydi; UI'dan faqat nom/tartib boshqariladi va yangi status qo'shiladi.",cols:[
+  ["id","uuid","PK","","Status identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi (event, trigger) shunga qurilgan, UPDATE taqiqlangan"],
+  ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
+  ["position","int","NN","","Tartib raqami"],
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],
+  ["is_active","boolean","NN","","Faolmi"]]},
  {name:"sla_policies",desc:"SLA siyosatlari — javob berish va hal qilish muddatlari.",cols:[
   ["id","uuid","PK","","SLA identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["name","varchar(100)","NN","","Siyosat nomi"],
   ["priority_id","uuid","EXT,NN","ext:global-reference.ref_items.id","Qaysi muhimlik darajasi uchun (ref_items: ticket_priorities)"],
   ["first_response_min","int","NN","","Birinchi javob muddati (daqiqa)"],
@@ -621,7 +651,7 @@ const DB = {
   ["subject","varchar(255)","NN","","Murojaat mavzusi"],
   ["description","text","","","Murojaat mazmuni"],
   ["priority_id","uuid","EXT,NN","ext:global-reference.ref_items.id","Muhimlik — ref_items (ticket_priorities kategoriyasi), UI'da boshqariladi"],
-  ["status","varchar(20)","NN","","open / in_progress / resolved / closed"],
+  ["status_id","uuid","FK,NN","ticket_statuses.id","Joriy status — logika short_code bo'yicha"],
   ["operator","uuid","EXT","ext:hrm.assignments.id","Mas'ul operator (tayinlov)"],
   ["sla_policy_id","uuid","FK","sla_policies.id","Qo'llaniladigan SLA"],
   ["created_at","timestamptz","NN","","Ochilgan vaqt"],
@@ -681,11 +711,13 @@ const DB = {
  tables:[
  {name:"pbx_trunks",desc:"PBX trunk sozlamalari — telefoniya provayderiga ulanish.",cols:[
   ["id","uuid","PK","","Trunk identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["name","varchar(100)","NN","","Trunk nomi"],
   ["provider","varchar(100)","","","Provayder (Asterisk, Yeastar...)"],
   ["config","jsonb","NN","","SIP sozlamalari — maxfiy qismlari shifrlangan"]]},
  {name:"call_queues",desc:"Qo'ng'iroq navbatlari — kiruvchi qo'ng'iroqlarni taqsimlash.",cols:[
   ["id","uuid","PK","","Navbat identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["trunk_id","uuid","FK,NN","pbx_trunks.id","Qaysi trunk orqali"],
   ["name","varchar(100)","NN","","Navbat nomi"],
   ["strategy","varchar(30)","NN","","ring_all / round_robin / least_recent"]]},
@@ -722,13 +754,14 @@ const DB = {
  tables:[
  {name:"channel_providers",desc:"Kanal provayderlari — qaysi kanal qaysi provayder orqali yuboriladi.",cols:[
   ["id","uuid","PK","","Provayder identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["channel","varchar(15)","NN","","email / sms / push / telegram"],
   ["provider","varchar(50)","NN","","SMTP / Eskiz / FCM ..."],
   ["config","jsonb","NN","","Ulanish sozlamalari — shifrlangan"],
   ["is_active","boolean","NN","","Faolmi"]]},
  {name:"templates",desc:"Xabarnoma shablonlari — kod bo'yicha chaqiriladi, o'zgaruvchilar bilan.",cols:[
   ["id","uuid","PK","","Shablon identifikatori"],
-  ["code","varchar(50)","UK,NN","","Shablon kodi (issue_assigned, sla_breach...)"],
+  ["short_code","varchar(50)","UK,NN","","Shablon kodi (issue_assigned, sla_breach...) — seed, kod logikasi shunga tayanadi"],
   ["channel","varchar(15)","NN","","Qaysi kanal uchun"],
   ["lang","varchar(5)","NN","","Til (uz / ru / en)"],
   ["subject","varchar(255)","","","Sarlavha (email uchun)"],
@@ -758,6 +791,7 @@ const DB = {
  tables:[
  {name:"item_categories",desc:"Jihoz/mahsulot kategoriyalari — ierarxik (mebel → stol, texnika → kompyuter).",cols:[
   ["id","uuid","PK","","Kategoriya identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["parent_id","uuid","FK","item_categories.id","Yuqori kategoriya"],
   ["name","varchar(100)","NN","","Kategoriya nomi"],
   ["type_id","uuid","EXT,NN","ext:global-reference.ref_items.id","Kategoriya turi — ref_items (inventory_types), UI'da boshqariladi"]]},
@@ -823,31 +857,31 @@ const DB = {
  tables:[
  {name:"regions",desc:"Viloyatlar — O'zbekiston hududiy bo'linishi.",cols:[
   ["id","uuid","PK","","Viloyat identifikatori"],
-  ["code","varchar(10)","UK,NN","","Viloyat kodi"],
+  ["short_code","varchar(10)","UK,NN","","Viloyat kodi — seed, o'zgartirilmaydi"],
   ["soato_code","varchar(20)","UK","","SOATO/MHOBT kodi"],
   ["name_uz","varchar(100)","NN","","Nomi (o'zbekcha)"],
   ["name_ru","varchar(100)","","","Nomi (ruscha)"]]},
  {name:"districts",desc:"Tumanlar — viloyatga bog'langan.",cols:[
   ["id","uuid","PK","","Tuman identifikatori"],
   ["region_id","uuid","FK,NN","regions.id","Qaysi viloyatga tegishli"],
-  ["code","varchar(10)","NN","","Tuman kodi"],
+  ["short_code","varchar(10)","NN","","Tuman kodi — seed, o'zgartirilmaydi"],
   ["soato_code","varchar(20)","UK","","SOATO/MHOBT kodi"],
   ["name_uz","varchar(100)","NN","","Nomi (o'zbekcha)"],
   ["name_ru","varchar(100)","","","Nomi (ruscha)"]]},
  {name:"currencies",desc:"Valyutalar ro'yxati.",cols:[
   ["id","uuid","PK","","Valyuta identifikatori"],
-  ["code","varchar(3)","UK,NN","","ISO kodi (UZS, USD, EUR)"],
+  ["short_code","varchar(3)","UK,NN","","ISO kodi (UZS, USD, EUR) — seed, o'zgartirilmaydi"],
   ["name","varchar(50)","NN","","Valyuta nomi"],
   ["symbol","varchar(5)","","","Belgisi"]]},
  {name:"ref_categories",desc:"Universal ma'lumotnoma kategoriyalari — yangi lug'atlar table qo'shmasdan UI orqali kiritiladi. Amaldagi kategoriyalar: contract_doc_types, payment_methods, ticket_priorities, inventory_types, lead_channel_types.",cols:[
   ["id","uuid","PK","","Kategoriya identifikatori"],
-  ["code","varchar(50)","UK,NN","","Kategoriya kodi (doc_types, industries...)"],
+  ["short_code","varchar(50)","UK,NN","","Kategoriya kodi — seed, o'zgartirish taqiqlangan"],
   ["name","varchar(100)","NN","","Kategoriya nomi"]]},
  {name:"ref_items",desc:"Universal ma'lumotnoma elementlari — kategoriya ichidagi qiymatlar, ierarxiya bilan.",cols:[
   ["id","uuid","PK","","Element identifikatori"],
   ["category_id","uuid","FK,NN","ref_categories.id","Qaysi kategoriyaga tegishli"],
   ["parent_id","uuid","FK","ref_items.id","Yuqori element (ierarxiya)"],
-  ["code","varchar(50)","UK,NN","","Element kodi (UK: category + code)"],
+  ["short_code","varchar(50)","UK,NN","","Element kodi (UK: category + short_code) — logika shunga tayanadi, o'zgartirish taqiqlangan"],
   ["name_uz","varchar(255)","NN","","Nomi (o'zbekcha)"],
   ["name_ru","varchar(255)","","","Nomi (ruscha)"],
   ["name_en","varchar(255)","","","Nomi (inglizcha)"],
