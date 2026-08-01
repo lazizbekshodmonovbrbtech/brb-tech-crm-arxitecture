@@ -621,12 +621,12 @@ const DB = {
   ["name","varchar(255)","NN","","Loyiha nomi"],
   ["description","text","","","Loyiha tavsifi"],
   ["status","varchar(20)","NN","","active / paused / completed / archived"]]},
- {name:"project_settings",desc:"Loyiha sozlamalari. mode ustuni Agile yoki Kanban rejimini belgilaydi — butun board/sprint logikasi shunga qarab ishlaydi.",cols:[
+ {name:"project_settings",desc:"Loyiha sozlamalari. mode — Agile/Kanban rejimi. estimation_type — baholash usuli (point yoki estimate), rejimdan qat'i nazar barcha issuelar uchun majburiy: KPI hisoblash shunga quriladi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,UK,NN","projects.id","Qaysi loyiha (1:1)"],
   ["mode","varchar(10)","NN","","agile / kanban — task management rejimi"],
   ["sprint_duration_days","int","","","Sprint davomiyligi (agile uchun, odatda 14)"],
-  ["estimation_type","varchar(20)","NN","","story_points / hours / none"],
+  ["estimation_type","varchar(20)","NN","","point / estimate — Agile va Kanban IKKALASIDA ham qo'llanadi (KPI uchun); loyihadagi barcha issuelar shu bo'yicha baholanadi"],
   ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (kanban uchun)"],
   ["default_board_id","bigint","FK","boards.id","Standart board"]]},
  {name:"project_member_roles",desc:"Loyiha ichidagi rollar (PM, Developer, QA, Viewer...).",cols:[
@@ -689,7 +689,7 @@ const DB = {
   ["end_date","date","","","Tugash sanasi"],
   ["status","varchar(20)","NN","","planned / active / completed"],
   ["velocity_points","int","","","Yakunda bajarilgan story pointlar"]]},
- {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL bo'ladi.",cols:[
+ {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi.",cols:[
   ["id","bigint","PK","","Vazifa identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
@@ -700,7 +700,8 @@ const DB = {
   ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
   ["description","text","","","Batafsil tavsif"],
   ["priority_id","bigint","FK,NN","priorities.id","Muhimlik darajasi — priorities tablesidan (UI'da boshqariladi)"],
-  ["story_points","int","","","Baholash (agile uchun)"],
+  ["point","int","","","Baholash — estimation_type=point bo'lganda to'ldiriladi"],
+  ["estimated_minutes","int","","","Baholash — estimation_type=estimate bo'lganda: dasturchi va PM KELISHIB bitta vaqt qo'yadi (daqiqa). Alohida estimate+worklog yuritilmaydi"],
   ["due_date","date","","","Muddat"],
   ["updated_at","timestamptz","NN","","Oxirgi o'zgarish"]]},
  {name:"issue_assignments",desc:"Vazifa mas'ullari — bir vazifaga bir nechta xodim biriktirilishi mumkin.",cols:[
