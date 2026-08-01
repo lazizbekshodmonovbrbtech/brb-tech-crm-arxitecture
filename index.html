@@ -342,7 +342,7 @@ const DB = {
  {name:"lead_sources",desc:"Lead manbalari — qayerdan kelgani (sayt, instagram, tavsiya...).",cols:[
   ["id","uuid","PK","","Manba identifikatori"],
   ["name","varchar(100)","NN","","Manba nomi"],
-  ["channel_type","varchar(50)","","","Kanal turi (social / call / web / other)"]]},
+  ["channel_type_id","uuid","EXT","ext:global-reference.ref_items.id","Kanal turi — ref_items (lead_channel_types), UI'da boshqariladi"]]},
  {name:"customers",desc:"Mijozlar — jismoniy yoki yuridik shaxslar. Contract service ham shu tablega tashqi ref orqali bog'lanadi.",cols:[
   ["id","uuid","PK","","Mijoz identifikatori"],
   ["name","varchar(255)","NN","","Mijoz nomi / tashkilot nomi"],
@@ -440,7 +440,7 @@ const DB = {
   ["id","uuid","PK","","Yozuv identifikatori"],
   ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnomaga tegishli"],
   ["file_id","uuid","EXT,NN","ext:file.files.id","Fayl (MinIO)"],
-  ["doc_type","varchar(50)","NN","","asosiy / ilova / qo'shimcha kelishuv"],
+  ["doc_type_id","uuid","EXT,NN","ext:global-reference.ref_items.id","Hujjat turi — ref_items (contract_doc_types), UI'da boshqariladi"],
   ["version","int","NN","","Hujjat versiyasi"],
   ["uploaded_by","uuid","EXT","ext:hrm.assignments.id","Kim yuklagan"]]},
  {name:"payment_schedules",desc:"To'lov jadvali — shartnoma bo'yicha rejalashtirilgan to'lovlar.",cols:[
@@ -455,7 +455,7 @@ const DB = {
   ["schedule_id","uuid","FK","payment_schedules.id","Jadvaldagi qaysi to'lovga mos"],
   ["paid_at","timestamptz","NN","","To'langan vaqt"],
   ["amount","numeric(18,2)","NN","","Kelib tushgan summa"],
-  ["method","varchar(30)","","","bank / cash / card"]]},
+  ["method_id","uuid","EXT","ext:global-reference.ref_items.id","To'lov usuli — ref_items (payment_methods), UI'da boshqariladi"]]},
  {name:"contract_status_history",desc:"Shartnoma statuslari o'zgarish tarixi — audit uchun.",cols:[
   ["id","uuid","PK","","Yozuv identifikatori"],
   ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnoma"],
@@ -494,7 +494,14 @@ const DB = {
   ["assignment_id","uuid","EXT,NN","ext:hrm.assignments.id","Xodim tayinlovi"],
   ["role_id","uuid","FK,NN","project_member_roles.id","Loyihadagi roli"],
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
- {name:"issue_types",desc:"Vazifa turlari — Epic, Story, Task, Bug, Subtask. Ierarxiya darajasini belgilaydi.",cols:[
+ {name:"priorities",desc:"Muhimlik darajalari — UI'dan boshqariladi (qo'shish, rang, tartib). code ustuni logika uchun barqaror qoladi.",cols:[
+  ["id","uuid","PK","","Daraja identifikatori"],
+  ["code","varchar(30)","UK,NN","","Barqaror kod (low, medium, high, critical) — kod logikasi shunga tayanadi"],
+  ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'dan o'zgartiriladi"],
+  ["color","varchar(7)","NN","","Rang (hex)"],
+  ["position","int","NN","","Tartib raqami"],
+  ["is_active","boolean","NN","","Faolmi"]]},
+ {name:"issue_types",desc:"Vazifa turlari — Epic, Story, Task, Bug, Subtask. UI'dan yangi tur qo'shish mumkin. Ierarxiya darajasini belgilaydi.",cols:[
   ["id","uuid","PK","","Tur identifikatori"],
   ["name","varchar(50)","NN","","Tur nomi"],
   ["level","int","NN","","Ierarxiya darajasi: 0=Epic, 1=Story/Task/Bug, 2=Subtask"],
@@ -544,7 +551,7 @@ const DB = {
   ["number","int","NN","","Loyiha ichidagi raqam (KEY-123)"],
   ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
   ["description","text","","","Batafsil tavsif"],
-  ["priority","varchar(15)","NN","","low / medium / high / critical"],
+  ["priority_id","uuid","FK,NN","priorities.id","Muhimlik darajasi — priorities tablesidan (UI'da boshqariladi)"],
   ["story_points","int","","","Baholash (agile uchun)"],
   ["due_date","date","","","Muddat"],
   ["created_by","uuid","EXT,NN","ext:hrm.assignments.id","Kim yaratgan"],
@@ -603,7 +610,7 @@ const DB = {
  {name:"sla_policies",desc:"SLA siyosatlari — javob berish va hal qilish muddatlari.",cols:[
   ["id","uuid","PK","","SLA identifikatori"],
   ["name","varchar(100)","NN","","Siyosat nomi"],
-  ["priority","varchar(15)","NN","","Qaysi prioritet uchun"],
+  ["priority_id","uuid","EXT,NN","ext:global-reference.ref_items.id","Qaysi muhimlik darajasi uchun (ref_items: ticket_priorities)"],
   ["first_response_min","int","NN","","Birinchi javob muddati (daqiqa)"],
   ["resolve_min","int","NN","","Hal qilish muddati (daqiqa)"]]},
  {name:"tickets",desc:"Support ticketlari — loyiha bo'yicha mijoz murojaatlari.",cols:[
@@ -613,7 +620,7 @@ const DB = {
   ["customer_id","uuid","EXT","ext:lead.customers.id","Qaysi mijozdan"],
   ["subject","varchar(255)","NN","","Murojaat mavzusi"],
   ["description","text","","","Murojaat mazmuni"],
-  ["priority","varchar(15)","NN","","low / medium / high / critical"],
+  ["priority_id","uuid","EXT,NN","ext:global-reference.ref_items.id","Muhimlik — ref_items (ticket_priorities kategoriyasi), UI'da boshqariladi"],
   ["status","varchar(20)","NN","","open / in_progress / resolved / closed"],
   ["operator","uuid","EXT","ext:hrm.assignments.id","Mas'ul operator (tayinlov)"],
   ["sla_policy_id","uuid","FK","sla_policies.id","Qo'llaniladigan SLA"],
@@ -753,7 +760,7 @@ const DB = {
   ["id","uuid","PK","","Kategoriya identifikatori"],
   ["parent_id","uuid","FK","item_categories.id","Yuqori kategoriya"],
   ["name","varchar(100)","NN","","Kategoriya nomi"],
-  ["type","varchar(20)","NN","","equipment / appliance / consumable"]]},
+  ["type_id","uuid","EXT,NN","ext:global-reference.ref_items.id","Kategoriya turi — ref_items (inventory_types), UI'da boshqariladi"]]},
  {name:"warehouses",desc:"Omborlar — filiallar bo'yicha.",cols:[
   ["id","uuid","PK","","Ombor identifikatori"],
   ["branch_id","uuid","EXT,NN","ext:hrm.branches.id","Qaysi filialda"],
@@ -832,7 +839,7 @@ const DB = {
   ["code","varchar(3)","UK,NN","","ISO kodi (UZS, USD, EUR)"],
   ["name","varchar(50)","NN","","Valyuta nomi"],
   ["symbol","varchar(5)","","","Belgisi"]]},
- {name:"ref_categories",desc:"Universal ma'lumotnoma kategoriyalari — yangi lug'atlar table qo'shmasdan kiritiladi.",cols:[
+ {name:"ref_categories",desc:"Universal ma'lumotnoma kategoriyalari — yangi lug'atlar table qo'shmasdan UI orqali kiritiladi. Amaldagi kategoriyalar: contract_doc_types, payment_methods, ticket_priorities, inventory_types, lead_channel_types.",cols:[
   ["id","uuid","PK","","Kategoriya identifikatori"],
   ["code","varchar(50)","UK,NN","","Kategoriya kodi (doc_types, industries...)"],
   ["name","varchar(100)","NN","","Kategoriya nomi"]]},
