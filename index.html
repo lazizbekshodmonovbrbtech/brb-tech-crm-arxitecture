@@ -465,7 +465,7 @@ const DB = {
   ["type","varchar(20)","NN","","individual / company"],
   ["phone","varchar(20)","UK","","Asosiy telefon"],
   ["email","varchar(255)","","","Elektron pochta"],
-  ["region_id","bigint","EXT","ext:global-reference.region.id","Viloyat (ma'lumotnomadan)"]]]},
+  ["region_id","bigint","EXT","ext:global-reference.region.id","Viloyat (ma'lumotnomadan)"]]},
  {name:"contacts",desc:"Mijoz kontakt shaxslari (kompaniya bo'lsa — vakillari).",cols:[
   ["id","bigint","PK","","Kontakt identifikatori"],
   ["customer_id","bigint","FK,NN","customers.id","Qaysi mijozga tegishli"],
@@ -484,13 +484,13 @@ const DB = {
   ["currency_id","bigint","EXT","ext:global-reference.currency.id","Valyuta"],
   ["assigned_to","bigint","EXT,NN","ext:hrm.assignment.id","Mas'ul sotuvchi (tayinlov)"],
   ["status_id","bigint","FK,NN","lead_statuses.id","Joriy status — logika short_code bo'yicha"],
-  ["external_ref","varchar(255)","","","Tashqi tizimdagi ID (social user va h.k.)"]]]},
+  ["external_ref","varchar(255)","","","Tashqi tizimdagi ID (social user va h.k.)"]]},
  {name:"lead_activities",desc:"Lead bo'yicha barcha faoliyat tarixi — qo'ng'iroq, xabar, uchrashuv, izoh.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["lead_id","bigint","FK,NN","leads.id","Qaysi leadga tegishli"],
   ["type","varchar(30)","NN","","call / message / meeting / note / stage_change"],
   ["content","text","","","Faoliyat mazmuni"],
-  ["actor","bigint","EXT","ext:hrm.assignment.id","Kim bajardi (tayinlov)"]]]}
+  ["actor","bigint","EXT","ext:hrm.assignment.id","Kim bajardi (tayinlov)"]]}
 ]},
 
 "social-integration-service":{
@@ -576,7 +576,7 @@ const DB = {
   ["contract_id","bigint","FK,NN","contracts.id","Qaysi shartnomaga tegishli"],
   ["file_hash","varchar(255)","EXT,NN","ext:file.file_storage.hash","Fayl (MinIO)"],
   ["doc_type_id","bigint","FK,NN","document_types.id","Hujjat turi — ichki lug'at, JOIN bilan"],
-  ["version","int","NN","","Hujjat versiyasi"]]]},
+  ["version","int","NN","","Hujjat versiyasi"]]},
  {name:"payment_schedules",desc:"To'lov jadvali — shartnoma bo'yicha rejalashtirilgan to'lovlar.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["contract_id","bigint","FK,NN","contracts.id","Qaysi shartnoma"],
@@ -608,7 +608,7 @@ const DB = {
   ["key","varchar(10)","UK,NN","","Qisqa kod (masalan CRM, ERP) — issue raqamlari uchun"],
   ["name","varchar(255)","NN","","Loyiha nomi"],
   ["description","text","","","Loyiha tavsifi"],
-  ["status","varchar(20)","NN","","active / paused / completed / archived"]]]},
+  ["status","varchar(20)","NN","","active / paused / completed / archived"]]},
  {name:"project_settings",desc:"Loyiha sozlamalari. mode ustuni Agile yoki Kanban rejimini belgilaydi — butun board/sprint logikasi shunga qarab ishlaydi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,UK,NN","projects.id","Qaysi loyiha (1:1)"],
@@ -713,12 +713,12 @@ const DB = {
   ["changed_at","timestamptz","NN","","Vaqti"]]},
  {name:"issue_watchers",desc:"Kuzatuvchilar — vazifa o'zgarishlaridan notification-service orqali xabardor bo'ladi.",cols:[
   ["issue_id","bigint","PK,FK","issues.id","Qaysi vazifa"],
-  ["assignment_id","bigint","PK,EXT","ext:hrm.assignment.id","Kuzatuvchi xodim"]]]},
+  ["assignment_id","bigint","PK,EXT","ext:hrm.assignment.id","Kuzatuvchi xodim"]]},
  {name:"issue_attachments",desc:"Vazifaga biriktirilgan fayllar — file-service'da saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["issue_id","bigint","FK,NN","issues.id","Qaysi vazifaga"],
   ["file_hash","varchar(255)","EXT,NN","ext:file.file_storage.hash","Fayl (MinIO)"],
-  ["uploaded_by","bigint","EXT,NN","ext:hrm.assignment.id","Kim yuklagan"]]]},
+  ["uploaded_by","bigint","EXT,NN","ext:hrm.assignment.id","Kim yuklagan"]]},
  {name:"labels",desc:"Teglar — moslashuvchan filtrlash uchun.",cols:[
   ["id","bigint","PK","","Teg identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
@@ -779,13 +779,13 @@ const DB = {
   ["author_type","varchar(15)","NN","","operator / customer / system"],
   ["author_ref","bigint","","","Muallif ID (turi author_type'ga bog'liq)"],
   ["content","text","NN","","Izoh matni"],
-  ["is_internal","boolean","NN","","Ichki izohmi (mijoz ko'rmaydi)"]]]},
+  ["is_internal","boolean","NN","","Ichki izohmi (mijoz ko'rmaydi)"]]},
  {name:"escalations",desc:"Eskalatsiyalar — SLA buzilganda yoki murakkab holatlarda yuqoriga ko'tarish.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["ticket_id","bigint","FK,NN","tickets.id","Qaysi ticket"],
   ["level","int","NN","","Eskalatsiya darajasi"],
   ["escalated_to","bigint","EXT,NN","ext:hrm.assignment.id","Kimga ko'tarildi"],
-  ["reason","text","","","Sababi"]]]},
+  ["reason","text","","","Sababi"]]},
  {name:"bots",desc:"Har bir loyihaning o'z Telegram boti — o'z tokeni va logotipi bilan. Token shifrlangan saqlanadi!",cols:[
   ["id","bigint","PK","","Bot identifikatori"],
   ["project_id","bigint","EXT,UK,NN","ext:project.projects.id","Qaysi loyihaning boti (1:1)"],
@@ -840,7 +840,7 @@ const DB = {
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["operator","bigint","EXT,UK,NN","ext:hrm.assignment.id","Operator (tayinlov)"],
   ["extension","varchar(10)","UK,NN","","Ichki raqam"],
-  ["status","varchar(15)","NN","","online / busy / away / offline"]]]},
+  ["status","varchar(15)","NN","","online / busy / away / offline"]]},
  {name:"calls",desc:"Qo'ng'iroqlar tarixi — kiruvchi va chiquvchi. Mijoz/lead bilan bog'lanadi.",cols:[
   ["id","bigint","PK","","Qo'ng'iroq identifikatori"],
   ["direction","varchar(10)","NN","","inbound / outbound"],
@@ -895,7 +895,7 @@ const DB = {
   ["notification_id","bigint","FK,NN","notifications.id","Qaysi xabarnoma"],
   ["attempt","int","NN","","Urinish raqami"],
   ["status","varchar(15)","NN","","success / error"],
-  ["provider_response","text","","","Provayder javobi"]]]}
+  ["provider_response","text","","","Provayder javobi"]]}
 ]},
 
 "inventory-service":{
