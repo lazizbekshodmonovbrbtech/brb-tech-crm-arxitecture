@@ -153,6 +153,8 @@ body{
   border-bottom:1px solid rgba(26,48,80,.4);
 }
 .row:last-child{border-bottom:none;border-radius:0 0 8px 8px}
+.row.aud{color:var(--faint);font-size:10px;justify-content:center;background:rgba(26,48,80,.25)}
+.d-col.aud-col{opacity:.75;border-style:dashed}
 .row .cn{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .ct{color:var(--typ);margin-left:auto;font-size:10px;flex:none}
 .k{font-size:8.5px;font-weight:700;padding:1px 4px;border-radius:3px;flex:none;letter-spacing:.04em}
@@ -280,9 +282,9 @@ const DB = {
 
 "hrm-service":{
  group:"Mavjud tizim",
- desc:"MAVJUD — hrm_service_db. 18 jadval, 24 FK, 34 sequence. Deyarli har jadvalda 7 audit ustun (created/modified date, employee_id, assignment_id, last_updated_id) va soft delete (status) — diagrammada takrorlanmaydi.",
+ desc:"MAVJUD — hrm_service_db. 18 jadval, 24 FK, 34 sequence. Har jadvalda 7 standart audit ustun (kartada va drawerda avtomatik ko'rsatiladi) va soft delete (status).",
  tables:[
- {name:"org_structure",desc:"Tashkilot tuzilmasi (ierarxik). DIQQAT: parent uchun FK constraint e'lon qilinmagan — butunlik faqat ilova darajasida. Audit: bor (7 standart ustun).",cols:[
+ {name:"org_structure",desc:"Tashkilot tuzilmasi (ierarxik). DIQQAT: parent uchun FK constraint e'lon qilinmagan — butunlik faqat ilova darajasida.",cols:[
   ["id","bigint","PK","","SEQ_ORG_STRUCTURE_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["short_code","varchar(500)","","","Qisqa kod"],
@@ -290,7 +292,7 @@ const DB = {
   ["logo_file_hash","varchar(255)","EXT","ext:file.file_storage.hash","Logo — file-service hash orqali (FKsiz)"],
   ["status","varchar(255)","NN","","ACTIVE / INACTIVE / DELETED (soft delete)"],
   ["parent_org_structure_id","bigint","","org_structure.id","Ierarxiya — FK e'lon qilinmagan!"]]},
- {name:"branch",desc:"Filial (ierarxik) — eng ko'p ustunli jadval (25). BranchStatus: ACTIVE/DELETED (INACTIVE yo'q). Audit: bor (7 standart ustun).",cols:[
+ {name:"branch",desc:"Filial (ierarxik) — eng ko'p ustunli jadval (25). BranchStatus: ACTIVE/DELETED (INACTIVE yo'q).",cols:[
   ["id","bigint","PK","","SEQ_BRANCH_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
@@ -309,7 +311,7 @@ const DB = {
   ["district_id","bigint","EXT","ext:global-reference.district.id","Tuman — FKsiz, mantiqiy"],
   ["branch_level_id","bigint","FK","ref_branch_level.id","Filial darajasi"],
   ["branch_type_id","bigint","FK","ref_branch_type.id","Filial turi"]]},
- {name:"department",desc:"Bo'lim (ierarxik). Audit: bor (7 standart ustun).",cols:[
+ {name:"department",desc:"Bo'lim (ierarxik).",cols:[
   ["id","bigint","PK","","SEQ_DEPARTMENT_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
@@ -318,29 +320,29 @@ const DB = {
   ["parent_department_id","bigint","FK","department.id","Yuqori bo'lim"],
   ["branch_id","bigint","FK","branch.id","Qaysi filialda"],
   ["department_type_id","bigint","FK","ref_department_type.id","Bo'lim turi"]]},
- {name:"position",desc:"Lavozim. Audit: bor (7 standart ustun).",cols:[
+ {name:"position",desc:"Lavozim.",cols:[
   ["id","bigint","PK","","SEQ_POSITION_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["short_code","varchar(500)","","","Qisqa kod"],
   ["status","varchar(255)","NN","","Soft delete status"],
   ["org_structure_id","bigint","FK","org_structure.id","Qaysi tuzilmaga tegishli"]]},
- {name:"position_branch_level",desc:"Lavozim × filial darajasi bog'lovchi (N:M). Audit YO'Q — naqshdan chetga chiqadi, sequence faqat _ID.",cols:[
+ {name:"position_branch_level",noaudit:true,desc:"Lavozim × filial darajasi bog'lovchi (N:M). Audit YO'Q — naqshdan chetga chiqadi, sequence faqat _ID.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["position_id","bigint","FK","position.id","Lavozim"],
   ["branch_level_id","bigint","FK","ref_branch_level.id","Filial darajasi"]]},
- {name:"position_branch_type",desc:"Lavozim × filial turi bog'lovchi (N:M). Audit YO'Q.",cols:[
+ {name:"position_branch_type",noaudit:true,desc:"Lavozim × filial turi bog'lovchi (N:M). Audit YO'Q.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["position_id","bigint","FK","position.id","Lavozim"],
   ["branch_type_id","bigint","FK","ref_branch_type.id","Filial turi"]]},
- {name:"staff_unit",desc:"Shtat birligi — bo'lim + lavozim kesishmasi, aynan shu yerga xodim tayinlanadi. Audit: bor (7 standart ustun).",cols:[
+ {name:"staff_unit",desc:"Shtat birligi — bo'lim + lavozim kesishmasi, aynan shu yerga xodim tayinlanadi.",cols:[
   ["id","bigint","PK","","SEQ_STAFF_UNIT_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["total_fte","decimal(21,2)","","","Shtat ulushi"],
   ["status","varchar(255)","NN","","Soft delete status"],
   ["department_id","bigint","FK","department.id","Qaysi bo'lim"],
   ["position_id","bigint","FK","position.id","Qaysi lavozim"]]},
- {name:"employee",desc:"Xodim. EmployeeStatus: ACTIVE/INACTIVE/BLOCKED/DELETED. Uch unique: username, pinfl, email. Audit: bor (7 standart ustun).",cols:[
+ {name:"employee",desc:"Xodim. EmployeeStatus: ACTIVE/INACTIVE/BLOCKED/DELETED. Uch unique: username, pinfl, email.",cols:[
   ["id","bigint","PK","","SEQ_EMPLOYEE_ID"],
   ["user_external_id","varchar(255)","NN","","Keycloak/SSO identifikatori"],
   ["username","varchar(255)","UK,NN","","Login"],
@@ -355,7 +357,7 @@ const DB = {
   ["pinfl","varchar(14)","UK,NN","","JShShIR"],
   ["email","varchar(255)","UK","","Elektron pochta"],
   ["lang_key","varchar(255)","","","Interfeys tili"]]},
- {name:"assignment",desc:"Tayinlov — platformaning eng markaziy jadvali, barcha servicelardagi audit ustunlar shunga ishora qiladi. AssignmentStatus: ACTIVE/PENDING/RELEASED/TERMINATED — soft delete YO'Q, hayot sikli bo'yicha yopiladi. Audit: bor (7 standart ustun).",cols:[
+ {name:"assignment",desc:"Tayinlov — platformaning eng markaziy jadvali, barcha servicelardagi audit ustunlar shunga ishora qiladi. AssignmentStatus: ACTIVE/PENDING/RELEASED/TERMINATED — soft delete YO'Q, hayot sikli bo'yicha yopiladi.",cols:[
   ["id","bigint","PK","","SEQ_ASSIGNMENT_ID"],
   ["status","varchar(255)","NN","","ACTIVE / PENDING / RELEASED / TERMINATED"],
   ["staff_unit_id","bigint","FK","staff_unit.id","Qaysi shtat birligiga"],
@@ -363,7 +365,7 @@ const DB = {
   ["assignment_type_id","bigint","FK","ref_assignment_type.id","Tayinlov turi"],
   ["employee_id","bigint","FK","employee.id","Joriy xodim"],
   ["old_employee_id","bigint","FK","employee.id","Almashtirilgan (oldingi) xodim"]]},
- {name:"role",desc:"RBAC rol (ierarxik). short_code masalan SECURITY_MODULE. Audit: bor (7 standart ustun).",cols:[
+ {name:"role",desc:"RBAC rol (ierarxik). short_code masalan SECURITY_MODULE.",cols:[
   ["id","bigint","PK","","SEQ_ROLE_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["short_code","varchar(50)","UK,NN","","Barqaror kod — logika shunga tayanadi"],
@@ -371,50 +373,50 @@ const DB = {
   ["localized_description","varchar(2000)","","","Tavsif (5 tilli JSON)"],
   ["parent_id","bigint","FK","role.id","Yuqori rol"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"action_catalog",desc:"Amallar katalogi: CREATE, EDIT, DELETE, DETAIL_VIEW, PAGING_VIEW, LIST_VIEW, DASHBOARD_VIEW. Audit: bor (7 standart ustun).",cols:[
+ {name:"action_catalog",desc:"Amallar katalogi: CREATE, EDIT, DELETE, DETAIL_VIEW, PAGING_VIEW, LIST_VIEW, DASHBOARD_VIEW.",cols:[
   ["id","bigint","PK","","SEQ_ACTION_CATALOG_ID"],
   ["code","varchar(50)","UK,NN","","Amal kodi"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["localized_description","varchar(2000)","","","Tavsif"],
   ["sort_order","bigint","","","Tartib"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"permission",desc:"Ruxsat (rol × amal). UK: uk_permission_role_action (role_id, action_catalog_id). Audit: bor (7 standart ustun).",cols:[
+ {name:"permission",desc:"Ruxsat (rol × amal). UK: uk_permission_role_action (role_id, action_catalog_id).",cols:[
   ["id","bigint","PK","","SEQ_PERMISSION_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["role_id","bigint","FK,UK","role.id","Qaysi rol (UK tarkibida)"],
   ["action_catalog_id","bigint","FK,UK","action_catalog.id","Qaysi amal (UK tarkibida)"],
   ["api_path","varchar(300)","","","Himoyalangan endpoint"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"assignment_permission",desc:"Tayinlovga to'g'ridan-to'g'ri ruxsat (roldan chetlab). UK: (assignment_id, permission_id). Audit: bor (7 standart ustun).",cols:[
+ {name:"assignment_permission",desc:"Tayinlovga to'g'ridan-to'g'ri ruxsat (roldan chetlab). UK: (assignment_id, permission_id).",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["assignment_id","bigint","FK,UK,NN","assignment.id","Qaysi tayinlovga"],
   ["permission_id","bigint","FK,UK,NN","permission.id","Qaysi ruxsat"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"ref_branch_type",desc:"HR ma'lumotnomasi: filial turi. Audit: bor (7 standart ustun).",cols:[
+ {name:"ref_branch_type",desc:"HR ma'lumotnomasi: filial turi.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["sort_order","bigint","","","Tartib"],
   ["short_code","varchar(500)","","","Qisqa kod"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"ref_branch_level",desc:"HR ma'lumotnomasi: filial darajasi. Audit: bor (7 standart ustun).",cols:[
+ {name:"ref_branch_level",desc:"HR ma'lumotnomasi: filial darajasi.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["sort_order","bigint","","","Tartib"],
   ["short_code","varchar(500)","","","Qisqa kod"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"ref_department_type",desc:"HR ma'lumotnomasi: bo'lim turi. Audit: bor (7 standart ustun).",cols:[
+ {name:"ref_department_type",desc:"HR ma'lumotnomasi: bo'lim turi.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["sort_order","bigint","","","Tartib"],
   ["short_code","varchar(500)","","","Qisqa kod"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"ref_fte",desc:"HR ma'lumotnomasi: shtat ulushi (0.5, 1.0 ...). Audit: bor (7 standart ustun).",cols:[
+ {name:"ref_fte",desc:"HR ma'lumotnomasi: shtat ulushi (0.5, 1.0 ...).",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["sort_order","bigint","","","Tartib"],
   ["short_code","varchar(500)","","","Qisqa kod"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"ref_assignment_type",desc:"HR ma'lumotnomasi: tayinlov turi. Audit: bor (7 standart ustun).",cols:[
+ {name:"ref_assignment_type",desc:"HR ma'lumotnomasi: tayinlov turi.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["sort_order","bigint","","","Tartib"],
   ["short_code","varchar(500)","","","Qisqa kod"],
@@ -463,8 +465,7 @@ const DB = {
   ["type","varchar(20)","NN","","individual / company"],
   ["phone","varchar(20)","UK","","Asosiy telefon"],
   ["email","varchar(255)","","","Elektron pochta"],
-  ["region_id","bigint","EXT","ext:global-reference.region.id","Viloyat (ma'lumotnomadan)"],
-  ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
+  ["region_id","bigint","EXT","ext:global-reference.region.id","Viloyat (ma'lumotnomadan)"]]]},
  {name:"contacts",desc:"Mijoz kontakt shaxslari (kompaniya bo'lsa — vakillari).",cols:[
   ["id","bigint","PK","","Kontakt identifikatori"],
   ["customer_id","bigint","FK,NN","customers.id","Qaysi mijozga tegishli"],
@@ -483,15 +484,13 @@ const DB = {
   ["currency_id","bigint","EXT","ext:global-reference.currency.id","Valyuta"],
   ["assigned_to","bigint","EXT,NN","ext:hrm.assignment.id","Mas'ul sotuvchi (tayinlov)"],
   ["status_id","bigint","FK,NN","lead_statuses.id","Joriy status — logika short_code bo'yicha"],
-  ["external_ref","varchar(255)","","","Tashqi tizimdagi ID (social user va h.k.)"],
-  ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
+  ["external_ref","varchar(255)","","","Tashqi tizimdagi ID (social user va h.k.)"]]]},
  {name:"lead_activities",desc:"Lead bo'yicha barcha faoliyat tarixi — qo'ng'iroq, xabar, uchrashuv, izoh.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["lead_id","bigint","FK,NN","leads.id","Qaysi leadga tegishli"],
   ["type","varchar(30)","NN","","call / message / meeting / note / stage_change"],
   ["content","text","","","Faoliyat mazmuni"],
-  ["actor","bigint","EXT","ext:hrm.assignment.id","Kim bajardi (tayinlov)"],
-  ["created_at","timestamptz","NN","","Vaqti"]]}
+  ["actor","bigint","EXT","ext:hrm.assignment.id","Kim bajardi (tayinlov)"]]]}
 ]},
 
 "social-integration-service":{
@@ -577,8 +576,7 @@ const DB = {
   ["contract_id","bigint","FK,NN","contracts.id","Qaysi shartnomaga tegishli"],
   ["file_hash","varchar(255)","EXT,NN","ext:file.file_storage.hash","Fayl (MinIO)"],
   ["doc_type_id","bigint","FK,NN","document_types.id","Hujjat turi — ichki lug'at, JOIN bilan"],
-  ["version","int","NN","","Hujjat versiyasi"],
-  ["uploaded_by","bigint","EXT","ext:hrm.assignment.id","Kim yuklagan"]]},
+  ["version","int","NN","","Hujjat versiyasi"]]]},
  {name:"payment_schedules",desc:"To'lov jadvali — shartnoma bo'yicha rejalashtirilgan to'lovlar.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["contract_id","bigint","FK,NN","contracts.id","Qaysi shartnoma"],
@@ -610,8 +608,7 @@ const DB = {
   ["key","varchar(10)","UK,NN","","Qisqa kod (masalan CRM, ERP) — issue raqamlari uchun"],
   ["name","varchar(255)","NN","","Loyiha nomi"],
   ["description","text","","","Loyiha tavsifi"],
-  ["status","varchar(20)","NN","","active / paused / completed / archived"],
-  ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
+  ["status","varchar(20)","NN","","active / paused / completed / archived"]]]},
  {name:"project_settings",desc:"Loyiha sozlamalari. mode ustuni Agile yoki Kanban rejimini belgilaydi — butun board/sprint logikasi shunga qarab ishlaydi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,UK,NN","projects.id","Qaysi loyiha (1:1)"],
@@ -693,8 +690,6 @@ const DB = {
   ["priority_id","bigint","FK,NN","priorities.id","Muhimlik darajasi — priorities tablesidan (UI'da boshqariladi)"],
   ["story_points","int","","","Baholash (agile uchun)"],
   ["due_date","date","","","Muddat"],
-  ["created_by","bigint","EXT,NN","ext:hrm.assignment.id","Kim yaratgan"],
-  ["created_at","timestamptz","NN","","Yaratilgan vaqt"],
   ["updated_at","timestamptz","NN","","Oxirgi o'zgarish"]]},
  {name:"issue_assignments",desc:"Vazifa mas'ullari — bir vazifaga bir nechta xodim biriktirilishi mumkin.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -707,7 +702,6 @@ const DB = {
   ["issue_id","bigint","FK,NN","issues.id","Qaysi vazifaga"],
   ["author","bigint","EXT,NN","ext:hrm.assignment.id","Muallif (tayinlov)"],
   ["content","text","NN","","Izoh matni"],
-  ["created_at","timestamptz","NN","","Yozilgan vaqt"],
   ["edited_at","timestamptz","","","Tahrirlangan vaqt"]]},
  {name:"issue_history",desc:"O'zgarishlar tarixi (audit log) — kim nimani qachon o'zgartirgani.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -719,14 +713,12 @@ const DB = {
   ["changed_at","timestamptz","NN","","Vaqti"]]},
  {name:"issue_watchers",desc:"Kuzatuvchilar — vazifa o'zgarishlaridan notification-service orqali xabardor bo'ladi.",cols:[
   ["issue_id","bigint","PK,FK","issues.id","Qaysi vazifa"],
-  ["assignment_id","bigint","PK,EXT","ext:hrm.assignment.id","Kuzatuvchi xodim"],
-  ["added_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
+  ["assignment_id","bigint","PK,EXT","ext:hrm.assignment.id","Kuzatuvchi xodim"]]]},
  {name:"issue_attachments",desc:"Vazifaga biriktirilgan fayllar — file-service'da saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["issue_id","bigint","FK,NN","issues.id","Qaysi vazifaga"],
   ["file_hash","varchar(255)","EXT,NN","ext:file.file_storage.hash","Fayl (MinIO)"],
-  ["uploaded_by","bigint","EXT,NN","ext:hrm.assignment.id","Kim yuklagan"],
-  ["uploaded_at","timestamptz","NN","","Yuklangan vaqt"]]},
+  ["uploaded_by","bigint","EXT,NN","ext:hrm.assignment.id","Kim yuklagan"]]]},
  {name:"labels",desc:"Teglar — moslashuvchan filtrlash uchun.",cols:[
   ["id","bigint","PK","","Teg identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
@@ -780,7 +772,6 @@ const DB = {
   ["status_id","bigint","FK,NN","ticket_statuses.id","Joriy status — logika short_code bo'yicha"],
   ["operator","bigint","EXT","ext:hrm.assignment.id","Mas'ul operator (tayinlov)"],
   ["sla_policy_id","bigint","FK","sla_policies.id","Qo'llaniladigan SLA"],
-  ["created_at","timestamptz","NN","","Ochilgan vaqt"],
   ["resolved_at","timestamptz","","","Hal qilingan vaqt"]]},
  {name:"ticket_comments",desc:"Ticket yozishmalari — operator va mijoz javoblari.",cols:[
   ["id","bigint","PK","","Izoh identifikatori"],
@@ -788,15 +779,13 @@ const DB = {
   ["author_type","varchar(15)","NN","","operator / customer / system"],
   ["author_ref","bigint","","","Muallif ID (turi author_type'ga bog'liq)"],
   ["content","text","NN","","Izoh matni"],
-  ["is_internal","boolean","NN","","Ichki izohmi (mijoz ko'rmaydi)"],
-  ["created_at","timestamptz","NN","","Yozilgan vaqt"]]},
+  ["is_internal","boolean","NN","","Ichki izohmi (mijoz ko'rmaydi)"]]]},
  {name:"escalations",desc:"Eskalatsiyalar — SLA buzilganda yoki murakkab holatlarda yuqoriga ko'tarish.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["ticket_id","bigint","FK,NN","tickets.id","Qaysi ticket"],
   ["level","int","NN","","Eskalatsiya darajasi"],
   ["escalated_to","bigint","EXT,NN","ext:hrm.assignment.id","Kimga ko'tarildi"],
-  ["reason","text","","","Sababi"],
-  ["created_at","timestamptz","NN","","Vaqti"]]},
+  ["reason","text","","","Sababi"]]]},
  {name:"bots",desc:"Har bir loyihaning o'z Telegram boti — o'z tokeni va logotipi bilan. Token shifrlangan saqlanadi!",cols:[
   ["id","bigint","PK","","Bot identifikatori"],
   ["project_id","bigint","EXT,UK,NN","ext:project.projects.id","Qaysi loyihaning boti (1:1)"],
@@ -851,8 +840,7 @@ const DB = {
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["operator","bigint","EXT,UK,NN","ext:hrm.assignment.id","Operator (tayinlov)"],
   ["extension","varchar(10)","UK,NN","","Ichki raqam"],
-  ["status","varchar(15)","NN","","online / busy / away / offline"],
-  ["updated_at","timestamptz","NN","","Oxirgi yangilanish"]]},
+  ["status","varchar(15)","NN","","online / busy / away / offline"]]]},
  {name:"calls",desc:"Qo'ng'iroqlar tarixi — kiruvchi va chiquvchi. Mijoz/lead bilan bog'lanadi.",cols:[
   ["id","bigint","PK","","Qo'ng'iroq identifikatori"],
   ["direction","varchar(10)","NN","","inbound / outbound"],
@@ -907,8 +895,7 @@ const DB = {
   ["notification_id","bigint","FK,NN","notifications.id","Qaysi xabarnoma"],
   ["attempt","int","NN","","Urinish raqami"],
   ["status","varchar(15)","NN","","success / error"],
-  ["provider_response","text","","","Provayder javobi"],
-  ["created_at","timestamptz","NN","","Vaqti"]]}
+  ["provider_response","text","","","Provayder javobi"]]]}
 ]},
 
 "inventory-service":{
@@ -965,20 +952,20 @@ const DB = {
  group:"Mavjud tizim",
  desc:"MAVJUD — settings_service_db. 4 jadval, 2 FK, 8 sequence. Frontend jadval metadatasi va i18n tarjimalar.",
  tables:[
- {name:"i18n_message",desc:"Tarjimalar. UK: (short_code, status) — soft delete bilan birga ishlashi uchun status ham kalitda. Audit: bor (7 standart ustun).",cols:[
+ {name:"i18n_message",desc:"Tarjimalar. UK: (short_code, status) — soft delete bilan birga ishlashi uchun status ham kalitda.",cols:[
   ["id","bigint","PK","","SEQ_I18N_MESSAGE_ID"],
   ["short_code","varchar(500)","UK","","i18n kaliti (common.create, region.title)"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["status","varchar(255)","UK,NN","","UK tarkibida (short_code bilan birga)"],
   ["sort_order","bigint","","","Tartib"]]},
- {name:"ui_table",desc:"Frontend jadval ta'rifi. UK: short_code. Audit: bor (7 standart ustun).",cols:[
+ {name:"ui_table",desc:"Frontend jadval ta'rifi. UK: short_code.",cols:[
   ["id","bigint","PK","","SEQ_UI_TABLE_ID"],
   ["short_code","varchar(500)","UK","","Frontend so'raydigan kalit"],
   ["table_name","varchar(500)","NN","","Jadval nomi"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["sort_order","integer","NN","","Tartib"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"ui_table_column",desc:"Frontend ustun ta'rifi — jadvallarning butun ko'rinishi shu yerdan boshqariladi. short_code DTO maydon nomiga (camelCase) mos kelishi SHART — mos kelmasa ustun bo'sh ko'rinadi va xato hech qayerda chiqmaydi. UK: (short_code, ui_table_id). Audit: bor (7 standart ustun).",cols:[
+ {name:"ui_table_column",desc:"Frontend ustun ta'rifi — jadvallarning butun ko'rinishi shu yerdan boshqariladi. short_code DTO maydon nomiga (camelCase) mos kelishi SHART — mos kelmasa ustun bo'sh ko'rinadi va xato hech qayerda chiqmaydi. UK: (short_code, ui_table_id).",cols:[
   ["id","bigint","PK","","SEQ_UI_TABLE_COLUMN_ID"],
   ["short_code","varchar(500)","UK","","DTO maydon nomi (camelCase)"],
   ["localized_name","varchar(2000)","NN","","Ustun sarlavhasi (5 tilli)"],
@@ -995,7 +982,7 @@ const DB = {
   ["max_width","integer","","","Maksimal kenglik"],
   ["status","varchar(255)","NN","","Soft delete status"],
   ["ui_table_id","bigint","FK,UK,NN","ui_table.id","Qaysi jadvalga tegishli (UK tarkibida)"]]},
- {name:"ui_table_column_employee",desc:"Xodimga xos ustun sozlamasi. DIQQAT: employee_id boshqa bazada (FKsiz) va unique cheklov ham yo'q — xodim+ustun juftligi takrorlanishi mumkin. Audit: bor (7 standart ustun).",cols:[
+ {name:"ui_table_column_employee",desc:"Xodimga xos ustun sozlamasi. DIQQAT: employee_id boshqa bazada (FKsiz) va unique cheklov ham yo'q — xodim+ustun juftligi takrorlanishi mumkin.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["is_visible","boolean","","","Xodim yashirgan/ko'rsatgan"],
   ["sort_order","integer","","","Xodimning tartibi"],
@@ -1008,27 +995,27 @@ const DB = {
  group:"Mavjud tizim",
  desc:"MAVJUD — global_reference_db. 4 jadval, 1 FK, 8 sequence. Sof ma'lumotnoma servisi.",
  tables:[
- {name:"region",desc:"Viloyat. Audit: bor (7 standart ustun).",cols:[
+ {name:"region",desc:"Viloyat.",cols:[
   ["id","bigint","PK","","SEQ_REGION_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["short_code","varchar(255)","","","Qisqa kod"],
   ["status","varchar(255)","","","Soft delete status"]]},
- {name:"district",desc:"Tuman — bu servisdagi yagona FK. Audit: bor (7 standart ustun).",cols:[
+ {name:"district",desc:"Tuman — bu servisdagi yagona FK.",cols:[
   ["id","bigint","PK","","SEQ_DISTRICT_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["short_code","varchar(255)","","","Qisqa kod"],
   ["status","varchar(255)","","","Soft delete status"],
   ["region_id","bigint","FK","region.id","Qaysi viloyatga tegishli"]]},
- {name:"country",desc:"Davlat — tashqi MyID tizimi bilan bog'langan. Audit: bor (7 standart ustun).",cols:[
+ {name:"country",desc:"Davlat — tashqi MyID tizimi bilan bog'langan.",cols:[
   ["id","bigint","PK","","SEQ_COUNTRY_ID"],
   ["my_id_id","bigint","UK","","MyID tizimi identifikatori"],
   ["sort_order","bigint","","","Tartib"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["short_code","varchar(255)","","","Qisqa kod"],
   ["status","varchar(255)","","","Soft delete status"]]},
- {name:"currency",desc:"Valyuta. Audit: bor (7 standart ustun).",cols:[
+ {name:"currency",desc:"Valyuta.",cols:[
   ["id","bigint","PK","","SEQ_CURRENCY_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
@@ -1040,7 +1027,7 @@ const DB = {
  group:"Mavjud tizim",
  desc:"MAVJUD — file_service_db. 1 jadval, 0 FK. Fayllar MinIO'da; tashqi tizimlar faylga id emas, HASH orqali murojaat qiladi.",
  tables:[
- {name:"file_storage",desc:"Fayl metadatasi. Object key formati: {LOCATION}/{YYYY}/{MM}/{DD}/{uuid}.{ext}. Audit ustunlari employee/assignment ma'lumotini RestClient orqali hrm-service'dan oladi. Audit: bor (7 standart ustun).",cols:[
+ {name:"file_storage",desc:"Fayl metadatasi. Object key formati: {LOCATION}/{YYYY}/{MM}/{DD}/{uuid}.{ext}. Audit ustunlari employee/assignment ma'lumotini RestClient orqali hrm-service'dan oladi.",cols:[
   ["id","bigint","PK","","SEQ_FILE_STORAGE_ID"],
   ["name","varchar(2000)","NN","","Asl fayl nomi"],
   ["file_path","varchar(2000)","NN","","MinIO object key (disk yo'li emas)"],
@@ -1052,6 +1039,18 @@ const DB = {
 ]}
 
 };
+
+/* Standart audit ustunlari — BUTUN LOYIHADA BIR XIL, har bir tablega avtomatik qo'llanadi.
+   Istisno: noaudit:true belgilangan jadvallar (position_branch_level/type). */
+const AUDIT_COLS=[
+ ["created_date","timestamp","NN","","Yaratilgan vaqt"],
+ ["last_modified_date","timestamp","NN","","Oxirgi o'zgartirish vaqti"],
+ ["created_assignment_id","bigint","NN,EXT","ext:hrm.assignment.id","Yaratgan xodimning tayinlovi (FKsiz, mantiqiy)"],
+ ["created_employee_id","bigint","NN,EXT","ext:hrm.employee.id","Yaratgan xodim (FKsiz, mantiqiy)"],
+ ["last_modified_assignment_id","bigint","NN,EXT","ext:hrm.assignment.id","O'zgartirgan xodimning tayinlovi (FKsiz)"],
+ ["last_modified_employee_id","bigint","NN,EXT","ext:hrm.employee.id","O'zgartirgan xodim (FKsiz)"],
+ ["last_updated_id","bigint","UK,NN","","Optimistik qulflash hisoblagichi — SEQ_{TABLE}_LAST_UPDATED_ID"]
+];
 
 /* ========================================================= */
 const $=s=>document.querySelector(s);
@@ -1106,7 +1105,9 @@ function render(key){
         .map(f=>`<span class="k ${f.toLowerCase()}">${f}</span>`).join('');
       return `<div class="row" data-col="${c[0]}">${ks}<span class="cn">${c[0]}</span><span class="ct">${c[1]}</span></div>`;
     }).join('');
-    el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${t.cols.length}</span></div>${rows}`;
+    const audFoot=t.noaudit?'':'<div class="row aud">⊞ +7 standart audit ustun</div>';
+    const cntTxt=t.noaudit?t.cols.length:`${t.cols.length}+7`;
+    el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${cntTxt}</span></div>${rows}${audFoot}`;
     // shortest column placement
     let ci=0;for(let i=1;i<nCols;i++)if(colH[i]<colH[ci])ci=i;
     el.style.left=(PAD+ci*(W+HGAP))+'px';
@@ -1251,6 +1252,23 @@ function openDrawer(svcKey,tbl){
       ${c[4]?`<div class="dsc">${c[4]}</div>`:''}
     </div>`;
   });
+  // audit ustunlari (standart pattern)
+  if(!tbl.noaudit){
+    html+=`<div class="d-sec">Audit ustunlari — butun loyihada bir xil</div>`;
+    AUDIT_COLS.forEach(c=>{
+      const flags=c[2]?c[2].split(','):[];
+      const ks=flags.map(f=>{
+        const cls=['PK','FK','UK','EXT'].includes(f)?f.toLowerCase():'';
+        return cls?`<span class="k ${cls}">${f}</span>`:`<span class="k" style="background:rgba(124,150,182,.15);color:var(--muted)">${f}</span>`;
+      }).join('');
+      const refHtml=c[3]?`<div class="ref ext">→ ${c[3].slice(4)}  (tashqi service)</div>`:'';
+      html+=`<div class="d-col aud-col">
+        <div class="d-col-top"><span class="nm">${c[0]}</span><span class="tp">${c[1]}</span>${ks}</div>
+        ${refHtml}
+        <div class="dsc">${c[4]}</div>
+      </div>`;
+    });
+  }
   // referenced by
   const svc=DB[svcKey];
   const refs=[];
