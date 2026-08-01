@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Database Arxitekturasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c1626;
+  --bg-grid:#16243c;
+  --panel:#101f36;
+  --panel-2:#0e1b30;
+  --line:#24405f;
+  --line-soft:#1a3050;
+  --ink:#d9e6f5;
+  --muted:#7c96b6;
+  --faint:#54708f;
+  --pk:#ffc861;
+  --fk:#6fe0c0;
+  --uk:#d9a0f0;
+  --typ:#7fb0e8;
+  --ext:#f08c7a;
+  --accent:#4fa3f7;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  overflow:hidden;
+  font-size:14px;
+}
+/* ===== Layout ===== */
+#app{display:flex;height:100vh}
+/* ===== Sidebar ===== */
+#sidebar{
+  width:248px;min-width:248px;
+  background:var(--panel-2);
+  border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;
+  z-index:30;
+}
+#brand{
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line-soft);
+}
+#brand h1{
+  font-family:var(--mono);
+  font-size:15px;font-weight:700;letter-spacing:.04em;
+  color:var(--ink);
+}
+#brand h1 span{color:var(--accent)}
+#brand p{font-size:11px;color:var(--faint);margin-top:3px;letter-spacing:.02em}
+#menu{flex:1;overflow-y:auto;padding:10px 8px}
+.menu-group{
+  font-size:10px;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--faint);padding:12px 10px 6px;
+}
+.menu-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:6px;cursor:pointer;
+  color:var(--muted);font-family:var(--mono);font-size:12.5px;
+  border:1px solid transparent;
+  transition:background .15s,color .15s;
+  user-select:none;
+}
+.menu-item:hover{background:var(--bg-grid);color:var(--ink)}
+.menu-item.active{
+  background:var(--bg-grid);color:var(--ink);
+  border-color:var(--line);
+}
+.menu-item .dot{
+  width:7px;height:7px;border-radius:2px;background:var(--faint);flex:none;
+}
+.menu-item.active .dot{background:var(--accent)}
+.menu-item .cnt{
+  margin-left:auto;font-size:10px;color:var(--faint);
+  background:var(--panel);padding:1px 6px;border-radius:8px;
+}
+#sidebar-foot{
+  padding:10px 14px;border-top:1px solid var(--line-soft);
+  font-size:10px;color:var(--faint);line-height:1.6;font-family:var(--mono);
+}
+/* ===== Main ===== */
+#main{flex:1;display:flex;flex-direction:column;min-width:0}
+#topbar{
+  height:56px;flex:none;
+  display:flex;align-items:center;gap:14px;
+  padding:0 22px;
+  border-bottom:1px solid var(--line-soft);
+  background:var(--panel-2);
+}
+#svc-title{font-family:var(--mono);font-size:15px;font-weight:600}
+#svc-desc{font-size:12px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#legend{display:flex;gap:12px;flex:none}
+.lg{display:flex;align-items:center;gap:5px;font-size:10px;font-family:var(--mono);color:var(--muted)}
+.lg i{width:8px;height:8px;border-radius:2px;display:inline-block}
+/* ===== Canvas ===== */
+#canvas-wrap{flex:1;overflow:auto;position:relative;
+  background-image:radial-gradient(circle,var(--bg-grid) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+#canvas{position:relative;min-width:100%;min-height:100%}
+#wires{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
+.wireg{pointer-events:visibleStroke;cursor:pointer}
+.wire-hit{fill:none;stroke:transparent;stroke-width:14}
+.wire{fill:none;stroke:var(--line);stroke-width:1.5;transition:stroke .15s,opacity .15s,stroke-width .15s}
+.wire.w11{stroke:#a97fd4}
+.wire.wident{stroke:#c9a35a;stroke-dasharray:2 4}
+.wire.wself{stroke:#5f87b8;stroke-dasharray:6 4}
+.wireg:hover .wire{stroke:var(--fk);stroke-width:2.5;opacity:1}
+.wire.hot{stroke:var(--fk);stroke-width:2.5}
+.has-focus .wire{opacity:.1}
+.has-focus .wire.hot{opacity:1}
+.has-focus .wireg:hover .wire{opacity:1}
+.has-focus .tbl.wired{opacity:1;border-color:var(--fk);
+  box-shadow:0 0 0 2px rgba(111,224,192,.25),0 10px 32px rgba(0,0,0,.5)}
+/* ===== Table card ===== */
+.tbl{
+  position:absolute;width:252px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-family:var(--mono);
+  cursor:pointer;
+  transition:opacity .25s,border-color .2s,box-shadow .2s;
+  box-shadow:0 4px 18px rgba(0,0,0,.35);
+}
+.tbl:hover{border-color:var(--accent)}
+.has-focus .tbl{opacity:.18}
+.has-focus .tbl.related{opacity:.55}
+.has-focus .tbl.focused{
+  opacity:1;border-color:var(--accent);
+  box-shadow:0 0 0 2px rgba(79,163,247,.35),0 10px 32px rgba(0,0,0,.5);
+}
+.tbl-h{
+  padding:8px 12px;
+  border-bottom:1px solid var(--line-soft);
+  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,rgba(79,163,247,.10),transparent);
+  border-radius:8px 8px 0 0;
+}
+.tbl-h b{font-size:12.5px;font-weight:600;letter-spacing:.02em}
+.tbl-h .n{margin-left:auto;font-size:9.5px;color:var(--faint)}
+.row{
+  display:flex;align-items:center;gap:6px;
+  padding:3.5px 12px;font-size:11px;line-height:1.35;
+  border-bottom:1px solid rgba(26,48,80,.4);
+}
+.row:last-child{border-bottom:none;border-radius:0 0 8px 8px}
+.row .cn{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .ct{color:var(--typ);margin-left:auto;font-size:10px;flex:none}
+.k{font-size:8.5px;font-weight:700;padding:1px 4px;border-radius:3px;flex:none;letter-spacing:.04em}
+.k.pk{background:rgba(255,200,97,.16);color:var(--pk)}
+.k.fk{background:rgba(111,224,192,.14);color:var(--fk)}
+.k.uk{background:rgba(217,160,240,.14);color:var(--uk)}
+.k.ext{background:rgba(240,140,122,.14);color:var(--ext)}
+/* ===== Drawer ===== */
+#drawer{
+  position:fixed;top:0;right:0;height:100vh;width:430px;max-width:92vw;
+  background:var(--panel-2);
+  border-left:1px solid var(--line);
+  transform:translateX(105%);
+  transition:transform .28s cubic-bezier(.22,.8,.3,1);
+  z-index:50;display:flex;flex-direction:column;
+  box-shadow:-18px 0 50px rgba(0,0,0,.5);
+}
+#drawer.open{transform:translateX(0)}
+#drawer-h{
+  padding:18px 20px 14px;border-bottom:1px solid var(--line-soft);
+  display:flex;align-items:flex-start;gap:12px;
+}
+#drawer-h .t{font-family:var(--mono);font-size:16px;font-weight:700}
+#drawer-h .s{font-size:11px;color:var(--faint);font-family:var(--mono);margin-top:2px}
+#drawer-close{
+  margin-left:auto;background:none;border:1px solid var(--line);
+  color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;
+  font-size:14px;line-height:1;flex:none;
+}
+#drawer-close:hover{color:var(--ink);border-color:var(--accent)}
+#drawer-body{flex:1;overflow-y:auto;padding:16px 20px 40px}
+.d-desc{
+  font-size:12.5px;color:var(--muted);line-height:1.6;
+  padding:10px 12px;background:var(--panel);border:1px solid var(--line-soft);
+  border-radius:6px;margin-bottom:18px;
+}
+.d-sec{
+  font-size:10px;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--faint);margin:18px 0 8px;
+}
+.d-col{
+  border:1px solid var(--line-soft);border-radius:6px;
+  padding:9px 12px;margin-bottom:7px;background:var(--panel);
+}
+.d-col-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.d-col-top .nm{font-family:var(--mono);font-size:12.5px;font-weight:600}
+.d-col-top .tp{font-family:var(--mono);font-size:11px;color:var(--typ)}
+.d-col .ref{
+  font-family:var(--mono);font-size:10.5px;color:var(--fk);
+  margin-top:4px;
+}
+.d-col .ref.ext{color:var(--ext)}
+.d-col .dsc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.55}
+.d-rel{
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  padding:6px 10px;border:1px dashed var(--line);border-radius:6px;margin-bottom:6px;
+}
+.d-rel b{color:var(--fk);font-weight:600}
+#overlay{
+  position:fixed;inset:0;background:rgba(5,10,20,.35);
+  opacity:0;pointer-events:none;transition:opacity .25s;z-index:40;
+}
+#overlay.show{opacity:1;pointer-events:auto}
+/* mobile */
+#burger{display:none}
+@media(max-width:820px){
+  #sidebar{position:fixed;left:0;top:0;height:100vh;transform:translateX(-100%);transition:transform .25s}
+  #sidebar.open{transform:translateX(0)}
+  #burger{display:block;background:none;border:1px solid var(--line);color:var(--ink);
+    border-radius:6px;padding:5px 9px;cursor:pointer;font-size:14px}
+  #svc-desc{display:none}
+  #legend{display:none}
+}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div id="brand">
+      <h1>CRM<span>::</span>schema</h1>
+      <p>Mikroservislar DB arxitekturasi</p>
+    </div>
+    <nav id="menu"></nav>
+    <div id="sidebar-foot">assignment_id → hrm.assignments<br>inventory → hrm.employees</div>
+  </aside>
+  <div id="main">
+    <div id="topbar">
+      <button id="burger">☰</button>
+      <div id="svc-title"></div>
+      <div id="svc-desc"></div>
+      <div id="legend">
+        <span class="lg"><i style="background:var(--pk)"></i>PK</span>
+        <span class="lg"><i style="background:var(--fk)"></i>FK</span>
+        <span class="lg"><i style="background:var(--uk)"></i>UK</span>
+        <span class="lg"><i style="background:var(--ext)"></i>EXT</span>
+        <span class="lg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#24405f" stroke-width="2"/></svg>1:N</span>
+        <span class="lg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#a97fd4" stroke-width="2"/></svg>1:1</span>
+        <span class="lg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#c9a35a" stroke-width="2" stroke-dasharray="2 4"/></svg>N:M</span>
+        <span class="lg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#5f87b8" stroke-width="2" stroke-dasharray="6 4"/></svg>self</span>
+      </div>
+    </div>
+    <div id="canvas-wrap"><div id="canvas"><svg id="wires"></svg></div></div>
+  </div>
+</div>
+<div id="overlay"></div>
+<aside id="drawer">
+  <div id="drawer-h">
+    <div><div class="t" id="d-title"></div><div class="s" id="d-sub"></div></div>
+    <button id="drawer-close">✕</button>
+  </div>
+  <div id="drawer-body"></div>
+</aside>
+
+<script>
+/* =========================================================
+   SCHEMA DATA
+   col: [name, type, flags, ref, description]
+   flags: PK | FK | UK | NN  (vergul bilan)
+   ref:  "table.col"  yoki tashqi: "ext:service.table.col"
+========================================================= */
+const DB = {
+
+"hrm-service":{
+ group:"Mavjud tizim",
+ desc:"Xodimlar va tashkiliy tuzilma — butun arxitekturaning tayanchi. Barcha servicelar assignment orqali bog'lanadi.",
+ tables:[
+ {name:"org_structures",desc:"Kompaniyaning yuqori darajadagi tashkiliy tuzilmasi (boshqarma, direksiya va h.k.). Ierarxik — o'z-o'ziga bog'lanadi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["parent_id","uuid","FK","org_structures.id","Yuqori turuvchi tuzilma (ierarxiya)"],
+  ["name","varchar(255)","NN","","Tuzilma nomi"],
+  ["type","varchar(50)","NN","","Tuzilma turi (boshqarma, bo'lim va h.k.)"],
+  ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
+ {name:"branches",desc:"Kompaniya filiallari — hududiy bo'linmalar.",cols:[
+  ["id","uuid","PK","","Filial identifikatori"],
+  ["org_structure_id","uuid","FK,NN","org_structures.id","Qaysi tuzilmaga tegishli"],
+  ["name","varchar(255)","NN","","Filial nomi"],
+  ["region_id","uuid","EXT","ext:global-reference.regions.id","Viloyat (ma'lumotnomadan)"],
+  ["address","text","","","Filial manzili"],
+  ["status","varchar(20)","NN","","active / closed"]]},
+ {name:"departments",desc:"Filial ichidagi bo'limlar. Ichma-ich bo'limlar uchun parent_id ishlatiladi.",cols:[
+  ["id","uuid","PK","","Bo'lim identifikatori"],
+  ["branch_id","uuid","FK,NN","branches.id","Qaysi filialga tegishli"],
+  ["parent_id","uuid","FK","departments.id","Yuqori bo'lim (ierarxiya)"],
+  ["name","varchar(255)","NN","","Bo'lim nomi"]]},
+ {name:"staff_units",desc:"Shtat birliklari — bo'limdagi lavozim o'rinlari.",cols:[
+  ["id","uuid","PK","","Shtat birligi identifikatori"],
+  ["department_id","uuid","FK,NN","departments.id","Qaysi bo'limga tegishli"],
+  ["position_name","varchar(255)","NN","","Lavozim nomi"],
+  ["unit_count","int","NN","","Nechta o'rin ajratilgan"],
+  ["salary_grade","varchar(30)","","","Maosh toifasi"]]},
+ {name:"employees",desc:"Xodimlar — shaxs sifatida. Keycloak foydalanuvchisi bilan bog'langan. Inventory service aynan shu tablega bog'lanadi.",cols:[
+  ["id","uuid","PK","","Xodim identifikatori"],
+  ["keycloak_user_id","uuid","UK,NN","","Keycloak'dagi foydalanuvchi (sub)"],
+  ["first_name","varchar(100)","NN","","Ismi"],
+  ["last_name","varchar(100)","NN","","Familiyasi"],
+  ["phone","varchar(20)","UK","","Telefon raqami"],
+  ["email","varchar(255)","UK","","Elektron pochta"],
+  ["status","varchar(20)","NN","","active / dismissed"],
+  ["hired_at","date","","","Ishga qabul qilingan sana"]]},
+ {name:"assignments",desc:"Tayinlovlar — xodimning shtat birligiga biriktirilishi. CRM'dagi barcha servicelar (inventory'dan tashqari) shu tablega bog'lanadi: lavozim o'zgarsa vazifalar yangi assignment kontekstiga o'tadi.",cols:[
+  ["id","uuid","PK","","Tayinlov identifikatori"],
+  ["employee_id","uuid","FK,NN","employees.id","Qaysi xodim"],
+  ["staff_unit_id","uuid","FK,NN","staff_units.id","Qaysi shtat birligiga"],
+  ["start_date","date","NN","","Tayinlov boshlanishi"],
+  ["end_date","date","","","Tayinlov tugashi (null = amaldagi)"],
+  ["is_primary","boolean","NN","","Asosiy ish o'rinimi"],
+  ["status","varchar(20)","NN","","active / ended"]]}
+]},
+
+"lead-service":{
+ group:"CRM yadro",
+ desc:"Leadlar, mijozlar va sotuv pipeline boshqaruvi.",
+ tables:[
+ {name:"pipelines",desc:"Sotuv voronkalari — turli yo'nalishlar uchun alohida pipeline bo'lishi mumkin.",cols:[
+  ["id","uuid","PK","","Pipeline identifikatori"],
+  ["name","varchar(255)","NN","","Pipeline nomi"],
+  ["is_default","boolean","NN","","Standart pipeline'mi"]]},
+ {name:"pipeline_stages",desc:"Pipeline bosqichlari (yangi → aloqa → taklif → yopilgan).",cols:[
+  ["id","uuid","PK","","Bosqich identifikatori"],
+  ["pipeline_id","uuid","FK,NN","pipelines.id","Qaysi pipeline'ga tegishli"],
+  ["name","varchar(255)","NN","","Bosqich nomi"],
+  ["position","int","NN","","Tartib raqami"],
+  ["probability","int","","","Yutish ehtimoli (%)"]]},
+ {name:"lead_sources",desc:"Lead manbalari — qayerdan kelgani (sayt, instagram, tavsiya...).",cols:[
+  ["id","uuid","PK","","Manba identifikatori"],
+  ["name","varchar(100)","NN","","Manba nomi"],
+  ["channel_type","varchar(50)","","","Kanal turi (social / call / web / other)"]]},
+ {name:"customers",desc:"Mijozlar — jismoniy yoki yuridik shaxslar. Contract service ham shu tablega tashqi ref orqali bog'lanadi.",cols:[
+  ["id","uuid","PK","","Mijoz identifikatori"],
+  ["name","varchar(255)","NN","","Mijoz nomi / tashkilot nomi"],
+  ["type","varchar(20)","NN","","individual / company"],
+  ["phone","varchar(20)","UK","","Asosiy telefon"],
+  ["email","varchar(255)","","","Elektron pochta"],
+  ["region_id","uuid","EXT","ext:global-reference.regions.id","Viloyat (ma'lumotnomadan)"],
+  ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
+ {name:"contacts",desc:"Mijoz kontakt shaxslari (kompaniya bo'lsa — vakillari).",cols:[
+  ["id","uuid","PK","","Kontakt identifikatori"],
+  ["customer_id","uuid","FK,NN","customers.id","Qaysi mijozga tegishli"],
+  ["name","varchar(255)","NN","","Ism-familiya"],
+  ["phone","varchar(20)","","","Telefon"],
+  ["email","varchar(255)","","","Pochta"],
+  ["position","varchar(100)","","","Lavozimi"]]},
+ {name:"leads",desc:"Leadlar — potensial bitimlar. Yutilganda contract-service'ga event orqali uzatiladi.",cols:[
+  ["id","uuid","PK","","Lead identifikatori"],
+  ["customer_id","uuid","FK","customers.id","Bog'langan mijoz"],
+  ["pipeline_id","uuid","FK,NN","pipelines.id","Qaysi pipeline"],
+  ["stage_id","uuid","FK,NN","pipeline_stages.id","Joriy bosqich"],
+  ["source_id","uuid","FK","lead_sources.id","Lead manbasi"],
+  ["title","varchar(255)","NN","","Lead sarlavhasi"],
+  ["amount","numeric(18,2)","","","Taxminiy bitim summasi"],
+  ["currency_id","uuid","EXT","ext:global-reference.currencies.id","Valyuta"],
+  ["assigned_to","uuid","EXT,NN","ext:hrm.assignments.id","Mas'ul sotuvchi (tayinlov)"],
+  ["status","varchar(20)","NN","","open / won / lost"],
+  ["external_ref","varchar(255)","","","Tashqi tizimdagi ID (social user va h.k.)"],
+  ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
+ {name:"lead_activities",desc:"Lead bo'yicha barcha faoliyat tarixi — qo'ng'iroq, xabar, uchrashuv, izoh.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["lead_id","uuid","FK,NN","leads.id","Qaysi leadga tegishli"],
+  ["type","varchar(30)","NN","","call / message / meeting / note / stage_change"],
+  ["content","text","","","Faoliyat mazmuni"],
+  ["actor","uuid","EXT","ext:hrm.assignments.id","Kim bajardi (tayinlov)"],
+  ["created_at","timestamptz","NN","","Vaqti"]]}
+]},
+
+"social-integration-service":{
+ group:"CRM yadro",
+ desc:"Ijtimoiy tarmoq va messenjer integratsiyalari — webhook qabul qilish va lead-service'ga uzatish.",
+ tables:[
+ {name:"platforms",desc:"Qo'llab-quvvatlanadigan platformalar ro'yxati.",cols:[
+  ["id","uuid","PK","","Platforma identifikatori"],
+  ["code","varchar(30)","UK,NN","","instagram / facebook / telegram / whatsapp"],
+  ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"]]},
+ {name:"accounts",desc:"Kompaniyaning platformalardagi hisoblari (sahifa, bot, biznes akkaunt).",cols:[
+  ["id","uuid","PK","","Hisob identifikatori"],
+  ["platform_id","uuid","FK,NN","platforms.id","Qaysi platforma"],
+  ["name","varchar(255)","NN","","Hisob nomi"],
+  ["credentials","jsonb","NN","","Token/kalitlar — shifrlangan saqlanadi"],
+  ["webhook_url","varchar(500)","","","Ro'yxatdan o'tgan webhook manzili"],
+  ["status","varchar(20)","NN","","active / disabled / error"]]},
+ {name:"external_users",desc:"Platformadagi foydalanuvchilar — lead bilan bog'lash uchun identifikatsiya.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["platform_id","uuid","FK,NN","platforms.id","Qaysi platforma foydalanuvchisi"],
+  ["external_id","varchar(255)","UK,NN","","Platformadagi user ID"],
+  ["username","varchar(255)","","","Username / display name"],
+  ["phone","varchar(20)","","","Telefon (agar mavjud bo'lsa)"],
+  ["lead_id","uuid","EXT","ext:lead.leads.id","Bog'langan lead"]]},
+ {name:"webhook_events",desc:"Platformalardan kelgan xom webhook eventlar — queue'ga tushishdan oldingi log.",cols:[
+  ["id","uuid","PK","","Event identifikatori"],
+  ["account_id","uuid","FK,NN","accounts.id","Qaysi hisobga kelgan"],
+  ["event_type","varchar(50)","NN","","message / comment / reaction ..."],
+  ["payload","jsonb","NN","","Xom ma'lumot (platformadan kelganicha)"],
+  ["received_at","timestamptz","NN","","Qabul qilingan vaqt"],
+  ["processed","boolean","NN","","Qayta ishlanganmi"]]},
+ {name:"message_logs",desc:"Kiruvchi/chiquvchi xabarlar tarixi — audit va takroriylikni oldini olish uchun.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["account_id","uuid","FK,NN","accounts.id","Qaysi hisob orqali"],
+  ["external_user_id","uuid","FK,NN","external_users.id","Kim bilan yozishma"],
+  ["direction","varchar(10)","NN","","in / out"],
+  ["content","text","","","Xabar matni"],
+  ["sent_at","timestamptz","NN","","Yuborilgan/kelgan vaqt"]]}
+]},
+
+"contract-service":{
+ group:"CRM yadro",
+ desc:"Shartnomalar, hujjatlar va to'lov jadvali boshqaruvi.",
+ tables:[
+ {name:"contracts",desc:"Shartnomalar — yutilgan leaddan yaratiladi. Imzolanganda project-service'ga event chiqaradi.",cols:[
+  ["id","uuid","PK","","Shartnoma identifikatori"],
+  ["number","varchar(50)","UK,NN","","Shartnoma raqami"],
+  ["customer_id","uuid","EXT,NN","ext:lead.customers.id","Mijoz"],
+  ["lead_id","uuid","EXT","ext:lead.leads.id","Qaysi leaddan kelgan"],
+  ["project_id","uuid","EXT","ext:project.projects.id","Qaysi loyihaga tegishli — bitta loyihada bir nechta shartnoma (1:N). Birinchi shartnomada NULL, loyiha yaratilgach event orqali to'ldiriladi"],
+  ["title","varchar(255)","NN","","Shartnoma mavzusi"],
+  ["amount","numeric(18,2)","NN","","Umumiy summa"],
+  ["currency_id","uuid","EXT","ext:global-reference.currencies.id","Valyuta"],
+  ["responsible","uuid","EXT,NN","ext:hrm.assignments.id","Mas'ul xodim (tayinlov)"],
+  ["signed_at","date","","","Imzolangan sana"],
+  ["start_date","date","","","Amal qilish boshlanishi"],
+  ["end_date","date","","","Amal qilish tugashi"],
+  ["status","varchar(20)","NN","","draft / signed / active / closed / cancelled"]]},
+ {name:"contract_documents",desc:"Shartnomaga biriktirilgan hujjatlar. Fayl file-service'da saqlanadi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnomaga tegishli"],
+  ["file_id","uuid","EXT,NN","ext:file.files.id","Fayl (MinIO)"],
+  ["doc_type","varchar(50)","NN","","asosiy / ilova / qo'shimcha kelishuv"],
+  ["version","int","NN","","Hujjat versiyasi"],
+  ["uploaded_by","uuid","EXT","ext:hrm.assignments.id","Kim yuklagan"]]},
+ {name:"payment_schedules",desc:"To'lov jadvali — shartnoma bo'yicha rejalashtirilgan to'lovlar.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnoma"],
+  ["due_date","date","NN","","To'lov muddati"],
+  ["amount","numeric(18,2)","NN","","To'lov summasi"],
+  ["status","varchar(20)","NN","","pending / paid / overdue"]]},
+ {name:"payments",desc:"Amalda kelib tushgan to'lovlar.",cols:[
+  ["id","uuid","PK","","To'lov identifikatori"],
+  ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnoma bo'yicha"],
+  ["schedule_id","uuid","FK","payment_schedules.id","Jadvaldagi qaysi to'lovga mos"],
+  ["paid_at","timestamptz","NN","","To'langan vaqt"],
+  ["amount","numeric(18,2)","NN","","Kelib tushgan summa"],
+  ["method","varchar(30)","","","bank / cash / card"]]},
+ {name:"contract_status_history",desc:"Shartnoma statuslari o'zgarish tarixi — audit uchun.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["contract_id","uuid","FK,NN","contracts.id","Qaysi shartnoma"],
+  ["old_status","varchar(20)","","","Oldingi status"],
+  ["new_status","varchar(20)","NN","","Yangi status"],
+  ["changed_by","uuid","EXT","ext:hrm.assignments.id","Kim o'zgartirdi"],
+  ["changed_at","timestamptz","NN","","O'zgargan vaqt"]]}
+]},
+
+"project-service":{
+ group:"CRM yadro",
+ desc:"Loyiha, sprint va vazifalar. Agile/Kanban rejimi project_settings'da saqlanadi.",
+ tables:[
+ {name:"projects",desc:"Loyihalar. Shartnomalar bilan bog'lanish teskari tomonda: contract-service'dagi contracts.project_id orqali — bitta loyihada bir nechta shartnoma bo'lishi mumkin (1:N).",cols:[
+  ["id","uuid","PK","","Loyiha identifikatori"],
+  ["key","varchar(10)","UK,NN","","Qisqa kod (masalan CRM, ERP) — issue raqamlari uchun"],
+  ["name","varchar(255)","NN","","Loyiha nomi"],
+  ["description","text","","","Loyiha tavsifi"],
+  ["status","varchar(20)","NN","","active / paused / completed / archived"],
+  ["created_at","timestamptz","NN","","Yaratilgan vaqt"]]},
+ {name:"project_settings",desc:"Loyiha sozlamalari. mode ustuni Agile yoki Kanban rejimini belgilaydi — butun board/sprint logikasi shunga qarab ishlaydi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["project_id","uuid","FK,UK,NN","projects.id","Qaysi loyiha (1:1)"],
+  ["mode","varchar(10)","NN","","agile / kanban — task management rejimi"],
+  ["sprint_duration_days","int","","","Sprint davomiyligi (agile uchun, odatda 14)"],
+  ["estimation_type","varchar(20)","NN","","story_points / hours / none"],
+  ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (kanban uchun)"],
+  ["default_board_id","uuid","FK","boards.id","Standart board"]]},
+ {name:"project_member_roles",desc:"Loyiha ichidagi rollar (PM, Developer, QA, Viewer...).",cols:[
+  ["id","uuid","PK","","Rol identifikatori"],
+  ["name","varchar(50)","UK,NN","","Rol nomi"],
+  ["permissions","jsonb","NN","","Rol ruxsatlari"]]},
+ {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi (lavozim o'zgarsa yangi assignment bilan qayta biriktiriladi).",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["project_id","uuid","FK,NN","projects.id","Qaysi loyiha"],
+  ["assignment_id","uuid","EXT,NN","ext:hrm.assignments.id","Xodim tayinlovi"],
+  ["role_id","uuid","FK,NN","project_member_roles.id","Loyihadagi roli"],
+  ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
+ {name:"issue_types",desc:"Vazifa turlari — Epic, Story, Task, Bug, Subtask. Ierarxiya darajasini belgilaydi.",cols:[
+  ["id","uuid","PK","","Tur identifikatori"],
+  ["name","varchar(50)","NN","","Tur nomi"],
+  ["level","int","NN","","Ierarxiya darajasi: 0=Epic, 1=Story/Task/Bug, 2=Subtask"],
+  ["icon","varchar(50)","","","Ikonka kodi"],
+  ["color","varchar(7)","","","Rang (hex)"]]},
+ {name:"project_statuses",desc:"Loyihaga xos statuslar (To Do, In Progress, Review, Done...).",cols:[
+  ["id","uuid","PK","","Status identifikatori"],
+  ["project_id","uuid","FK,NN","projects.id","Qaysi loyihaga tegishli"],
+  ["name","varchar(50)","NN","","Status nomi"],
+  ["category","varchar(20)","NN","","todo / in_progress / done — hisobotlar uchun"],
+  ["position","int","NN","","Tartib raqami"]]},
+ {name:"status_pipeline_rules",desc:"Workflow qoidalari — qaysi statusdan qaysi statusga, kim o'tkaza oladi.",cols:[
+  ["id","uuid","PK","","Qoida identifikatori"],
+  ["project_id","uuid","FK,NN","projects.id","Qaysi loyiha uchun"],
+  ["from_status_id","uuid","FK,NN","project_statuses.id","Qaysi statusdan"],
+  ["to_status_id","uuid","FK,NN","project_statuses.id","Qaysi statusga"],
+  ["allowed_role_ids","jsonb","","","Ruxsat etilgan rollar (bo'sh = hamma)"],
+  ["condition","jsonb","","","Shart (masalan: barcha subtasklar yopiq)"]]},
+ {name:"boards",desc:"Boardlar — vazifalarning vizual taqdimoti. Turi loyiha rejimiga mos.",cols:[
+  ["id","uuid","PK","","Board identifikatori"],
+  ["project_id","uuid","FK,NN","projects.id","Qaysi loyihaga tegishli"],
+  ["type","varchar(10)","NN","","scrum / kanban"],
+  ["name","varchar(100)","NN","","Board nomi"]]},
+ {name:"board_columns",desc:"Board ustunlari — statusga bog'lanadi. WIP limit shu yerda (kanban asosiy mexanizmi).",cols:[
+  ["id","uuid","PK","","Ustun identifikatori"],
+  ["board_id","uuid","FK,NN","boards.id","Qaysi boardga tegishli"],
+  ["status_id","uuid","FK,NN","project_statuses.id","Qaysi statusga mos"],
+  ["name","varchar(50)","NN","","Ustun nomi"],
+  ["position","int","NN","","Tartib raqami"],
+  ["wip_limit","int","","","Work-In-Progress limiti (null = cheksiz)"]]},
+ {name:"sprints",desc:"Sprintlar — faqat Agile rejimida ishlatiladi. Kanban loyihalarda yaratilmaydi.",cols:[
+  ["id","uuid","PK","","Sprint identifikatori"],
+  ["project_id","uuid","FK,NN","projects.id","Qaysi loyiha"],
+  ["name","varchar(100)","NN","","Sprint nomi"],
+  ["goal","text","","","Sprint maqsadi"],
+  ["start_date","date","","","Boshlanish sanasi"],
+  ["end_date","date","","","Tugash sanasi"],
+  ["status","varchar(20)","NN","","planned / active / completed"],
+  ["velocity_points","int","","","Yakunda bajarilgan story pointlar"]]},
+ {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL bo'ladi.",cols:[
+  ["id","uuid","PK","","Vazifa identifikatori"],
+  ["project_id","uuid","FK,NN","projects.id","Qaysi loyiha"],
+  ["issue_type_id","uuid","FK,NN","issue_types.id","Vazifa turi"],
+  ["parent_issue_id","uuid","FK","issues.id","Yuqori vazifa (Epic/Story ierarxiyasi)"],
+  ["sprint_id","uuid","FK","sprints.id","Sprint (kanban'da NULL)"],
+  ["status_id","uuid","FK,NN","project_statuses.id","Joriy status"],
+  ["number","int","NN","","Loyiha ichidagi raqam (KEY-123)"],
+  ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
+  ["description","text","","","Batafsil tavsif"],
+  ["priority","varchar(15)","NN","","low / medium / high / critical"],
+  ["story_points","int","","","Baholash (agile uchun)"],
+  ["due_date","date","","","Muddat"],
+  ["created_by","uuid","EXT,NN","ext:hrm.assignments.id","Kim yaratgan"],
+  ["created_at","timestamptz","NN","","Yaratilgan vaqt"],
+  ["updated_at","timestamptz","NN","","Oxirgi o'zgarish"]]},
+ {name:"issue_assignments",desc:"Vazifa mas'ullari — bir vazifaga bir nechta xodim biriktirilishi mumkin.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["issue_id","uuid","FK,NN","issues.id","Qaysi vazifa"],
+  ["assignment_id","uuid","EXT,NN","ext:hrm.assignments.id","Mas'ul xodim tayinlovi"],
+  ["role","varchar(20)","NN","","assignee / reviewer"],
+  ["assigned_at","timestamptz","NN","","Biriktirilgan vaqt"]]},
+ {name:"issue_comments",desc:"Vazifa izohlari.",cols:[
+  ["id","uuid","PK","","Izoh identifikatori"],
+  ["issue_id","uuid","FK,NN","issues.id","Qaysi vazifaga"],
+  ["author","uuid","EXT,NN","ext:hrm.assignments.id","Muallif (tayinlov)"],
+  ["content","text","NN","","Izoh matni"],
+  ["created_at","timestamptz","NN","","Yozilgan vaqt"],
+  ["edited_at","timestamptz","","","Tahrirlangan vaqt"]]},
+ {name:"issue_history",desc:"O'zgarishlar tarixi (audit log) — kim nimani qachon o'zgartirgani.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["issue_id","uuid","FK,NN","issues.id","Qaysi vazifa"],
+  ["field","varchar(50)","NN","","O'zgargan maydon (status, assignee...)"],
+  ["old_value","text","","","Eski qiymat"],
+  ["new_value","text","","","Yangi qiymat"],
+  ["changed_by","uuid","EXT,NN","ext:hrm.assignments.id","Kim o'zgartirdi"],
+  ["changed_at","timestamptz","NN","","Vaqti"]]},
+ {name:"issue_watchers",desc:"Kuzatuvchilar — vazifa o'zgarishlaridan notification-service orqali xabardor bo'ladi.",cols:[
+  ["issue_id","uuid","PK,FK","issues.id","Qaysi vazifa"],
+  ["assignment_id","uuid","PK,EXT","ext:hrm.assignments.id","Kuzatuvchi xodim"],
+  ["added_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
+ {name:"issue_attachments",desc:"Vazifaga biriktirilgan fayllar — file-service'da saqlanadi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["issue_id","uuid","FK,NN","issues.id","Qaysi vazifaga"],
+  ["file_id","uuid","EXT,NN","ext:file.files.id","Fayl (MinIO)"],
+  ["uploaded_by","uuid","EXT,NN","ext:hrm.assignments.id","Kim yuklagan"],
+  ["uploaded_at","timestamptz","NN","","Yuklangan vaqt"]]},
+ {name:"labels",desc:"Teglar — moslashuvchan filtrlash uchun.",cols:[
+  ["id","uuid","PK","","Teg identifikatori"],
+  ["project_id","uuid","FK,NN","projects.id","Qaysi loyihaga tegishli"],
+  ["name","varchar(50)","NN","","Teg nomi"],
+  ["color","varchar(7)","NN","","Rang (hex)"]]},
+ {name:"issue_labels",desc:"Vazifa–teg bog'lanishi (many-to-many).",cols:[
+  ["issue_id","uuid","PK,FK","issues.id","Vazifa"],
+  ["label_id","uuid","PK,FK","labels.id","Teg"]]},
+ {name:"issue_links",desc:"Vazifalar orasidagi bog'lanishlar — blocks, relates, duplicates.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["source_issue_id","uuid","FK,NN","issues.id","Manba vazifa"],
+  ["target_issue_id","uuid","FK,NN","issues.id","Nishon vazifa"],
+  ["link_type","varchar(20)","NN","","blocks / is_blocked_by / relates_to / duplicates"]]}
+]},
+
+"support-service":{
+ group:"Operatsiyalar",
+ desc:"Loyihalar supporti — ticketlar, SLA va har bir loyihaning o'z Telegram boti orqali muloqot.",
+ tables:[
+ {name:"sla_policies",desc:"SLA siyosatlari — javob berish va hal qilish muddatlari.",cols:[
+  ["id","uuid","PK","","SLA identifikatori"],
+  ["name","varchar(100)","NN","","Siyosat nomi"],
+  ["priority","varchar(15)","NN","","Qaysi prioritet uchun"],
+  ["first_response_min","int","NN","","Birinchi javob muddati (daqiqa)"],
+  ["resolve_min","int","NN","","Hal qilish muddati (daqiqa)"]]},
+ {name:"tickets",desc:"Support ticketlari — loyiha bo'yicha mijoz murojaatlari.",cols:[
+  ["id","uuid","PK","","Ticket identifikatori"],
+  ["number","varchar(20)","UK,NN","","Ticket raqami"],
+  ["project_id","uuid","EXT,NN","ext:project.projects.id","Qaysi loyiha bo'yicha"],
+  ["customer_id","uuid","EXT","ext:lead.customers.id","Qaysi mijozdan"],
+  ["subject","varchar(255)","NN","","Murojaat mavzusi"],
+  ["description","text","","","Murojaat mazmuni"],
+  ["priority","varchar(15)","NN","","low / medium / high / critical"],
+  ["status","varchar(20)","NN","","open / in_progress / resolved / closed"],
+  ["operator","uuid","EXT","ext:hrm.assignments.id","Mas'ul operator (tayinlov)"],
+  ["sla_policy_id","uuid","FK","sla_policies.id","Qo'llaniladigan SLA"],
+  ["created_at","timestamptz","NN","","Ochilgan vaqt"],
+  ["resolved_at","timestamptz","","","Hal qilingan vaqt"]]},
+ {name:"ticket_comments",desc:"Ticket yozishmalari — operator va mijoz javoblari.",cols:[
+  ["id","uuid","PK","","Izoh identifikatori"],
+  ["ticket_id","uuid","FK,NN","tickets.id","Qaysi ticketga"],
+  ["author_type","varchar(15)","NN","","operator / customer / system"],
+  ["author_ref","uuid","","","Muallif ID (turi author_type'ga bog'liq)"],
+  ["content","text","NN","","Izoh matni"],
+  ["is_internal","boolean","NN","","Ichki izohmi (mijoz ko'rmaydi)"],
+  ["created_at","timestamptz","NN","","Yozilgan vaqt"]]},
+ {name:"escalations",desc:"Eskalatsiyalar — SLA buzilganda yoki murakkab holatlarda yuqoriga ko'tarish.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["ticket_id","uuid","FK,NN","tickets.id","Qaysi ticket"],
+  ["level","int","NN","","Eskalatsiya darajasi"],
+  ["escalated_to","uuid","EXT,NN","ext:hrm.assignments.id","Kimga ko'tarildi"],
+  ["reason","text","","","Sababi"],
+  ["created_at","timestamptz","NN","","Vaqti"]]},
+ {name:"bots",desc:"Har bir loyihaning o'z Telegram boti — o'z tokeni va logotipi bilan. Token shifrlangan saqlanadi!",cols:[
+  ["id","uuid","PK","","Bot identifikatori"],
+  ["project_id","uuid","EXT,UK,NN","ext:project.projects.id","Qaysi loyihaning boti (1:1)"],
+  ["bot_token","varchar(500)","NN","","Bot tokeni — AES shifrlangan"],
+  ["bot_username","varchar(100)","UK,NN","","Bot @username"],
+  ["logo_file_id","uuid","EXT","ext:file.files.id","Loyiha logotipi (bot profil rasmi)"],
+  ["webhook_url","varchar(500)","NN","","Webhook manzili (/webhook/{bot_id})"],
+  ["status","varchar(20)","NN","","active / inactive"]]},
+ {name:"telegram_groups",desc:"Bot qo'shilgan mijoz guruhlari — loyiha bo'yicha muloqot guruhi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["bot_id","uuid","FK,NN","bots.id","Qaysi bot"],
+  ["tg_group_id","bigint","UK,NN","","Telegram guruh ID"],
+  ["title","varchar(255)","","","Guruh nomi"],
+  ["joined_at","timestamptz","NN","","Bot qo'shilgan vaqt"]]},
+ {name:"private_chats",desc:"Bot ↔ Telegram foydalanuvchi shaxsiy chatlari. Operator CRM'da turib javob beradi.",cols:[
+  ["id","uuid","PK","","Chat identifikatori"],
+  ["bot_id","uuid","FK,NN","bots.id","Qaysi bot orqali"],
+  ["tg_user_id","bigint","NN","","Telegram foydalanuvchi ID"],
+  ["username","varchar(100)","","","Foydalanuvchi @username"],
+  ["operator","uuid","EXT","ext:hrm.assignments.id","Biriktirilgan operator"],
+  ["status","varchar(20)","NN","","active / closed"]]},
+ {name:"chat_messages",desc:"Guruh va shaxsiy chatlardagi barcha xabarlar. Kerak bo'lsa ticketga bog'lanadi.",cols:[
+  ["id","uuid","PK","","Xabar identifikatori"],
+  ["bot_id","uuid","FK,NN","bots.id","Qaysi bot orqali"],
+  ["group_id","uuid","FK","telegram_groups.id","Guruh xabari bo'lsa"],
+  ["chat_id","uuid","FK","private_chats.id","Shaxsiy chat xabari bo'lsa"],
+  ["ticket_id","uuid","FK","tickets.id","Bog'langan ticket (agar ochilgan bo'lsa)"],
+  ["tg_message_id","bigint","NN","","Telegram xabar ID"],
+  ["sender_type","varchar(15)","NN","","customer / operator / bot"],
+  ["content","text","","","Xabar matni"],
+  ["file_id","uuid","EXT","ext:file.files.id","Biriktirilgan fayl"],
+  ["sent_at","timestamptz","NN","","Yuborilgan vaqt"]]}
+]},
+
+"callcenter-service":{
+ group:"Operatsiyalar",
+ desc:"Telefoniya — PBX/SIP integratsiyasi, qo'ng'iroqlar va operator holati.",
+ tables:[
+ {name:"pbx_trunks",desc:"PBX trunk sozlamalari — telefoniya provayderiga ulanish.",cols:[
+  ["id","uuid","PK","","Trunk identifikatori"],
+  ["name","varchar(100)","NN","","Trunk nomi"],
+  ["provider","varchar(100)","","","Provayder (Asterisk, Yeastar...)"],
+  ["config","jsonb","NN","","SIP sozlamalari — maxfiy qismlari shifrlangan"]]},
+ {name:"call_queues",desc:"Qo'ng'iroq navbatlari — kiruvchi qo'ng'iroqlarni taqsimlash.",cols:[
+  ["id","uuid","PK","","Navbat identifikatori"],
+  ["trunk_id","uuid","FK,NN","pbx_trunks.id","Qaysi trunk orqali"],
+  ["name","varchar(100)","NN","","Navbat nomi"],
+  ["strategy","varchar(30)","NN","","ring_all / round_robin / least_recent"]]},
+ {name:"operator_statuses",desc:"Operatorlarning joriy holati — real-time taqsimlash uchun.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["operator","uuid","EXT,UK,NN","ext:hrm.assignments.id","Operator (tayinlov)"],
+  ["extension","varchar(10)","UK,NN","","Ichki raqam"],
+  ["status","varchar(15)","NN","","online / busy / away / offline"],
+  ["updated_at","timestamptz","NN","","Oxirgi yangilanish"]]},
+ {name:"calls",desc:"Qo'ng'iroqlar tarixi — kiruvchi va chiquvchi. Mijoz/lead bilan bog'lanadi.",cols:[
+  ["id","uuid","PK","","Qo'ng'iroq identifikatori"],
+  ["direction","varchar(10)","NN","","inbound / outbound"],
+  ["caller_number","varchar(20)","NN","","Qo'ng'iroq qiluvchi raqam"],
+  ["callee_number","varchar(20)","NN","","Qabul qiluvchi raqam"],
+  ["queue_id","uuid","FK","call_queues.id","Qaysi navbat orqali"],
+  ["operator","uuid","EXT","ext:hrm.assignments.id","Javob bergan operator"],
+  ["customer_id","uuid","EXT","ext:lead.customers.id","Aniqlangan mijoz"],
+  ["lead_id","uuid","EXT","ext:lead.leads.id","Bog'langan lead"],
+  ["started_at","timestamptz","NN","","Boshlangan vaqt"],
+  ["answered_at","timestamptz","","","Javob berilgan vaqt"],
+  ["ended_at","timestamptz","","","Tugagan vaqt"],
+  ["status","varchar(20)","NN","","answered / missed / busy / failed"]]},
+ {name:"call_recordings",desc:"Qo'ng'iroq yozuvlari — audio fayllar file-service (MinIO)da saqlanadi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["call_id","uuid","FK,UK,NN","calls.id","Qaysi qo'ng'iroq (1:1)"],
+  ["file_id","uuid","EXT,NN","ext:file.files.id","Audio fayl (MinIO)"],
+  ["duration_sec","int","NN","","Davomiyligi (soniya)"],
+  ["size_bytes","bigint","","","Fayl hajmi"]]}
+]},
+
+"notification-service":{
+ group:"Platforma",
+ desc:"Markazlashtirilgan xabarnomalar — email, SMS, push. Barcha servicelar event orqali foydalanadi.",
+ tables:[
+ {name:"channel_providers",desc:"Kanal provayderlari — qaysi kanal qaysi provayder orqali yuboriladi.",cols:[
+  ["id","uuid","PK","","Provayder identifikatori"],
+  ["channel","varchar(15)","NN","","email / sms / push / telegram"],
+  ["provider","varchar(50)","NN","","SMTP / Eskiz / FCM ..."],
+  ["config","jsonb","NN","","Ulanish sozlamalari — shifrlangan"],
+  ["is_active","boolean","NN","","Faolmi"]]},
+ {name:"templates",desc:"Xabarnoma shablonlari — kod bo'yicha chaqiriladi, o'zgaruvchilar bilan.",cols:[
+  ["id","uuid","PK","","Shablon identifikatori"],
+  ["code","varchar(50)","UK,NN","","Shablon kodi (issue_assigned, sla_breach...)"],
+  ["channel","varchar(15)","NN","","Qaysi kanal uchun"],
+  ["lang","varchar(5)","NN","","Til (uz / ru / en)"],
+  ["subject","varchar(255)","","","Sarlavha (email uchun)"],
+  ["body","text","NN","","Matn — {{o'zgaruvchi}}lar bilan"]]},
+ {name:"notifications",desc:"Yuborilgan/rejalashtirilgan xabarnomalar.",cols:[
+  ["id","uuid","PK","","Xabarnoma identifikatori"],
+  ["template_id","uuid","FK","templates.id","Qaysi shablon asosida"],
+  ["channel","varchar(15)","NN","","Yuborish kanali"],
+  ["recipient_type","varchar(20)","NN","","assignment / customer / phone / email"],
+  ["recipient_ref","varchar(255)","NN","","Qabul qiluvchi identifikatori"],
+  ["payload","jsonb","","","Shablon o'zgaruvchilari"],
+  ["status","varchar(15)","NN","","pending / sent / failed"],
+  ["scheduled_at","timestamptz","","","Rejalashtirilgan vaqt"],
+  ["sent_at","timestamptz","","","Yuborilgan vaqt"]]},
+ {name:"delivery_logs",desc:"Yetkazish urinishlari logi — xatolarni tekshirish uchun.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["notification_id","uuid","FK,NN","notifications.id","Qaysi xabarnoma"],
+  ["attempt","int","NN","","Urinish raqami"],
+  ["status","varchar(15)","NN","","success / error"],
+  ["provider_response","text","","","Provayder javobi"],
+  ["created_at","timestamptz","NN","","Vaqti"]]}
+]},
+
+"inventory-service":{
+ group:"Operatsiyalar",
+ desc:"Kompaniya jihozlari va ombor reyestri. MUHIM: xodimga bog'lanish employee_id orqali — lavozim o'zgarsa ham jihoz xodimda qoladi.",
+ tables:[
+ {name:"item_categories",desc:"Jihoz/mahsulot kategoriyalari — ierarxik (mebel → stol, texnika → kompyuter).",cols:[
+  ["id","uuid","PK","","Kategoriya identifikatori"],
+  ["parent_id","uuid","FK","item_categories.id","Yuqori kategoriya"],
+  ["name","varchar(100)","NN","","Kategoriya nomi"],
+  ["type","varchar(20)","NN","","equipment / appliance / consumable"]]},
+ {name:"warehouses",desc:"Omborlar — filiallar bo'yicha.",cols:[
+  ["id","uuid","PK","","Ombor identifikatori"],
+  ["branch_id","uuid","EXT,NN","ext:hrm.branches.id","Qaysi filialda"],
+  ["name","varchar(100)","NN","","Ombor nomi"],
+  ["location","varchar(255)","","","Joylashuvi"]]},
+ {name:"items",desc:"Jihozlar reyestri — stol, stul, kompyuter, monitor, telefon, printer, maishiy texnika.",cols:[
+  ["id","uuid","PK","","Jihoz identifikatori"],
+  ["category_id","uuid","FK,NN","item_categories.id","Kategoriyasi"],
+  ["warehouse_id","uuid","FK","warehouses.id","Qaysi omborda (berilmagan bo'lsa)"],
+  ["name","varchar(255)","NN","","Jihoz nomi"],
+  ["inventory_number","varchar(50)","UK,NN","","Inventar raqami"],
+  ["serial_number","varchar(100)","UK","","Zavod seriya raqami"],
+  ["status","varchar(20)","NN","","in_stock / assigned / repair / written_off"],
+  ["purchase_date","date","","","Sotib olingan sana"],
+  ["price","numeric(18,2)","","","Qiymati"]]},
+ {name:"item_assignments",desc:"Jihoz biriktirish tarixi — TO'G'RIDAN-TO'G'RI XODIMGA (employee_id). Assignment emas: lavozim o'zgarsa jihoz xodimda qolaveradi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["item_id","uuid","FK,NN","items.id","Qaysi jihoz"],
+  ["employee_id","uuid","EXT,NN","ext:hrm.employees.id","Qaysi xodimga — employee, assignment EMAS"],
+  ["assigned_at","timestamptz","NN","","Berilgan vaqt"],
+  ["returned_at","timestamptz","","","Qaytarilgan vaqt (null = xodimda)"],
+  ["assigned_by","uuid","EXT","ext:hrm.assignments.id","Kim tomonidan berilgan"],
+  ["condition_note","text","","","Holati haqida izoh"]]},
+ {name:"stock_movements",desc:"Ombor harakati — kirim, chiqim, ko'chirish.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["item_id","uuid","FK,NN","items.id","Qaysi jihoz/mahsulot"],
+  ["warehouse_id","uuid","FK,NN","warehouses.id","Qaysi ombor"],
+  ["movement_type","varchar(15)","NN","","in / out / transfer"],
+  ["qty","int","NN","","Miqdor (consumable uchun)"],
+  ["actor","uuid","EXT","ext:hrm.assignments.id","Kim amalga oshirdi"],
+  ["moved_at","timestamptz","NN","","Vaqti"]]}
+]},
+
+"settings-service":{
+ group:"Platforma",
+ desc:"Tizim va foydalanuvchi interfeysi sozlamalari.",
+ tables:[
+ {name:"user_settings",desc:"Foydalanuvchi shaxsiy sozlamalari — til, tema, bildirishnoma tanlovi.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["user_id","uuid","EXT,NN","ext:keycloak.user.sub","Keycloak foydalanuvchi ID"],
+  ["key","varchar(100)","UK,NN","","Sozlama kaliti (UK: user_id + key)"],
+  ["value","jsonb","NN","","Sozlama qiymati"],
+  ["updated_at","timestamptz","NN","","Oxirgi o'zgarish"]]},
+ {name:"system_settings",desc:"Tizim darajasidagi umumiy sozlamalar.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["key","varchar(100)","UK,NN","","Sozlama kaliti"],
+  ["value","jsonb","NN","","Qiymati"],
+  ["description","varchar(255)","","","Sozlama tavsifi"]]},
+ {name:"service_configs",desc:"Servicelarga xos konfiguratsiyalar — environment bo'yicha.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["service_name","varchar(50)","NN","","Qaysi service (UK: service+key+env)"],
+  ["key","varchar(100)","UK,NN","","Konfiguratsiya kaliti"],
+  ["value","jsonb","NN","","Qiymati"],
+  ["environment","varchar(20)","NN","","dev / staging / prod"]]}
+]},
+
+"global-reference-service":{
+ group:"Platforma",
+ desc:"Kam o'zgaruvchan ma'lumotnoma (reference) ma'lumotlar — barcha servicelar foydalanadi.",
+ tables:[
+ {name:"regions",desc:"Viloyatlar — O'zbekiston hududiy bo'linishi.",cols:[
+  ["id","uuid","PK","","Viloyat identifikatori"],
+  ["code","varchar(10)","UK,NN","","Viloyat kodi"],
+  ["soato_code","varchar(20)","UK","","SOATO/MHOBT kodi"],
+  ["name_uz","varchar(100)","NN","","Nomi (o'zbekcha)"],
+  ["name_ru","varchar(100)","","","Nomi (ruscha)"]]},
+ {name:"districts",desc:"Tumanlar — viloyatga bog'langan.",cols:[
+  ["id","uuid","PK","","Tuman identifikatori"],
+  ["region_id","uuid","FK,NN","regions.id","Qaysi viloyatga tegishli"],
+  ["code","varchar(10)","NN","","Tuman kodi"],
+  ["soato_code","varchar(20)","UK","","SOATO/MHOBT kodi"],
+  ["name_uz","varchar(100)","NN","","Nomi (o'zbekcha)"],
+  ["name_ru","varchar(100)","","","Nomi (ruscha)"]]},
+ {name:"currencies",desc:"Valyutalar ro'yxati.",cols:[
+  ["id","uuid","PK","","Valyuta identifikatori"],
+  ["code","varchar(3)","UK,NN","","ISO kodi (UZS, USD, EUR)"],
+  ["name","varchar(50)","NN","","Valyuta nomi"],
+  ["symbol","varchar(5)","","","Belgisi"]]},
+ {name:"ref_categories",desc:"Universal ma'lumotnoma kategoriyalari — yangi lug'atlar table qo'shmasdan kiritiladi.",cols:[
+  ["id","uuid","PK","","Kategoriya identifikatori"],
+  ["code","varchar(50)","UK,NN","","Kategoriya kodi (doc_types, industries...)"],
+  ["name","varchar(100)","NN","","Kategoriya nomi"]]},
+ {name:"ref_items",desc:"Universal ma'lumotnoma elementlari — kategoriya ichidagi qiymatlar, ierarxiya bilan.",cols:[
+  ["id","uuid","PK","","Element identifikatori"],
+  ["category_id","uuid","FK,NN","ref_categories.id","Qaysi kategoriyaga tegishli"],
+  ["parent_id","uuid","FK","ref_items.id","Yuqori element (ierarxiya)"],
+  ["code","varchar(50)","UK,NN","","Element kodi (UK: category + code)"],
+  ["name_uz","varchar(255)","NN","","Nomi (o'zbekcha)"],
+  ["name_ru","varchar(255)","","","Nomi (ruscha)"],
+  ["name_en","varchar(255)","","","Nomi (inglizcha)"],
+  ["position","int","NN","","Tartib raqami"],
+  ["is_active","boolean","NN","","Faolmi"]]}
+]},
+
+"file-service":{
+ group:"Platforma",
+ desc:"MinIO orqali fayl saqlash — barcha servicelar fayl uchun shu yerga tayanadi.",
+ tables:[
+ {name:"buckets",desc:"MinIO bucketlar — har bir service/maqsad uchun alohida.",cols:[
+  ["id","uuid","PK","","Bucket identifikatori"],
+  ["name","varchar(63)","UK,NN","","MinIO bucket nomi"],
+  ["service_owner","varchar(50)","NN","","Qaysi service egasi (contract, support...)"],
+  ["max_file_size","bigint","","","Maksimal fayl hajmi (bayt)"],
+  ["is_public","boolean","NN","","Ochiq havola bilan ko'rish mumkinmi"]]},
+ {name:"files",desc:"Fayllar reyestri — boshqa servicelar faqat file_id saqlaydi, metadata shu yerda.",cols:[
+  ["id","uuid","PK","","Fayl identifikatori"],
+  ["bucket_id","uuid","FK,NN","buckets.id","Qaysi bucketda"],
+  ["object_key","varchar(500)","UK,NN","","MinIO'dagi obyekt kaliti"],
+  ["original_name","varchar(255)","NN","","Asl fayl nomi"],
+  ["mime_type","varchar(100)","NN","","Fayl turi"],
+  ["size_bytes","bigint","NN","","Hajmi"],
+  ["checksum","varchar(64)","","","SHA-256 — takroriylikni aniqlash uchun"],
+  ["uploaded_by","uuid","EXT","ext:hrm.assignments.id","Kim yuklagan"],
+  ["created_at","timestamptz","NN","","Yuklangan vaqt"]]},
+ {name:"file_access_logs",desc:"Fayl bilan ishlash logi — kim qachon ko'rgan/yuklagan/o'chirgan.",cols:[
+  ["id","uuid","PK","","Yozuv identifikatori"],
+  ["file_id","uuid","FK,NN","files.id","Qaysi fayl"],
+  ["action","varchar(15)","NN","","view / download / delete"],
+  ["actor","uuid","EXT","ext:hrm.assignments.id","Kim amalga oshirdi"],
+  ["ip","inet","","","IP manzil"],
+  ["created_at","timestamptz","NN","","Vaqti"]]}
+]}
+};
+
+/* ========================================================= */
+const $=s=>document.querySelector(s);
+const canvas=$('#canvas'),wrap=$('#canvas-wrap'),wires=$('#wires'),
+      drawer=$('#drawer'),overlay=$('#overlay'),menu=$('#menu');
+let currentSvc=null,focused=null;
+
+/* ---------- Menu ---------- */
+(function buildMenu(){
+  const groups={};
+  Object.entries(DB).forEach(([k,v])=>{(groups[v.group]??=[]).push(k)});
+  Object.entries(groups).forEach(([g,items])=>{
+    const h=document.createElement('div');h.className='menu-group';h.textContent=g;menu.appendChild(h);
+    items.forEach(k=>{
+      const el=document.createElement('div');
+      el.className='menu-item';el.dataset.svc=k;
+      el.innerHTML=`<span class="dot"></span>${k}<span class="cnt">${DB[k].tables.length}</span>`;
+      el.onclick=()=>{selectService(k);if(innerWidth<=820)$('#sidebar').classList.remove('open')};
+      menu.appendChild(el);
+    });
+  });
+})();
+
+/* ---------- Render service ---------- */
+function selectService(key){
+  currentSvc=key;focused=null;
+  document.querySelectorAll('.menu-item').forEach(m=>m.classList.toggle('active',m.dataset.svc===key));
+  $('#svc-title').textContent=key;
+  $('#svc-desc').textContent=DB[key].desc;
+  closeDrawer();
+  render(key);
+  wrap.scrollTo(0,0);
+}
+
+function render(key){
+  canvas.querySelectorAll('.tbl').forEach(t=>t.remove());
+  wires.innerHTML='';
+  canvas.classList.remove('has-focus');
+  const svc=DB[key];
+  const VGAP=80,HGAP=72,W=252,PAD=48;
+  const availW=wrap.clientWidth-PAD*2;
+  const nCols=Math.max(1,Math.min(4,Math.floor((availW+HGAP)/(W+HGAP))));
+  const colH=new Array(nCols).fill(PAD);
+  const els={};
+
+  svc.tables.forEach(t=>{
+    const el=document.createElement('div');
+    el.className='tbl';el.dataset.tbl=t.name;
+    let rows=t.cols.map(c=>{
+      const flags=c[2]?c[2].split(','):[];
+      const ks=flags.filter(f=>['PK','FK','UK','EXT'].includes(f))
+        .map(f=>`<span class="k ${f.toLowerCase()}">${f}</span>`).join('');
+      return `<div class="row" data-col="${c[0]}">${ks}<span class="cn">${c[0]}</span><span class="ct">${c[1]}</span></div>`;
+    }).join('');
+    el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${t.cols.length}</span></div>${rows}`;
+    // shortest column placement
+    let ci=0;for(let i=1;i<nCols;i++)if(colH[i]<colH[ci])ci=i;
+    el.style.left=(PAD+ci*(W+HGAP))+'px';
+    el.style.top=colH[ci]+'px';
+    canvas.appendChild(el);
+    colH[ci]+=el.offsetHeight+VGAP;
+    els[t.name]=el;
+    el.onclick=e=>{e.stopPropagation();focusTable(key,t.name)};
+  });
+
+  const totalH=Math.max(...colH)+PAD,totalW=PAD*2+nCols*(W+HGAP)-HGAP;
+  canvas.style.height=totalH+'px';canvas.style.width=Math.max(totalW,wrap.clientWidth)+'px';
+  wires.setAttribute('width',Math.max(totalW,wrap.clientWidth));
+  wires.setAttribute('height',totalH);
+
+  // internal FK wires
+  svc.tables.forEach(t=>{
+    t.cols.forEach(c=>{
+      const ref=c[3];
+      if(!ref||ref.startsWith('ext:'))return;
+      const target=ref.split('.')[0];
+      if(!els[target])return;
+      drawWire(els[t.name],els[target],c,t.name,target);
+    });
+  });
+}
+
+/* Bog'lanish turini aniqlash:
+   self  — o'z-o'ziga (ierarxiya: parent_id)
+   1:1   — FK ustunida UK ham bor
+   N:M   — FK ustuni composite PK tarkibida (junction table)
+   1:N   — oddiy FK (standart holat)                       */
+function wireType(colFlags,src,dst){
+  const f=colFlags?colFlags.split(','):[];
+  if(src===dst)return['wself','self (ierarxiya)'];
+  if(f.includes('UK'))return['w11','1:1'];
+  if(f.includes('PK'))return['wident','N:M (junction)'];
+  return['','1:N'];
+}
+
+function drawWire(srcEl,dstEl,col,srcName,dstName){
+  const colName=col[0];
+  const [cls,typeLabel]=wireType(col[2],srcName,dstName);
+  const row=[...srcEl.querySelectorAll('.row')].find(r=>r.dataset.col===colName);
+  const sy=srcEl.offsetTop+(row?row.offsetTop+row.offsetHeight/2:20);
+  const dy=dstEl.offsetTop+16;
+  const sL=srcEl.offsetLeft,sR=sL+srcEl.offsetWidth;
+  const dL=dstEl.offsetLeft,dR=dL+dstEl.offsetWidth;
+  let x1,x2,d;
+  if(srcName===dstName){
+    // self-loop: o'ng tomondan aylanma
+    const out=sR+44;
+    d=`M ${sR} ${sy} C ${out} ${sy}, ${out} ${dy}, ${sR} ${dy}`;
+  }else if(dL>=sR){
+    x1=sR;x2=dL;const mid=(x1+x2)/2;
+    d=`M ${x1} ${sy} C ${mid} ${sy}, ${mid} ${dy}, ${x2} ${dy}`;
+  }else if(dR<=sL){
+    x1=sL;x2=dR;const mid=(x1+x2)/2;
+    d=`M ${x1} ${sy} C ${mid} ${sy}, ${mid} ${dy}, ${x2} ${dy}`;
+  }else{
+    // bir ustunda ustma-ust — o'ng tomondan aylantirib
+    const out=Math.max(sR,dR)+34;
+    d=`M ${sR} ${sy} C ${out} ${sy}, ${out} ${dy}, ${dR} ${dy}`;
+  }
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('class','wireg');
+  const hit=document.createElementNS('http://www.w3.org/2000/svg','path');
+  hit.setAttribute('d',d);hit.setAttribute('class','wire-hit');
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',d);
+  p.setAttribute('class','wire '+cls);
+  p.dataset.src=srcName;p.dataset.dst=dstName;
+  const tip=document.createElementNS('http://www.w3.org/2000/svg','title');
+  tip.textContent=`${srcName}.${colName} → ${dstName}  [${typeLabel}]`;
+  g.appendChild(tip);g.appendChild(hit);g.appendChild(p);
+  g.onclick=e=>{e.stopPropagation();focusWire(srcName,dstName,p)};
+  wires.appendChild(g);
+}
+
+/* Chiziqqa bosilganda: ikkala table yoritiladi, shu yo'nalishdagi chiziqlar hot bo'ladi */
+function focusWire(srcName,dstName,path){
+  clearFocusStyles();
+  canvas.classList.add('has-focus');
+  canvas.querySelectorAll('.tbl').forEach(el=>{
+    if(el.dataset.tbl===srcName||el.dataset.tbl===dstName)el.classList.add('wired');
+  });
+  wires.querySelectorAll('.wire').forEach(w=>{
+    if((w.dataset.src===srcName&&w.dataset.dst===dstName)||
+       (w.dataset.src===dstName&&w.dataset.dst===srcName))w.classList.add('hot');
+  });
+}
+
+function clearFocusStyles(){
+  canvas.classList.remove('has-focus');
+  canvas.querySelectorAll('.tbl').forEach(el=>el.classList.remove('focused','related','wired'));
+  wires.querySelectorAll('.wire').forEach(w=>w.classList.remove('hot'));
+}
+
+/* ---------- Focus & drawer ---------- */
+function focusTable(svcKey,tblName){
+  focused=tblName;
+  const svc=DB[svcKey];
+  const tbl=svc.tables.find(t=>t.name===tblName);
+  clearFocusStyles();
+  canvas.classList.add('has-focus');
+  // related set
+  const rel=new Set();
+  tbl.cols.forEach(c=>{if(c[3]&&!c[3].startsWith('ext:'))rel.add(c[3].split('.')[0])});
+  svc.tables.forEach(t=>t.cols.forEach(c=>{
+    if(c[3]&&!c[3].startsWith('ext:')&&c[3].split('.')[0]===tblName)rel.add(t.name);
+  }));
+  canvas.querySelectorAll('.tbl').forEach(el=>{
+    el.classList.toggle('focused',el.dataset.tbl===tblName);
+    el.classList.toggle('related',el.dataset.tbl!==tblName&&rel.has(el.dataset.tbl));
+  });
+  wires.querySelectorAll('.wire').forEach(w=>{
+    w.classList.toggle('hot',w.dataset.src===tblName||w.dataset.dst===tblName);
+  });
+  openDrawer(svcKey,tbl);
+}
+
+function openDrawer(svcKey,tbl){
+  $('#d-title').textContent=tbl.name;
+  $('#d-sub').textContent=svcKey+' · '+tbl.cols.length+' ustun';
+  const body=$('#drawer-body');
+  let html=`<div class="d-desc">${tbl.desc}</div>`;
+  html+=`<div class="d-sec">Ustunlar</div>`;
+  tbl.cols.forEach(c=>{
+    const flags=c[2]?c[2].split(','):[];
+    const ks=flags.map(f=>{
+      const cls=['PK','FK','UK','EXT'].includes(f)?f.toLowerCase():'';
+      return cls?`<span class="k ${cls}">${f}</span>`:`<span class="k" style="background:rgba(124,150,182,.15);color:var(--muted)">${f}</span>`;
+    }).join('');
+    let refHtml='';
+    if(c[3]){
+      const isExt=c[3].startsWith('ext:');
+      refHtml=`<div class="ref ${isExt?'ext':''}">→ ${isExt?c[3].slice(4)+'  (tashqi service)':c[3]}</div>`;
+    }
+    html+=`<div class="d-col">
+      <div class="d-col-top"><span class="nm">${c[0]}</span><span class="tp">${c[1]}</span>${ks}</div>
+      ${refHtml}
+      ${c[4]?`<div class="dsc">${c[4]}</div>`:''}
+    </div>`;
+  });
+  // referenced by
+  const svc=DB[svcKey];
+  const refs=[];
+  svc.tables.forEach(t=>t.cols.forEach(c=>{
+    if(c[3]&&!c[3].startsWith('ext:')&&c[3].split('.')[0]===tbl.name)
+      refs.push(`<b>${t.name}</b>.${c[0]} → ${c[3]}`);
+  }));
+  if(refs.length){
+    html+=`<div class="d-sec">Bu tablega bog'lanadi</div>`;
+    refs.forEach(r=>html+=`<div class="d-rel">${r}</div>`);
+  }
+  body.innerHTML=html;
+  drawer.classList.add('open');
+  overlay.classList.add('show');
+}
+
+function closeDrawer(){
+  drawer.classList.remove('open');
+  overlay.classList.remove('show');
+  clearFocusStyles();
+  focused=null;
+}
+
+$('#drawer-close').onclick=closeDrawer;
+overlay.onclick=closeDrawer;
+canvas.onclick=closeDrawer;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+$('#burger').onclick=()=>$('#sidebar').classList.toggle('open');
+addEventListener('resize',()=>{if(currentSvc)render(currentSvc)});
+
+selectService('hrm-service');
+</script>
+</body>
+</html>
