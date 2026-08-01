@@ -799,6 +799,12 @@ const DB = {
   ["level","int","NN","","Eskalatsiya darajasi"],
   ["escalated_to","bigint","EXT,NN","ext:hrm.assignment.id","Kimga ko'tarildi"],
   ["reason","text","","","Sababi"]]},
+ {name:"ticket_feedbacks",desc:"Mijoz feedbacki — ticket yopilgach mijozdan so'raladi. KPI'ga event orqali uzatiladi (kpi-service, CUSTOMER_FEEDBACK kriteriyasi).",cols:[
+  ["id","bigint","PK","","Feedback identifikatori"],
+  ["ticket_id","bigint","FK,UK,NN","tickets.id","Qaysi ticket bo'yicha (1:1)"],
+  ["rating","int","NN","","Baho (1-5)"],
+  ["comment","text","","","Mijoz izohi"],
+  ["submitted_at","timestamp","NN","","Yuborilgan vaqt"]]},
  {name:"bots",desc:"Har bir loyihaning o'z Telegram boti — o'z tokeni va logotipi bilan. Token shifrlangan saqlanadi!",cols:[
   ["id","bigint","PK","","Bot identifikatori"],
   ["project_id","bigint","EXT,UK,NN","ext:project.projects.id","Qaysi loyihaning boti (1:1)"],
@@ -872,7 +878,14 @@ const DB = {
   ["call_id","bigint","FK,UK,NN","calls.id","Qaysi qo'ng'iroq (1:1)"],
   ["file_hash","varchar(255)","EXT,NN","ext:file.file_storage.hash","Audio fayl (MinIO)"],
   ["duration_sec","int","NN","","Davomiyligi (soniya)"],
-  ["size_bytes","bigint","","","Fayl hajmi"]]}
+  ["size_bytes","bigint","","","Fayl hajmi"]]},
+ {name:"call_ai_scores",desc:"Qo'ng'iroq yozuvlarini AI orqali baholash — audio transkripsiya qilinib, muloqot sifati scoring qilinadi. Natija KPI'ga event orqali uzatiladi (CALL_QUALITY kriteriyasi).",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["call_id","bigint","FK,UK,NN","calls.id","Qaysi qo'ng'iroq (1:1)"],
+  ["overall_score","decimal(5,2)","NN","","Umumiy baho (0-100)"],
+  ["criteria_scores","jsonb","","","Mezonlar kesimida: salomlashish, muammoni hal qilish, xushmuomalalik va h.k."],
+  ["model_version","varchar(50)","NN","","Qaysi AI model versiyasi baholagan"],
+  ["scored_at","timestamp","NN","","Baholangan vaqt"]]}
 ]},
 
 "notification-service":{
@@ -959,6 +972,70 @@ const DB = {
   ["qty","int","NN","","Miqdor (consumable uchun)"],
   ["actor","bigint","EXT","ext:hrm.assignment.id","Kim amalga oshirdi"],
   ["moved_at","timestamptz","NN","","Vaqti"]]}
+]},
+
+"kpi-service":{
+ group:"Operatsiyalar",
+ desc:"Xodimlar KPI hisoblash — har bir lavozim uchun har xil kriteriyalar va vaznlar. Barcha servicelardan event orqali faktlar yig'iladi, davr yopilganda hisoblanadi. Intizom (turniket) hamma uchun majburiy kriteriya.",
+ tables:[
+ {name:"kpi_criteria",desc:"KPI kriteriyalari lug'ati — seed: TASK_COMPLETION (bajarilgan vazifalar), TICKET_RESOLUTION (yopilgan so'rovlar), CUSTOMER_FEEDBACK (mijoz baholari), CALL_QUALITY (AI qo'ng'iroq scoring), DISCIPLINE (turniket intizomi). UI'dan yangi kriteriya qo'shiladi.",cols:[
+  ["id","bigint","PK","","Kriteriya identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — hisoblash logikasi shunga tayanadi, UPDATE taqiqlangan"],
+  ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"],
+  ["source_service","varchar(50)","NN","","Fakt manbasi: project / support / callcenter / turnstile"],
+  ["unit","varchar(20)","NN","","O'lchov: count / minutes / rating / score / percent"],
+  ["position","int","NN","","Tartib"],
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],
+  ["is_active","boolean","NN","","Faolmi"]]},
+ {name:"kpi_profiles",desc:"KPI profili — qaysi lavozim qanday baholanishini belgilaydi (dasturchi, support operatori, sotuvchi...). Lavozimga bog'lanadi: yangi xodim tayinlanganda profili avtomatik aniqlanadi.",cols:[
+  ["id","bigint","PK","","Profil identifikatori"],
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod"],
+  ["name","varchar(100)","NN","","Profil nomi"],
+  ["position_id","bigint","EXT,NN","ext:hrm.position.id","Qaysi lavozim uchun (FKsiz, mantiqiy)"],
+  ["status","varchar(255)","NN","","Soft delete status"]]},
+ {name:"kpi_profile_criteria",desc:"Profil tarkibi — qaysi kriteriya qancha vazn bilan. Vaznlar yig'indisi 100% bo'lishi shart (ilova validatsiyasi). DISCIPLINE har bir profilda majburiy.",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["profile_id","bigint","FK,UK,NN","kpi_profiles.id","Qaysi profil (UK tarkibida)"],
+  ["criterion_id","bigint","FK,UK,NN","kpi_criteria.id","Qaysi kriteriya (UK tarkibida)"],
+  ["weight_percent","decimal(5,2)","NN","","Vazn (%) — umumiy KPI'dagi ulushi"],
+  ["config","jsonb","","","Normalizatsiya sozlamalari: target qiymat, min/max, formula parametrlari"]]},
+ {name:"kpi_periods",desc:"Hisoblash davrlari (oy). Davr yopilganda barcha xodimlar KPI'si qayta hisoblanib muhrlanadi. UK: (year, month).",cols:[
+  ["id","bigint","PK","","Davr identifikatori"],
+  ["year","int","UK,NN","","Yil"],
+  ["month","int","UK,NN","","Oy (1-12)"],
+  ["status","varchar(20)","NN","","open / calculating / closed"]]},
+ {name:"kpi_facts",desc:"Xom faktlar — barcha servicelardan event orqali keladi: issue yopildi (project), ticket yopildi (support), feedback keldi, qo'ng'iroq AI baholandi (callcenter). Hisoblash shu faktlardan agregatsiya qiladi.",cols:[
+  ["id","bigint","PK","","Fakt identifikatori"],
+  ["criterion_id","bigint","FK,NN","kpi_criteria.id","Qaysi kriteriyaga tegishli"],
+  ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Qaysi xodim tayinloviga hisoblanadi"],
+  ["source_service","varchar(50)","NN","","Qaysi servicedan kelgan"],
+  ["source_ref","varchar(100)","NN","","Manba yozuv ID (issue_id, ticket_id, call_id...) — takroriylikni oldini olish uchun"],
+  ["value","decimal(12,2)","NN","","Fakt qiymati (point, daqiqa, baho, score)"],
+  ["occurred_at","timestamp","NN","","Hodisa sodir bo'lgan vaqt — davrga biriktirishda shu ishlatiladi"],
+  ["payload","jsonb","","","Qo'shimcha kontekst (audit/tekshiruv uchun)"]]},
+ {name:"attendance_records",desc:"Turniket ma'lumotlari — kelish/ketish vaqtlari. Jismoniy fakt bo'lgani uchun EMPLOYEE'ga bog'lanadi (inventory kabi); DISCIPLINE hisoblanayotganda faol assignmentga o'giriladi. UK: (employee_id, work_date).",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["employee_id","bigint","EXT,UK,NN","ext:hrm.employee.id","Xodim — jismoniy shaxs (FKsiz)"],
+  ["work_date","date","UK,NN","","Ish kuni"],
+  ["first_check_in","timestamp","","","Birinchi kirish (turniket)"],
+  ["last_check_out","timestamp","","","Oxirgi chiqish (turniket)"],
+  ["source","varchar(50)","NN","","Manba tizim (turniket integratsiyasi)"]]},
+ {name:"kpi_scores",desc:"Kriteriya kesimidagi hisoblangan ballar — davr yopilganda kpi_facts'dan agregatsiya qilinadi. UK: (period, assignment, criterion).",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["period_id","bigint","FK,UK,NN","kpi_periods.id","Qaysi davr (UK tarkibida)"],
+  ["assignment_id","bigint","EXT,UK,NN","ext:hrm.assignment.id","Qaysi tayinlov (UK tarkibida)"],
+  ["criterion_id","bigint","FK,UK,NN","kpi_criteria.id","Qaysi kriteriya (UK tarkibida)"],
+  ["raw_value","decimal(12,2)","NN","","Xom agregat (masalan 42 point, 4.6 o'rtacha feedback)"],
+  ["normalized_score","decimal(5,2)","NN","","Normalizatsiyadan keyin (0-100)"],
+  ["weighted_score","decimal(5,2)","NN","","Vazn qo'llangandan keyin (normalized × weight)"]]},
+ {name:"kpi_results",desc:"Yakuniy KPI — davr bo'yicha xodimning umumiy bahosi (weighted_score'lar yig'indisi). UK: (period, assignment).",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["period_id","bigint","FK,UK,NN","kpi_periods.id","Qaysi davr (UK tarkibida)"],
+  ["assignment_id","bigint","EXT,UK,NN","ext:hrm.assignment.id","Qaysi tayinlov (UK tarkibida)"],
+  ["profile_id","bigint","FK,NN","kpi_profiles.id","Qaysi profil bo'yicha hisoblangan (tarixiy qayd)"],
+  ["total_score","decimal(5,2)","NN","","Yakuniy KPI (0-100)"],
+  ["calculated_at","timestamp","NN","","Hisoblangan vaqt"],
+  ["status","varchar(20)","NN","","calculated / approved"]]}
 ]},
 
 "settings-service":{
