@@ -1038,6 +1038,39 @@ const DB = {
   ["status","varchar(20)","NN","","calculated / approved"]]}
 ]},
 
+"kafka-event-standart":{
+ group:"Platforma",
+ desc:"STANDART — Kafka + Outbox pattern. Quyidagi ikki table HAR BIR service bazasida bir xil nusxada bo'ladi (audit ustunlari kabi platforma naqshi). Topic nomlash: crm.{service}.{aggregate}.{event} (masalan crm.project.issue.completed). Partition key = aggregate_id (tartib kafolati). Yetkazish: at-least-once + idempotent consumer. DLQ: {topic}.dlq",
+ tables:[
+ {name:"outbox_events",noaudit:true,desc:"OUTBOX — event biznes o'zgarish bilan BITTA tranzaksiyada shu tablega yoziladi, keyin alohida publisher (transactional poller yoki Debezium CDC) Kafka'ga uzatadi. Dual-write muammosini yo'q qiladi. Audit ustunlari yo'q — texnik jadval, aktor ma'lumoti payload ichida.",cols:[
+  ["id","bigint","PK","","SEQ_OUTBOX_EVENTS_ID"],
+  ["event_id","uuid","UK,NN","","Global unikal event ID — consumer idempotentligi shunga tayanadi"],
+  ["aggregate_type","varchar(100)","NN","","Obyekt turi: ISSUE, TICKET, CONTRACT, CALL..."],
+  ["aggregate_id","varchar(100)","NN","","Obyekt ID — Kafka partition key (bitta obyekt eventlari tartibda boradi)"],
+  ["event_type","varchar(150)","NN","","Event nomi: issue.completed, ticket.closed, contract.signed..."],
+  ["topic","varchar(200)","NN","","Kafka topic: crm.{service}.{aggregate}.{event}"],
+  ["payload","jsonb","NN","","Event tanasi — envelope standarti bo'yicha (aktor, vaqt, ma'lumot)"],
+  ["headers","jsonb","","","Qo'shimcha headerlar (trace_id, correlation_id)"],
+  ["status","varchar(20)","NN","","NEW / PUBLISHED / FAILED — poller shu bo'yicha ishlaydi"],
+  ["occurred_at","timestamp","NN","","Hodisa vaqti (biznes tranzaksiya vaqti)"],
+  ["published_at","timestamp","","","Kafka'ga yuborilgan vaqt"]]},
+ {name:"processed_events",noaudit:true,desc:"INBOX — consumer tomonida idempotentlik: har bir qabul qilingan event_id shu yerga yoziladi (biznes o'zgarish bilan bitta tranzaksiyada). Takror kelgan event (at-least-once tufayli) UK orqali rad etiladi. UK: (event_id, consumer).",cols:[
+  ["id","bigint","PK","","SEQ_PROCESSED_EVENTS_ID"],
+  ["event_id","uuid","UK,NN","","Qayta ishlangan event (UK tarkibida)"],
+  ["consumer","varchar(100)","UK,NN","","Qaysi handler qayta ishladi (UK tarkibida) — bitta service ichida bir nechta consumer bo'lishi mumkin"],
+  ["processed_at","timestamp","NN","","Qayta ishlangan vaqt"]]},
+ {name:"event_envelope",noaudit:true,desc:"BU TABLE EMAS — Kafka xabarining standart strukturasi (payload JSON sxemasi). Har bir chiqarilgan event shu konvertda bo'lishi shart. Hujjatlashtirish uchun shu yerda ko'rsatilgan.",cols:[
+  ["event_id","uuid","NN","","outbox_events.event_id bilan bir xil"],
+  ["event_type","string","NN","","issue.completed kabi"],
+  ["aggregate_type","string","NN","","ISSUE, TICKET..."],
+  ["aggregate_id","string","NN","","Obyekt ID"],
+  ["occurred_at","ISO-8601","NN","","Hodisa vaqti"],
+  ["producer","string","NN","","Qaysi service chiqargan (project-service)"],
+  ["version","int","NN","","Sxema versiyasi — payload strukturasi o'zgarsa oshiriladi, consumerlar eski versiyani ham qo'llab-quvvatlaydi"],
+  ["actor_assignment_id","bigint","","","Hodisani kim qilgani (bo'lsa)"],
+  ["data","object","NN","","Domen ma'lumotlari — event turiga xos"]]}
+]},
+
 "settings-service":{
  group:"Mavjud tizim",
  desc:"MAVJUD — settings_service_db. 4 jadval, 2 FK, 8 sequence. Frontend jadval metadatasi va i18n tarjimalar.",
