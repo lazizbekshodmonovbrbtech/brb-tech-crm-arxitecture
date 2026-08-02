@@ -670,11 +670,24 @@ const DB = {
   ["estimation_type","varchar(20)","NN","","point / estimate — Agile va Kanban IKKALASIDA ham qo'llanadi (KPI uchun); loyihadagi barcha issuelar shu bo'yicha baholanadi"],
   ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (kanban uchun)"],
   ["default_board_id","bigint","FK","boards.id","Standart board"]]},
- {name:"project_member_roles",desc:"Loyiha ichidagi rollar (PM, Developer, QA, Viewer...).",cols:[
+ {name:"project_member_roles",desc:"Loyiha ichidagi rollar (seed: pm, developer, qa, viewer). Ruxsatlar HRM naqshidagi kabi normallashtirilgan: project_role_permissions orqali.",cols:[
   ["id","bigint","PK","","Rol identifikatori"],
-  ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
-  ["name","varchar(50)","UK,NN","","Rol nomi"],
-  ["permissions","jsonb","NN","","Rol ruxsatlari"]]},
+  ["short_code","varchar(30)","UK,NN","","Barqaror kod — seed, UPDATE taqiqlangan"],
+  ["name","varchar(50)","NN","","Rol nomi — UI'da o'zgartiriladi"],
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],
+  ["is_active","boolean","NN","","Faolmi"]]},
+ {name:"project_actions",desc:"Loyiha ichidagi amallar katalogi — HRM'dagi action_catalog naqshi. Seed: ISSUE_CREATE, ISSUE_EDIT, ISSUE_DELETE, STATUS_CHANGE, SPRINT_MANAGE, BOARD_CONFIGURE, MEMBER_MANAGE, SETTINGS_EDIT.",cols:[
+  ["id","bigint","PK","","Amal identifikatori"],
+  ["short_code","varchar(50)","UK,NN","","Amal kodi — seed, logika shunga tayanadi"],
+  ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"],
+  ["position","int","NN","","Tartib"],
+  ["is_system","boolean","NN","","Seed yozuvimi"],
+  ["is_active","boolean","NN","","Faolmi"]]},
+ {name:"project_role_permissions",desc:"Rol × amal ruxsati — HRM'dagi permission naqshi. UK: (role_id, action_id). Jsonb o'rniga normallashtirilgan: so'rov qilinadi, indekslanadi, validatsiya DB darajasida.",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["role_id","bigint","FK,UK,NN","project_member_roles.id","Qaysi rol (UK tarkibida)"],
+  ["action_id","bigint","FK,UK,NN","project_actions.id","Qaysi amal (UK tarkibida)"],
+  ["is_active","boolean","NN","","Faolmi"]]},
  {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi (lavozim o'zgarsa yangi assignment bilan qayta biriktiriladi).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
@@ -702,12 +715,16 @@ const DB = {
   ["name","varchar(50)","NN","","Status nomi"],
   ["category","varchar(20)","NN","","todo / in_progress / done — hisobotlar uchun"],
   ["position","int","NN","","Tartib raqami"]]},
- {name:"status_pipeline_rules",desc:"Workflow qoidalari — qaysi statusdan qaysi statusga, kim o'tkaza oladi.",cols:[
+ {name:"status_rule_roles",desc:"Workflow qoidasi × rol — qaysi rollar shu o'tishni qila oladi. Qoidada yozuv bo'lmasa = hamma o'tkaza oladi. UK: (rule_id, role_id).",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["rule_id","bigint","FK,UK,NN","status_pipeline_rules.id","Qaysi qoida (UK tarkibida)"],
+  ["role_id","bigint","FK,UK,NN","project_member_roles.id","Qaysi rolga ruxsat (UK tarkibida)"]]},
+ {name:"status_pipeline_rules",desc:"Workflow qoidalari — qaysi statusdan qaysi statusga o'tish mumkin. Rollar cheklovi status_rule_roles orqali (normallashtirilgan). condition jsonb qoladi — shart turlari har xil bo'lgani uchun chinakam moslashuvchan tuzilma.",cols:[
   ["id","bigint","PK","","Qoida identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha uchun"],
   ["from_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusdan"],
   ["to_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga"],
-  ["allowed_role_ids","jsonb","","","Ruxsat etilgan rollar (bo'sh = hamma)"],
+  
   ["condition","jsonb","","","Shart (masalan: barcha subtasklar yopiq)"]]},
  {name:"boards",desc:"Boardlar — vazifalarning vizual taqdimoti. Turi loyiha rejimiga mos.",cols:[
   ["id","bigint","PK","","Board identifikatori"],
