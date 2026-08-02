@@ -341,7 +341,7 @@ const DB = {
 
 "hrm-service":{
  group:"Mavjud tizim",
- desc:"MAVJUD — hrm_service_db. 18 jadval, 24 FK, 34 sequence. Har jadvalda 7 standart audit ustun (kartada va drawerda avtomatik ko'rsatiladi) va soft delete (status).",
+ desc:"MAVJUD — hrm_service_db. 18 jadval, 24 FK, 34 sequence. Har jadvalda 7 standart audit ustun va soft delete (status). QILINISHI KERAK: outbox_events + processed_events qo'shish (kafka-event-standart naqshi) — assignment.ended/created eventlari CRM handover jarayoni uchun SHART (event-katalog: hrm_service_events).",
  tables:[
  {name:"org_structure",desc:"Tashkilot tuzilmasi (ierarxik). DIQQAT: parent uchun FK constraint e'lon qilinmagan — butunlik faqat ilova darajasida.",cols:[
   ["id","bigint","PK","","SEQ_ORG_STRUCTURE_ID"],
