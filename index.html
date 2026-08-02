@@ -716,7 +716,7 @@ const DB = {
   ["role_id","bigint","FK,NN","project_member_roles.id","Loyihadagi roli"],
   ["status","varchar(20)","NN","","ACTIVE / ENDED — assignment.ended yoki partnership.ended eventida yopiladi"],
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
- {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Faqat ochiq (category: DRAFT/ACTIVE/INACTIVE) vazifalar ko'chiriladi; COMPLETED/DELETED tegilmaydi.",cols:[
+ {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Faqat ochiq (category: DRAFT/ACTIVE/INACTIVE) vazifalar ko'chiriladi; COMPLETED va soft-delete qilinganlar tegilmaydi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihada"],
   ["from_assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Tugagan tayinlov — vazifalar shundan olinadi"],
@@ -744,7 +744,7 @@ const DB = {
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod (UK: project_id + short_code) — workflow logikasi shunga tayanadi, o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Status nomi"],
-  ["category","enum","NN","","DRAFT / ACTIVE / INACTIVE / DELETED / COMPLETED — platforma standart enum (CHECK constraint). Tizim logikasi FAQAT shunga qurilgan: COMPLETED'ga o'tish = issue.completed + KPI fakt; DELETED = bekor, KPI/hisobotdan chiqadi; INACTIVE = pauza/blok; handover DRAFT/ACTIVE/INACTIVE'ni ko'chiradi. Status nomlari erkin, category o'zgarmas"],
+  ["category","enum","NN","","DRAFT / ACTIVE / INACTIVE / COMPLETED — platforma standart enum (CHECK constraint). Tizim logikasi FAQAT shunga qurilgan: COMPLETED'ga o'tish = issue.completed + KPI fakt; INACTIVE = pauza/blok. DELETED kategoriyasi YO'Q — bekor qilish workflow emas, soft delete (record status) orqali: yozuv boarddan/KPI'dan yo'qoladi, audit va issue_history'da saqlanadi"],
   ["position","int","NN","","Tartib raqami"]]},
  {name:"status_rule_roles",desc:"Workflow qoidasi × rol — qaysi rollar shu o'tishni qila oladi. Qoidada yozuv bo'lmasa = hamma o'tkaza oladi. UK: (rule_id, role_id).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -778,7 +778,7 @@ const DB = {
   ["end_date","date","","","Tugash sanasi"],
   ["status","varchar(20)","NN","","planned / active / completed"],
   ["velocity","int","","","Yakunda bajarilgan hajm — point yoki daqiqa (estimation_type bo'yicha)"]]},
- {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status COMPLETED kategoriyaga o'tganda issue.completed eventi chiqadi.",cols:[
+ {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status COMPLETED kategoriyaga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. HIMOYA: COMPLETED (fakt yozilgan) vazifa to'g'ridan-to'g'ri o'chirilmaydi — avval reopen (issue.reopened eventi KPI faktni VOID qiladi, davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
   ["id","bigint","PK","","Vazifa identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
@@ -1101,6 +1101,7 @@ const DB = {
   ["source_ref","varchar(100)","NN","","Manba yozuv ID (issue_id, ticket_id, call_id...) — takroriylikni oldini olish uchun"],
   ["value","decimal(12,2)","NN","","Fakt qiymati (point, daqiqa, baho, score)"],
   ["occurred_at","timestamp","NN","","Hodisa sodir bo'lgan vaqt — davrga biriktirishda shu ishlatiladi"],
+  ["status","varchar(15)","NN","","ACTIVE / VOIDED — issue.reopened kelganda source_ref bo'yicha VOIDED qilinadi (faqat davr ochiq bo'lsa); hisoblash faqat ACTIVE faktlarni oladi"],
   ["payload","jsonb","","","Qo'shimcha kontekst (audit/tekshiruv uchun)"]]},
  {name:"attendance_records",desc:"Turniket ma'lumotlari — kelish/ketish vaqtlari. Jismoniy fakt bo'lgani uchun EMPLOYEE'ga bog'lanadi (inventory kabi); DISCIPLINE hisoblanayotganda faol assignmentga o'giriladi. UK: (employee_id, work_date).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -1224,6 +1225,7 @@ const DB = {
   ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
   ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
   ["issue.completed","ISSUE","","","Vazifa COMPLETED kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt: point/estimated_minutes), notification"],
+  ["issue.reopened","ISSUE","","","COMPLETED vazifa qayta ochilganda → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa)"],
   ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
  {name:"support_service_events",noaudit:true,desc:"support-service chiqaradigan eventlar. Topic prefiksi: crm.support.*",cols:[
   ["ticket.created","TICKET","","","Ticket ochilganda → notification (operatorga)"],
