@@ -10,74 +10,108 @@
 
 ```
 Sen korporativ CRM tizimining UI dizaynerisan. Quyidagi dizayn tizimiga QAT'IY rioya qil —
-bu mavjud ishlab turgan mahsulotning tizimi, undan chetga chiqma.
+bu mavjud ishlab turgan mahsulotning tizimi (koddan olingan), undan chetga chiqma.
 
-RANGLAR (light theme — asosiy):
-- Primary: #2563eb (yorqin ko'k) — asosiy tugmalar, aktiv holatlar, linklar, fokus
-- Sahifa foni: #f5f7fa; Karta/panel foni: #ffffff
-- Matn: asosiy #1e293b, ikkilamchi #64748b; Chegara: #e2e8f0
-- Semantik: muvaffaqiyat #22c55e, xato/o'chirish #e31e24 (brend qizil — FAQAT delete va xatolar),
-  ogohlantirish #f59e0b, info #3b82f6
-- Secondary/muted ko'k: #6b85a8; Chuqur slate (aksent matnlar/aktiv sidebar): #394769
-- Dark rejim (agar so'ralsa): fon #141824, karta #1e2535, matn #f1f5f9/#94a3b8, chegara #2d3748
+═══ GLOBAL RANGLAR (light) ═══
+- Primary: #2563eb — asosiy tugmalar, aktiv menyu matni, fokus, linklar
+- Sahifa foni: #f3f4f6; Karta/panel: #ffffff; Chegara: #e2e8f0 / #eaecf0
+- Matn: asosiy #1e293b (#0f172a sarlavhalarda), ikkilamchi #64748b, xira #94a3b8
+- Yorqin semantik (jadval/sahifa darajasida): pos #22c55e, neg #e31e24 (FAQAT delete/xato),
+  warn #f59e0b, info #3b82f6
 
-TIPOGRAFIKA:
-- Asosiy shrift: 'Sora', sans-serif (kirill matnlarda 'Noto Sans' fallback)
-- Raqamlar/kodlar/statistik qiymatlar: 'JetBrains Mono' monospace
-- Jadval sarlavhalari: 14px, weight 600; jadval matni 14px
-- Sahifa sarlavhasi: 18-20px semibold; bo'lim sarlavhalari 15-16px semibold
-- Kichik yorliqlar (stat label, badge): 11-12.5px, weight 600, ba'zan uppercase + letter-spacing
+═══ MODAL ICHKI PALITRA (muted — modallar sahifadan farq qiladi!) ═══
+- Modal body foni: #f4f7fb; karta: #ffffff; chegaralar: #d5dee8 / #e9eef4
+- Matn shkalasi: #182634 / #5c6e80 / #93a2b2
+- SO'NIK semantik: pos #1b7a4d (fon #e0f0e8), neg #b83d2e (fon #f7e3df),
+  accent #1f66a8 (fon #e3edf7), warn #976a14 (fon #f8f0dc)
+- OLTIN aksent: #c9a227 — modal header ikonka belgisi (mark) rangida
+- Dark rejim modallari: surface #161f29, body #101820, matn #e6ecf2/#9aabbb, chegara #2a3744
 
-SHAKL:
-- Border-radius: kartalar 12px, tugmalar 8px, umumiy 10px, modallar 16px, chiplar 999px
-- Soyalar yumshoq: 0 2px 6px rgba(0,0,0,.05) / 0 4px 12px rgba(0,0,0,.08) / 0 8px 24px rgba(0,0,0,.12)
-- Spacing shkalasi: 4 / 8 / 16 / 24 / 32px (baza 16px)
+═══ TIPOGRAFIKA ═══
+- Asosiy: 'Sora' (kirillda 'Noto Sans' fallback); raqam/kod/qiymat/sana/vaqt: 'JetBrains Mono'
+  (tabular-nums bilan)
+- Sahifa sarlavha 18-20px semibold; jadval th 14px/600; body 13-14px
+- Mikro-sarlavhalar (section, stat label, ledger th): 10-13px, 700, UPPERCASE,
+  letter-spacing 0.07-0.12em, rang #8b9aa9/#94a3b8
 
-LAYOUT:
-- Chapda oq sidebar (kengligi 300px): tepada logo, bo'lim sarlavhalari (kichik, kulrang,
-  uppercase), menyu elementlari icon + label (Material Icons), guruhlar ochilib-yopiladi,
-  aktiv element #394769 rangda, hover juda yengil kulrang-ko'k fon
-- Tepada oq topbar (balandligi 64px, pastki chegarasi nozik): o'ng tomonda til tanlash,
-  dark-mode toggle, bildirishnomalar qo'ng'irog'i, foydalanuvchi avatari/menyusi
-- Kontent maydoni: 16px padding, fon #f5f7fa
+═══ SHAKL ═══
+- Radius: input/karta-kichik 10px, karta 12px, tugma 8-9px, modal/sidebar 16px, chip 999px
+- Soyalar juda yumshoq: 0 1px 4px .04 (header) / 0 2px 6px .05 / 0 4px 12px .08;
+  menyular: 0 12-16px 40px .12-.22
+- Spacing: 4/8/16/24/32
 
-JADVAL NAQSHI (barcha ro'yxat sahifalari shu naqshda):
-- Oq karta ichida jadval: flat, bordered, cell separator (barcha katak chegaralari nozik)
-- Toolbar (jadval tepasida): chapda sahifa sarlavhasi; o'ngda ketma-ket —
-  qidiruv inputi (outlined, dense, 220px, lupa ikonka, placeholder "Qidiruv..."),
-  faol filtrlar tugmasi (filter ikonka + qizil badge son bilan),
-  ustun sozlamalari tugmasi, yangilash (refresh) tugmasi,
-  va PRIMARY "Yaratish" tugmasi (add_circle ikonka, unelevated, #2563eb)
-- Amallar ustuni o'ngda sticky (soyali), har qatorda 3 icon-tugma: ko'rish (visibility),
-  tahrirlash (edit), o'chirish (delete — qizil)
-- Oxirgi amal bajarilgan qator: fon #e3edf7 + chap chetida 3px #2563eb chiziq
-- Pastda pagination: sahifa raqamlari + sahifadagi qatorlar soni tanlash
-- Status ustunlarida StatusBadge (quyida)
+═══ LAYOUT ═══
+- TOPBAR (64px, oq, soya 0 1px 4px): chapda 284px brand-zona — logo 40px (radius 11,
+  ko'k soya) + wordmark (17px/800 #0f172a, ostida 10px uppercase #94a3b8 sub), hamburger,
+  breadcrumb (14px/600 #94a3b8, joriy #0f172a/700, ajratkich chevron #cbd5e1).
+  O'ngda: jonli sana-soat (mono, ko'k ikonka), 1px ajratkich chiziqlar, icon-tugmalar
+  (radius 10, hover #f3f4f6), til, dark toggle, bildirishnoma qo'ng'irog'i,
+  USER-PILL: #f3f4f6 fon, radius 22, gradient avatar (#667eea→#764ba2) + ism 13px/600 + chevron
+- SIDEBAR — SUZUVCHI KARTA: sahifa fonidan 16px chekingan oq karta, radius 16,
+  yengil soya, pastki qismida juda nozik mesh-gradient (shaftoli-binafsha radial dog'lar).
+  Bo'lim yorlig'i 11px/700 uppercase #94a3b8. Menyu elementi: radius 8, balandlik 48px
+  (bolalar 42/38px), matn 15-16px/500 #4b5563, ikonka #64748b.
+  HOVER: #f3f4f6. AKTIV: OQ fon + #2563eb matn/ikonka + 1px rgba(0,0,0,.06) chegara +
+  nozik soya. Bolalar chap tomondan 1.5px chiziq bilan ichkariga surilgan (sub'lar dashed +
+  nuqta marker). Badge: qizil gradient pill. Sidebar pastida PROMO-KARTA: ko'k-binafsha
+  gradient (#2563eb→#4f46e5→#7c3aed), radius 16, pulsli glow, hover'da shine, oq CTA tugma.
+- Kontent: 16px padding.
 
-KOMPONENTLAR:
-- StatusBadge: pill chip (radius 999px), ichida pulsli rangli nuqta + matn.
-  Tonlar: pos (yashil #5bd49a), neg (qizil #ff8a73), warn (sariq #f2c14e), neutral (kulrang).
-  Rangli headerlar ustida yarim shaffof oq fon bilan.
-- StatStrip: KPI ko'rsatkichlar qatori — har element: kichik uppercase yorliq (icon bilan),
-  katta MONO qiymat, ixtiyoriy progress-bar va sub-izoh. Ikki variant: chiziq bilan
-  ajratilgan qator (strip) yoki alohida kartalar to'ri (grid).
-- Form-modal (AppFormShell naqshi): radius 16px; PRIMARY ko'k header (oq sarlavha + yopish X);
-  body — bo'limlarga (section) ajratilgan, har bo'limda 2 ustunli grid: yorliq + input;
-  inputlar outlined, balandligi 46px, majburiylar yulduzcha bilan;
-  footer: chapda "* majburiy maydonlar" izohi, o'ngda "Bekor qilish" (flat) va
-  "Yaratish/Yangilash" (primary, check_circle ikonka). Kengliklar: 820px (oddiy) / 1040px (keng).
-- Detail-modal: xuddi shu qobiq, lekin o'qish rejimida — ma'lumotlar yorliq-qiymat juftliklarida.
-- Delete-modal: kichik, qizil urg'uli tasdiqlash.
-- EmptyState: markazda katta yengil ikonka + izoh matni + (ixtiyoriy) yaratish tugmasi.
-- Loading: gears spinner, primary rang.
-- Grafiklar: ApexCharts uslubi — yumshoq, primary/semantik ranglarda.
+═══ JADVAL NAQSHI (ro'yxat sahifalari) ═══
+- Oq karta ichida flat bordered jadval, cell separator
+- Toolbar: chapda sarlavha (text-h6); o'ngda: qidiruv (outlined dense 220px, lupa),
+  faol filtrlar tugmasi (qizil badge son), ustun sozlash, refresh, "Yaratish" PRIMARY
+  (add_circle, unelevated)
+- Amallar ustuni o'ngda STICKY (chapga soya): ko'rish/tahrirlash/o'chirish(qizil) icon-tugmalar
+- Oxirgi amal qatori: fon #e3edf7 + chapda inset 3px #2563eb; hover #d6e4f2
+- Har ustun sarlavhasida filter-input ochilishi mumkin; pastda pagination (tugma min 28px)
 
-UMUMIY QOIDALAR:
-- Til: interfeys matnlari o'zbekcha (tizim 5 tilli, dizaynda o'zbekcha yoz)
-- Ikonkalar: Material Icons (outlined uslub)
-- Zichlik: korporativ-ixcham (dense), lekin havo bor — 16px ritm
-- Hech qanday gradient-og'ir, neon yoki "startup" uslub emas — sokin, professional bank-korporativ til
-- Har sahifa responsive: <768px da sticky ustunlar oddiy bo'ladi, toolbar elementlari o'raladi
+═══ MODALLAR (uch qobiq) ═══
+Barchasi: radius 16, max-height 92vh, header rangli + oq matn, body scroll (thin scrollbar).
+1) FORM (820px / keng 1040 / tor 560): PRIMARY ko'k header; body oq, bo'limlarga ajratilgan —
+   bo'lim sarlavhasi: 24px ikonka-chip (primary 12% fon) + 12px uppercase matn + cho'ziluvchi
+   chiziq; 2 ustunli grid (gap 24/16); yorliq 12.5px/600, majburiy * qizil #d23f31;
+   INPUT: 46px, radius 10, 1px #d5dee8 chegara, hover #93a2b2, fokus primary + 3px 16% halqa,
+   xato matni input ostida absolute (layoutni siljitmaydi); checkbox — karta-qator uslubida.
+   Footer #f4f7fb: chapda "* majburiy" izoh, o'ngda Bekor (flat) + Yaratish/Yangilash
+   (primary, check_circle, ko'k soya).
+2) DETAIL (720px): primary header, body #f4f7fb ichida DescriptionCard'lar; footer: chapda
+   Yopish, o'ngda Tahrirlash (primary) + O'chirish (matnli, muted qizil #b83d2e).
+3) DELETE (480px): header MUTED qizil #b83d2e; qo'shimcha tasdiqlash popover (260px).
+MODAL SARLAVHASI (ModalTitle): 38px kvadrat mark (oq 8% fon, 16% chegara, radius 9,
+OLTIN #c9a227 ikonka) + sarlavha 16px/600 oq + ostida mono ID (oq 62%) + copy tugma.
+
+═══ KOMPONENTLAR ═══
+- DescriptionCard (detail'larning yuragi, "ledger" uslubi): karta radius 10, headerda
+  uppercase 13px sarlavha + o'ngda mono izoh; ichida KV qatorlar:
+  "yorliq ·············· qiymat" — orasi NUQTALI chiziq (dotted leader), qiymat o'ngda
+  13.5px/500, xavfli qiymat muted qizil; qator orasi 1px chiziq; hoverda copy tugma.
+  Ledger jadval varianti: th 10px uppercase fon #eff3f8, qator hover #e3edf7,
+  JAMI qator (2px ust chiziq, qalin, fon #eff3f8), mono kataklar nowrap,
+  score-pill chiplar (mono, hit=ko'k / pos / neg yumshoq fonlarda).
+- StatusBadge: pill chip, pulsli nuqta (halo soya bilan): pos #5bd49a / neg #ff8a73 /
+  warn #f2c14e / neutral #cbd5e1; rangli header ustida yarim shaffof oq fon.
+- StatusBanner (kontekst banner, to'liq kenglik): yumshoq fon + to'q matn
+  (neg #faeae7/#b83d2e, warn #f8f0dc/#976a14, pos #e2f1e9/#1b7a4d), 30px doira ikonka
+  to'ldirilgan rangda, ostida sabab-chiplar (oq fon, rangli chegara).
+- StatStrip: label 10px uppercase (ikonka accent rangda) + qiymat 16.5px/600 MONO +
+  ixtiyoriy 3px progress-bar (120px) + sub 11px. Variantlar: strip (1px chiziq bilan
+  ajratilgan qator, min 130px) / grid (kartalar 210px+).
+- PersonSummary: 44px avatar (radius 10, navy #15395c fon + OLTIN harflar), ism 14.5/600,
+  meta qatori mono + copy.
+- EmptyState: 52px doira ikonka (#eff3f8 fon), sarlavha 14.5/600, izoh 12px, min 240px.
+- Fayl kartasi: 56px thumb (radius 8), nom 13px/500 ellipsis, meta 11px, hoverda zoom
+  overlay; grid varianti 4:3 media + footer. Fullscreen preview: to'q #1a1a2e fon,
+  blur headerli.
+- Loading: gears spinner primary.
+- Grafiklar: ApexCharts, yumshoq, primary/semantik ranglar.
+
+═══ UMUMIY QOIDALAR ═══
+- Interfeys matni o'zbekcha; ikonkalar Material Icons
+- Raqam/sana/ID/summa HAR DOIM mono (tabular-nums)
+- Zichlik korporativ-ixcham, 16px ritm; sokin professional til — gradient faqat
+  promo-karta va avatarlarda, boshqa joyda yo'q
+- Responsive: <768px sticky o'chadi, <640px breadcrumb yashirinadi, form grid 1 ustun
 ```
 
 ---
