@@ -716,7 +716,7 @@ const DB = {
   ["role_id","bigint","FK,NN","project_member_roles.id","Loyihadagi roli"],
   ["status","varchar(20)","NN","","ACTIVE / ENDED — assignment.ended yoki partnership.ended eventida yopiladi"],
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
- {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Yopilgan vazifalar ko'chirilmaydi.",cols:[
+ {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Faqat ochiq (category: DRAFT/ACTIVE/INACTIVE) vazifalar ko'chiriladi; COMPLETED/DELETED tegilmaydi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihada"],
   ["from_assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Tugagan tayinlov — vazifalar shundan olinadi"],
@@ -739,12 +739,12 @@ const DB = {
   ["level","int","NN","","Ierarxiya darajasi: 0=Epic, 1=Story/Task/Bug, 2=Subtask"],
   ["icon","varchar(50)","","","Ikonka kodi"],
   ["color","varchar(7)","","","Rang (hex)"]]},
- {name:"project_statuses",desc:"Loyihaga xos statuslar (To Do, In Progress, Review, Done...).",cols:[
+ {name:"project_statuses",desc:"Loyihaga xos statuslar — nomlari erkin (UI'da boshqariladi), har biri majburiy ravishda platforma enum kategoriyasiga (DRAFT/ACTIVE/INACTIVE/DELETED/COMPLETED) bog'lanadi: tizim logikasi nomga emas, kategoriyaga qaraydi.",cols:[
   ["id","bigint","PK","","Status identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod (UK: project_id + short_code) — workflow logikasi shunga tayanadi, o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Status nomi"],
-  ["category","varchar(20)","NN","","todo / in_progress / done — hisobotlar uchun"],
+  ["category","enum","NN","","DRAFT / ACTIVE / INACTIVE / DELETED / COMPLETED — platforma standart enum (CHECK constraint). Tizim logikasi FAQAT shunga qurilgan: COMPLETED'ga o'tish = issue.completed + KPI fakt; DELETED = bekor, KPI/hisobotdan chiqadi; INACTIVE = pauza/blok; handover DRAFT/ACTIVE/INACTIVE'ni ko'chiradi. Status nomlari erkin, category o'zgarmas"],
   ["position","int","NN","","Tartib raqami"]]},
  {name:"status_rule_roles",desc:"Workflow qoidasi × rol — qaysi rollar shu o'tishni qila oladi. Qoidada yozuv bo'lmasa = hamma o'tkaza oladi. UK: (rule_id, role_id).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -778,7 +778,7 @@ const DB = {
   ["end_date","date","","","Tugash sanasi"],
   ["status","varchar(20)","NN","","planned / active / completed"],
   ["velocity","int","","","Yakunda bajarilgan hajm — point yoki daqiqa (estimation_type bo'yicha)"]]},
- {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi.",cols:[
+ {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status COMPLETED kategoriyaga o'tganda issue.completed eventi chiqadi.",cols:[
   ["id","bigint","PK","","Vazifa identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
@@ -1223,7 +1223,7 @@ const DB = {
   ["project.created","PROJECT","","","Loyiha yaratilganda → contract-service (project_id to'ldirish), support-service (bot tayyorlash), notification"],
   ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
   ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
-  ["issue.completed","ISSUE","","","Vazifa done kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt: point/estimated_minutes), notification"],
+  ["issue.completed","ISSUE","","","Vazifa COMPLETED kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt: point/estimated_minutes), notification"],
   ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
  {name:"support_service_events",noaudit:true,desc:"support-service chiqaradigan eventlar. Topic prefiksi: crm.support.*",cols:[
   ["ticket.created","TICKET","","","Ticket ochilganda → notification (operatorga)"],
