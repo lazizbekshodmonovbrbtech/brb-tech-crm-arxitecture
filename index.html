@@ -682,20 +682,20 @@ const DB = {
   ["name","varchar(255)","NN","","Loyiha nomi"],
   ["description","text","","","Loyiha tavsifi"],
   ["status","varchar(20)","NN","","active / paused / completed / archived"]]},
- {name:"project_settings",desc:"Loyiha sozlamalari. mode — Agile/Kanban rejimi. estimation_type — baholash usuli (point yoki estimate), rejimdan qat'i nazar barcha issuelar uchun majburiy: KPI hisoblash shunga quriladi.",cols:[
+ {name:"project_settings",desc:"Loyiha sozlamalari. DIQQAT (ADR): mode (scrum/kanban) LOYIHANIKI EMAS — har boardning o'z rejimi bor (boards.mode): bitta loyihada Dev jamoasi scrum boardda, Maintenance/support jamoasi kanban boardda parallel ishlaydi. estimation_type — baholash usuli, boarddan qat'i nazar barcha issuelar uchun yagona: KPI hisoblash shunga quriladi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,UK,NN","projects.id","Qaysi loyiha (1:1)"],
-  ["mode","varchar(10)","NN","","agile / kanban — task management rejimi. Board TO'G'RIDAN-TO'G'RI project_statuses'dan quriladi (har status = ustun, position tartibida); agile'da board joriy sprint vazifalarini ko'rsatadi, kanban'da hammasini + wip_limit. Alohida boards jadvali YO'Q (ADR: bitta loyiha = bitta board; support o'z boardini ticket_statuses'dan quradi)"],
-  ["sprint_duration_days","int","","","Sprint davomiyligi (agile uchun, odatda 14)"],
+  ["default_board_id","bigint","FK","boards.id","Loyiha ochilganda ko'rsatiladigan board"],
+  ["sprint_duration_days","int","","","Sprint davomiyligi (scrum boardlar uchun, odatda 14)"],
   ["estimation_type","varchar(20)","NN","","point / estimate — Agile va Kanban IKKALASIDA ham qo'llanadi (KPI uchun); loyihadagi barcha issuelar shu bo'yicha baholanadi"],
-  ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (kanban rejimida statuslardagi wip_limit ishlaydi)"]]},
+  ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (kanban boardlarda ishlaydi)"]]},
  {name:"project_member_roles",desc:"Loyiha ichidagi rollar (seed: pm, developer, qa, viewer). Ruxsatlar HRM naqshidagi kabi normallashtirilgan: project_role_permissions orqali.",cols:[
   ["id","bigint","PK","","Rol identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — seed, UPDATE taqiqlangan"],
   ["name","varchar(50)","NN","","Rol nomi — UI'da o'zgartiriladi"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],
   ["is_active","boolean","NN","","Faolmi"]]},
- {name:"project_actions",desc:"Loyiha ichidagi amallar katalogi — HRM'dagi action_catalog naqshi. Seed: ISSUE_CREATE, ISSUE_EDIT, ISSUE_DELETE, STATUS_CHANGE, SPRINT_MANAGE, STATUS_MANAGE (statuslar/ustunlarni sozlash), MEMBER_MANAGE, SETTINGS_EDIT.",cols:[
+ {name:"project_actions",desc:"Loyiha ichidagi amallar katalogi — HRM'dagi action_catalog naqshi. Seed: ISSUE_CREATE, ISSUE_EDIT, ISSUE_DELETE, STATUS_CHANGE, SPRINT_MANAGE, STATUS_MANAGE (statuslar), BOARD_CONFIGURE (boardlar), MEMBER_MANAGE, SETTINGS_EDIT.",cols:[
   ["id","bigint","PK","","Amal identifikatori"],
   ["short_code","varchar(50)","UK,NN","","Amal kodi — seed, logika shunga tayanadi"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"],
@@ -738,14 +738,13 @@ const DB = {
   ["level","int","NN","","Ierarxiya darajasi: 0=Epic, 1=Story/Task/Bug, 2=Subtask"],
   ["icon","varchar(50)","","","Ikonka kodi"],
   ["color","varchar(7)","","","Rang (hex)"]]},
- {name:"project_statuses",desc:"Loyihaga xos statuslar — BOARD USTUNLARI HAM SHU: har status = board'dagi bitta ustun (position tartibida), alohida boards jadvali yo'q. Nomlari erkin (UI'da boshqariladi), har biri platforma enum kategoriyasiga (DRAFT/ACTIVE/INACTIVE/COMPLETED) bog'lanadi: tizim logikasi nomga emas, kategoriyaga qaraydi.",cols:[
+ {name:"project_statuses",desc:"Loyihaga xos statuslar — LOYIHA darajasida yagona to'plam (boardlar shundan o'z ustunlarini tanlaydi). Nomlari erkin (UI'da boshqariladi), har biri platforma enum kategoriyasiga (DRAFT/ACTIVE/INACTIVE/COMPLETED) bog'lanadi: tizim logikasi nomga emas, kategoriyaga qaraydi.",cols:[
   ["id","bigint","PK","","Status identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod (UK: project_id + short_code) — workflow logikasi shunga tayanadi, o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Status nomi"],
   ["category","enum","NN","","DRAFT / ACTIVE / INACTIVE / COMPLETED — platforma standart enum (CHECK constraint). Tizim logikasi FAQAT shunga qurilgan: COMPLETED'ga o'tish = issue.completed + KPI fakt; INACTIVE = pauza/blok. DELETED kategoriyasi YO'Q — bekor qilish workflow emas, soft delete (record status) orqali: yozuv boarddan/KPI'dan yo'qoladi, audit va issue_history'da saqlanadi"],
-  ["position","int","NN","","Tartib raqami — board'da ustun tartibi"],
-  ["wip_limit","int","","","Work-In-Progress limiti (null = cheksiz) — kanban rejimida shu status ustunidagi vazifalar soni cheklanadi"]]},
+  ["position","int","NN","","Tartib raqami"]]},
  {name:"status_rule_roles",desc:"Workflow qoidasi × rol — qaysi rollar shu o'tishni qila oladi. Qoidada yozuv bo'lmasa = hamma o'tkaza oladi. UK: (rule_id, role_id).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["rule_id","bigint","FK,UK,NN","status_pipeline_rules.id","Qaysi qoida (UK tarkibida)"],
@@ -757,7 +756,21 @@ const DB = {
   ["to_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga"],
   
   ["condition","jsonb","","","Shart (masalan: barcha subtasklar yopiq)"]]},
- {name:"sprints",desc:"Sprintlar — faqat Agile rejimida ishlatiladi. Kanban loyihalarda yaratilmaydi.",cols:[
+ {name:"boards",desc:"Boardlar — har biri O'Z REJIMIga ega (Jira modeli). Bitta loyihada bir nechta: Dev jamoasi scrum board (sprint bilan), Maintenance jamoasi kanban board (sprint'siz oqim) — ikkalasi BITTA issues hovuzidan o'qiydi, filter qaysi vazifa qaysi boardda ko'rinishini belgilaydi.",cols:[
+  ["id","bigint","PK","","Board identifikatori"],
+  ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
+  ["name","varchar(100)","NN","","Board nomi (Development, Maintenance...)"],
+  ["mode","varchar(10)","NN","","scrum / kanban — REJIM SHU YERDA: scrum'da sprint filtri + velocity, kanban'da doimiy oqim + wip_limit"],
+  ["filter_issue_type_ids","jsonb","","","Qaysi vazifa turlari ko'rinadi (masalan Dev: [Epic,Story,Task], Maintenance: [Bug]). NULL = hammasi. Kelajakda murakkab filter kerak bo'lsa jsonb kengayadi"],
+  ["position","int","NN","","Tab tartibida ko'rsatilish o'rni"]]},
+ {name:"board_columns",desc:"Board ustunlari — loyiha statuslariga bog'lanadi. Har board o'ziga kerakli statuslarnigina ustun qiladi: Dev board 5 ustun (To Do→In Progress→Code Review→QA→Done), Maintenance board 3 ustun (Code Review/QA ishlatmaydi). WIP limit ustunniki (kanban boardlarda).",cols:[
+  ["id","bigint","PK","","Ustun identifikatori"],
+  ["board_id","bigint","FK,NN","boards.id","Qaysi boardga tegishli"],
+  ["status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga mos (bir ustun bir status; UK: board_id+status_id)"],
+  ["name","varchar(50)","","","Ustun nomi (bo'sh = status nomi olinadi)"],
+  ["position","int","NN","","Ustun tartibi"],
+  ["wip_limit","int","","","Work-In-Progress limiti (null = cheksiz) — kanban boardda ishlaydi"]]},
+ {name:"sprints",desc:"Sprintlar — faqat scrum rejimidagi boardlar ishlatadi. Kanban boardlarda vazifa sprint'siz yuradi (issues.sprint_id NULL).",cols:[
   ["id","bigint","PK","","Sprint identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["name","varchar(100)","NN","","Sprint nomi"],
@@ -771,7 +784,7 @@ const DB = {
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
   ["parent_issue_id","bigint","FK","issues.id","Yuqori vazifa (Epic/Story ierarxiyasi)"],
-  ["sprint_id","bigint","FK","sprints.id","Sprint (kanban'da NULL)"],
+  ["sprint_id","bigint","FK","sprints.id","Sprint — faqat scrum boarddagi vazifalarda; kanban board vazifalarida NULL"],
   ["status_id","bigint","FK,NN","project_statuses.id","Joriy status"],
   ["number","int","NN","","Loyiha ichidagi raqam (KEY-123)"],
   ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
