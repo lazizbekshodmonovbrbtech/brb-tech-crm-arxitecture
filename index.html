@@ -1326,6 +1326,8 @@ function render(key){
   const colH=new Array(nCols).fill(PAD);
   const els={};
 
+  // 1) Elementlarni yaratish va o'lchash
+  const heights={};
   svc.tables.forEach(t=>{
     const el=document.createElement('div');
     el.className='tbl';el.dataset.tbl=t.name;
@@ -1338,14 +1340,54 @@ function render(key){
     const audFoot=t.noaudit?'':'<div class="row aud">⊞ +7 standart audit ustun</div>';
     const cntTxt=t.noaudit?t.cols.length:`${t.cols.length}+7`;
     el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${cntTxt}</span></div>${rows}${audFoot}`;
-    // shortest column placement
-    let ci=0;for(let i=1;i<nCols;i++)if(colH[i]<colH[ci])ci=i;
-    el.style.left=(PAD+ci*(W+HGAP))+'px';
-    el.style.top=colH[ci]+'px';
+    el.style.left='0px';el.style.top='0px';
     canvas.appendChild(el);
-    colH[ci]+=el.offsetHeight+VGAP;
-    els[t.name]=el;
+    els[t.name]=el;heights[t.name]=el.offsetHeight;
     el.onclick=e=>{e.stopPropagation();focusTable(key,t.name)};
+  });
+
+  // 2) Qo'shnilar grafi (ichki FK'lar bo'yicha)
+  const nb={};svc.tables.forEach(t=>nb[t.name]=new Set());
+  svc.tables.forEach(t=>t.cols.forEach(c=>{
+    const r=c[3];
+    if(r&&!r.startsWith('ext:')){
+      const tg=r.split('.')[0];
+      if(nb[tg]!==undefined&&tg!==t.name){nb[t.name].add(tg);nb[tg].add(t.name);}
+    }
+  }));
+
+  // 3) BFS tartib — eng ko'p bog'langan (markaziy) tabledan boshlab,
+  //    bog'langanlar ketma-ket keladi
+  const visited=new Set(),order=[];
+  const seeds=svc.tables.map(t=>t.name).sort((a,b)=>nb[b].size-nb[a].size);
+  seeds.forEach(s=>{
+    if(visited.has(s))return;
+    const q=[s];visited.add(s);
+    while(q.length){
+      const n=q.shift();order.push(n);
+      [...nb[n]].sort((a,b)=>nb[b].size-nb[a].size)
+        .forEach(m=>{if(!visited.has(m)){visited.add(m);q.push(m);}});
+    }
+  });
+
+  // 4) Joylashtirish — har bir table allaqachon joylashgan qo'shnilariga
+  //    eng yaqin ustunga qo'yiladi (masofa + ustun balandligi jarima)
+  const pos={};
+  order.forEach(nm=>{
+    let best=0,bestCost=Infinity;
+    for(let ci=0;ci<nCols;ci++){
+      const y=colH[ci];
+      let cost=y*0.5; // balans jarima: ustunlar teng to'lsin
+      nb[nm].forEach(m=>{
+        if(pos[m])cost+=Math.abs(ci-pos[m].ci)*(W+HGAP)+Math.abs(y-pos[m].y);
+      });
+      if(cost<bestCost){bestCost=cost;best=ci;}
+    }
+    pos[nm]={ci:best,y:colH[best]};
+    const el=els[nm];
+    el.style.left=(PAD+best*(W+HGAP))+'px';
+    el.style.top=colH[best]+'px';
+    colH[best]+=heights[nm]+VGAP;
   });
 
   const totalH=Math.max(...colH)+PAD,totalW=PAD*2+nCols*(W+HGAP)-HGAP;
