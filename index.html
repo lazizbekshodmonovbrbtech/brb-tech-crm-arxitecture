@@ -451,6 +451,13 @@ const DB = {
   ["assignment_id","bigint","FK,UK,NN","assignment.id","Qaysi tayinlovga"],
   ["permission_id","bigint","FK,UK,NN","permission.id","Qaysi ruxsat"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
+ {name:"tenant_partnership",desc:"QO'SHILADI (yangi jadval) — tashkilotlararo hamkorlik shartnomasi. Mehmon a'zolik (cross-tenant) faqat ACTIVE hamkorlik mavjud bo'lganda ruxsat etiladi. ENDED bo'lganda partnership.ended eventi chiqadi → barcha mehmon a'zoliklar avtomatik yopiladi. UK: (requester_org_structure_id, partner_org_structure_id).",cols:[
+  ["id","bigint","PK","","SEQ_TENANT_PARTNERSHIP_ID"],
+  ["requester_org_structure_id","bigint","FK,UK,NN","org_structure.id","Tashabbuskor tashkilot (root org_structure)"],
+  ["partner_org_structure_id","bigint","FK,UK,NN","org_structure.id","Hamkor tashkilot (root org_structure)"],
+  ["status","varchar(20)","NN","","PENDING / ACTIVE / SUSPENDED / ENDED"],
+  ["start_date","date","","","Hamkorlik boshlanishi"],
+  ["end_date","date","","","Tugashi (null = muddatsiz)"]]},
  {name:"ref_branch_type",desc:"HR ma'lumotnomasi: filial turi.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["sort_order","bigint","","","Tartib"],
@@ -697,9 +704,10 @@ const DB = {
  {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi. Tayinlov tugaganda (hrm: assignment.ended eventi) status ENDED bo'ladi va handover jarayoni boshlanadi — yozuv o'chirilmaydi, tarix saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
-  ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Xodim tayinlovi"],
+  ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Xodim tayinlovi — BOSHQA tenantdan bo'lishi mumkin (mehmon a'zo), faqat faol tenant_partnership mavjud bo'lsa"],
+  ["member_org_structure_id","bigint","EXT,NN","ext:hrm.org_structure.id","A'zoning UY tenanti — loyiha tenantidan farq qilsa = mehmon (cross-tenant). KPI faktlari shu tenant hisobiga yoziladi"],
   ["role_id","bigint","FK,NN","project_member_roles.id","Loyihadagi roli"],
-  ["status","varchar(20)","NN","","ACTIVE / ENDED — assignment.ended eventida yopiladi"],
+  ["status","varchar(20)","NN","","ACTIVE / ENDED — assignment.ended yoki partnership.ended eventida yopiladi"],
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
  {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Yopilgan vazifalar ko'chirilmaydi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -1116,6 +1124,14 @@ const DB = {
  group:"Standartlar va hujjatlar",doc:true,
  desc:"STANDART — Multi-tenant va ma'lumot ko'lami (data scope). Tenant = root org_structure (qattiq izolyatsiya). Branch/department = ko'rinish doirasi (a'zolik istisno bilan). Quyidagi ustunlar HAR BIR biznes tablega qo'shiladi (audit kabi), filtrlash base repository'da majburiy + Postgres RLS sug'urta qatlami.",
  tables:[
+ {name:"cross_tenant_hamkorlik",noaudit:true,desc:"TASHKILOTLARARO HAMKORLIK (autsors) QOIDALARI — mehmon a'zolik naqshi. Printsip: yozuv egasi DOIM bitta tenant; chegaradan o'tish faqat aniq berilgan a'zolik orqali (GitHub outside collaborator naqshi).",cols:[
+  ["shartnoma_sharti","qoida","","","Mehmon a'zo qo'shishdan oldin hrm.tenant_partnership'da ACTIVE yozuv bo'lishi SHART — service buni tekshiradi"],
+  ["yagona_ega","qoida","","","Loyiha (va barcha child yozuvlari) faqat BITTA tenantga tegishli — org_structure_id o'zgarmaydi, umumiy egalik yo'q"],
+  ["mehmon_korinishi","qoida","","","Mehmon FAQAT a'zo bo'lgan aggregate (loyiha) va uning childlarini (vazifa, izoh, board, sprint, fayl) ko'radi — mezbon tenantning boshqa hech narsasini emas"],
+  ["kirish_formulasi","qoida","","","(o'z tenanti AND scope) OR (a'zolik — tenantdan qat'i nazar). RLS siyosati: tenant match OR membership subquery"],
+  ["kpi_uy_tenanti","qoida","","","Mehmonning yopgan vazifalari KPI'da UNING uy tenanti hisobiga yoziladi — kpi-service assignment'ning tenantini aniqlab fakt yozadi (event'dagi loyiha tenanti emas)"],
+  ["partnership_ended","qoida","","","Hamkorlik ENDED bo'lganda hrm partnership.ended eventini chiqaradi → barcha servicelar shu juftlikdagi mehmon a'zoliklarni yopadi (handover jarayoni bilan)"],
+  ["uzoq_muddat","qoida","","","Xodim to'liq/uzoq muddat boshqa korxonada ishlasa — mehmon a'zolik EMAS, mezbon tenantda oddiy HRM assignment ochiladi (ikkilamchi ish o'rni)"]]},
  {name:"adr_001_multitenancy",noaudit:true,desc:"ARXITEKTURA QARORI (ADR-001) — 2026-08. Uch variant ko'rildi, COLUMN-BASED tanlandi. Qayta ko'rish sharti: tashqi mijoz shartnomada fizik izolyatsiya talab qilsa — o'shanda hybrid (o'sha mijoz uchun alohida deployment, arxitektura o'zgarmaydi).",cols:[
   ["1_column_based","TANLANDI","","","Hamma tableda tenant id. Sabab: 14 microservice'da migration/pool murakkabligi ko'paymaydi; data scope (branch/department) baribir column filtr talab qiladi — bitta mexanizm ikkalasiga xizmat qiladi; HRM allaqachon shu yo'lda; Kafka envelope bilan tabiiy mos; RLS bilan mustahkamlanadi"],
   ["2_schema_based","RAD ETILDI","","","Har tenant alohida schemada. Sabab: har deploy N schema × 14 service migration; cross-tenant hisobot og'ir; data scope uchun baribir column kerak — ikkita parallel izolyatsiya mexanizmi bo'lib qolardi"],
@@ -1133,7 +1149,7 @@ const DB = {
   ["ORGANIZATION","scope","","","Butun tashkilot — tenant ichidagi hamma narsa"]]},
  {name:"scope_qoidalari",noaudit:true,desc:"MAJBURIY QOIDALAR — har bir service implementatsiyasida.",cols:[
   ["filtr_avtomatik","qoida","","","Har list-so'rovga base repository avtomatik qo'shadi: WHERE org_structure_id=:tenant AND branch_id IN (:visible...). Dasturchi qo'lda yozmaydi"],
-  ["azolik_ustunligi","qoida","","","To'g'ridan-to'g'ri biriktirilganlik scope'dan USTUN: project_members / issue_assignments / ticket operator / issue_watchers bo'lsang — yozuvni ko'rasan, filialingdan qat'i nazar. Formula: (scope) OR (a'zolik)"],
+  ["azolik_ustunligi","qoida","","","To'g'ridan-to'g'ri biriktirilganlik scope'dan USTUN: project_members / issue_assignments / ticket operator / issue_watchers bo'lsang — yozuvni ko'rasan, filialing va hatto TENANTINGdan qat'i nazar (cross_tenant_hamkorlik qoidalari bilan). Formula: (tenant AND scope) OR (a'zolik)"],
   ["tree_hisoblash","qoida","","","TREE darajalar uchun ko'rinadigan branch/department ID ro'yxati HRM'dan olinadi va keshlanadi; org tuzilma o'zgarganda hrm eventi bilan yangilanadi"],
   ["jwt_claims","qoida","","","Tokenda majburiy: tenant_id, branch_id, department_id, assignment_id — Keycloak token mapper orqali"],
   ["cross_service","qoida","","","Boshqa servicedan kelgan id qabul qilinganda (masalan ticketdagi project_id) obyekt shu tenantga tegishliligi tekshiriladi"],
@@ -1218,7 +1234,9 @@ const DB = {
   ["assignment.created","ASSIGNMENT","","","Yangi tayinlov yaratilganda (old_employee_id bilan) → project-service (handover'da voris taklifi), kpi-service (profil biriktirish)"],
   ["assignment.ended","ASSIGNMENT","","","Tayinlov RELEASED/TERMINATED bo'lganda → project/support/callcenter (handover ochish, a'zolikni yopish), kpi-service (davr hisobini yopish)"],
   ["employee.blocked","EMPLOYEE","","","Xodim BLOCKED bo'lganda → barcha servicelar (kirishni cheklash)"],
-  ["employee.dismissed","EMPLOYEE","","","Xodim DELETED/ishdan bo'shaganda → inventory-service (jihozlarni qaytarish eslatmasi), barcha servicelar"]]},
+  ["employee.dismissed","EMPLOYEE","","","Xodim DELETED/ishdan bo'shaganda → inventory-service (jihozlarni qaytarish eslatmasi), barcha servicelar"],
+  ["partnership.activated","PARTNERSHIP","","","Hamkorlik ACTIVE bo'lganda → project-service (mehmon a'zo qo'shishga ruxsat ochiladi)"],
+  ["partnership.ended","PARTNERSHIP","","","Hamkorlik tugaganda → project/support (shu juftlikdagi barcha mehmon a'zoliklarni yopish + handover)"]]},
  {name:"notification_consumer",noaudit:true,desc:"notification-service — SOF ISTE'MOLCHI: o'zi domen event chiqarmaydi, deyarli barcha topiclarga obuna bo'lib xabarnoma yuboradi. Consumer group: notification-service-main",cols:[
   ["obuna","*","","","crm.lead.*, crm.contract.*, crm.project.*, crm.support.*, crm.inventory.*, crm.kpi.* — template short_code bo'yicha xabarnoma shakllantiradi"]]}
 ]},
