@@ -794,8 +794,8 @@ const DB = {
   ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
   ["description","text","","","Batafsil tavsif"],
   ["priority_id","bigint","FK,NN","priorities.id","Muhimlik darajasi — priorities tablesidan (UI'da boshqariladi)"],
-  ["point","int","","","Baholash — SCRUM boarddagi vazifalarda, sprint planning'da OLDINDAN belgilanadi (reja). Validatsiya: point'siz vazifa sprintga kiritilmaydi"],
-  ["estimated_minutes","int","","","Baholash — KANBAN boarddagi vazifalarda, YOPILAYOTGANDA (COMPLETED'ga o'tishda) kiritiladi: dasturchi va PM kelishgan sarflangan vaqt (daqiqa). Validatsiya: kiritmasdan yopib bo'lmaydi (status_pipeline_rules condition). Alohida estimate+worklog yuritilmaydi"],
+  ["point","int","","","Baholash — SCRUM boarddagi vazifalarda, sprint planning'da belgilanadi. Vazifa ochiq ekan istalgan payt YANGILANISHI mumkin (re-estimation; har o'zgarish issue_history'ga tushadi). COMPLETED bo'lgach QULFLANADI — o'zgartirish faqat reopen orqali (fakt VOID → qayta yopishda yangi fakt). Validatsiya: point'siz vazifa sprintga kiritilmaydi"],
+  ["estimated_minutes","int","","","Baholash — KANBAN boarddagi vazifalarda. Ochiq paytda dastlabki taxmin sifatida kiritilishi va istalgan payt yangilanishi mumkin (issue_history'ga tushadi); YOPISHDA (COMPLETED'ga o'tishda) yakuniy qiymat majburiy — kiritmasdan yopib bo'lmaydi (status_pipeline_rules condition). COMPLETED bo'lgach QULFLANADI — o'zgartirish faqat reopen orqali. Alohida estimate+worklog yuritilmaydi"],
   ["due_date","date","","","Muddat"],
   ["updated_at","timestamptz","NN","","Oxirgi o'zgarish"]]},
  {name:"issue_assignments",desc:"Vazifa mas'ullari — bir vazifaga bir nechta xodim biriktirilishi mumkin.",cols:[
