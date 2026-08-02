@@ -756,14 +756,14 @@ const DB = {
   ["to_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga"],
   
   ["condition","jsonb","","","Shart (masalan: barcha subtasklar yopiq)"]]},
- {name:"boards",desc:"Boardlar — har biri O'Z REJIMIga ega (Jira modeli). Bitta loyihada bir nechta: Dev jamoasi scrum board (sprint bilan), Maintenance jamoasi kanban board (sprint'siz oqim: bug, kichik vazifa, mayda yaxshilashlar) — ikkalasi BITTA issues hovuzidan o'qiydi. Ajratish mezoni odatda LABEL (masalan maintenance tegi) — type emas, chunki Task ham katta (sprint), ham kichik (oqim) bo'lishi mumkin.",cols:[
+ {name:"boards",desc:"Boardlar — har biri O'Z REJIMIga ega. Bitta loyihada bir nechta: Dev jamoasi scrum board (sprint bilan), Maintenance jamoasi kanban board (sprint'siz oqim: bug, kichik vazifa, mayda yaxshilashlar). Vazifa boardga TO'G'RIDAN-TO'G'RI bog'lanadi (issues.board_id) — yaratilganda tanlanadi, kerak bo'lsa boshqa boardga o'tkaziladi (board_id o'zgartiriladi, issue_history'ga tushadi).",cols:[
   ["id","bigint","PK","","Board identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
   ["name","varchar(100)","NN","","Board nomi (Development, Maintenance...)"],
   ["mode","varchar(10)","NN","","scrum / kanban — REJIM SHU YERDA: scrum'da sprint filtri + velocity, kanban'da doimiy oqim + wip_limit"],
-  ["filter","jsonb","","","Board filtri — qaysi vazifalar ko'rinadi. Mezonlar birga ishlaydi (AND): issue_type_ids, label_ids, sprint_scope. NULL = loyihaning hamma vazifalari. Masalan Maintenance: {\"label_ids\": [maintenance]} — bug ham, kichik vazifa ham shu label bilan tushadi; Dev: {\"label_ids_not\": [maintenance]}"],
+  
   ["position","int","NN","","Tab tartibida ko'rsatilish o'rni"]]},
- {name:"board_columns",desc:"Board ustunlari — loyiha statuslariga bog'lanadi. Har board o'ziga kerakli statuslarnigina ustun qiladi: Dev board 5 ustun (To Do→In Progress→Code Review→QA→Done), Maintenance board 3 ustun (Code Review/QA ishlatmaydi). WIP limit ustunniki (kanban boardlarda).",cols:[
+ {name:"board_columns",desc:"Board ustunlari — loyiha statuslariga bog'lanadi. Har board o'ziga kerakli statuslarnigina ustun qiladi: Dev board 5 ustun (To Do→In Progress→Code Review→QA→Done), Maintenance board 3 ustun (Code Review/QA ishlatmaydi). Vazifa O'Z boardining ustunlari bo'ylab yuradi — status o'tishlari shu boardda mavjud ustunlar bilan cheklanadi. WIP limit ustunniki (kanban boardlarda).",cols:[
   ["id","bigint","PK","","Ustun identifikatori"],
   ["board_id","bigint","FK,NN","boards.id","Qaysi boardga tegishli"],
   ["status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga mos (bir ustun bir status; UK: board_id+status_id)"],
@@ -784,7 +784,8 @@ const DB = {
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
   ["parent_issue_id","bigint","FK","issues.id","Yuqori vazifa (Epic/Story ierarxiyasi)"],
-  ["sprint_id","bigint","FK","sprints.id","Sprint — faqat scrum boarddagi vazifalarda; kanban board vazifalarida NULL"],
+  ["board_id","bigint","FK,NN","boards.id","Qaysi boardga tegishli — yaratilganda tanlanadi (Dev / Maintenance). Boshqa boardga o'tkazish = shu ustunni o'zgartirish (issue_history'ga yoziladi)"],
+  ["sprint_id","bigint","FK","sprints.id","Sprint — faqat scrum rejimidagi boardga tegishli vazifalarda; kanban board vazifalarida NULL (validatsiya: board.mode bo'yicha)"],
   ["status_id","bigint","FK,NN","project_statuses.id","Joriy status"],
   ["number","int","NN","","Loyiha ichidagi raqam (KEY-123)"],
   ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
