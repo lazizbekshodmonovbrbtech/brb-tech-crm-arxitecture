@@ -1134,6 +1134,7 @@ const DB = {
  {name:"cross_tenant_hamkorlik",noaudit:true,desc:"TASHKILOTLARARO HAMKORLIK (autsors) QOIDALARI — mehmon a'zolik naqshi. Printsip: yozuv egasi DOIM bitta tenant; chegaradan o'tish faqat aniq berilgan a'zolik orqali (GitHub outside collaborator naqshi).",cols:[
   ["shartnoma_sharti","qoida","","","Mehmon a'zo qo'shishdan oldin hrm.tenant_partnership'da ACTIVE yozuv bo'lishi SHART — service buni tekshiradi"],
   ["ajratilgan_pool","qoida","","","Partnership hech kimni avtomatik a'zo qilmaydi: hamkor tashkilot O'ZI partnership_employee orqali xodimlarini ajratadi; mezbon PM faqat shu pool'ni ko'radi va tanlaydi — hamkorning butun xodimlar reyestri ochilmaydi"],
+  ["teng_rollar","qoida","","","Mehmon a'zoga mezbon xodim bilan BIR XIL rollar berilishi mumkin — hech qanday cheklov yo'q (mehmon PM ham bo'la oladi). Ruxsat tekshirish a'zoning kelib chiqishiga qaramaydi, faqat rol va project_role_permissions'ga qaraydi (ADR qaror)"],
   ["yagona_ega","qoida","","","Loyiha (va barcha child yozuvlari) faqat BITTA tenantga tegishli — org_structure_id o'zgarmaydi, umumiy egalik yo'q"],
   ["mehmon_korinishi","qoida","","","Mehmon FAQAT a'zo bo'lgan aggregate (loyiha) va uning childlarini (vazifa, izoh, board, sprint, fayl) ko'radi — mezbon tenantning boshqa hech narsasini emas"],
   ["kirish_formulasi","qoida","","","(o'z tenanti AND scope) OR (a'zolik — tenantdan qat'i nazar). RLS siyosati: tenant match OR membership subquery"],
