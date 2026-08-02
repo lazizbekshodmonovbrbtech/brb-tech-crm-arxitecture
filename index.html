@@ -439,7 +439,7 @@ const DB = {
   ["localized_description","varchar(2000)","","","Tavsif"],
   ["sort_order","bigint","","","Tartib"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"permission",desc:"Ruxsat (rol × amal). UK: uk_permission_role_action (role_id, action_catalog_id).",cols:[
+ {name:"permission",desc:"Ruxsat (rol × amal). UK: (role_id, action_catalog_id). QILINISHI KERAK: data_scope ustuni qo'shilishi kerak (OWN/DEPARTMENT/DEPARTMENT_TREE/BRANCH/BRANCH_TREE/ORGANIZATION) — ma'lumot ko'lami nazorati uchun, multi-tenant-standart sahifasiga qarang.",cols:[
   ["id","bigint","PK","","SEQ_PERMISSION_ID"],
   ["sort_order","bigint","","","Tartib"],
   ["role_id","bigint","FK,UK","role.id","Qaysi rol (UK tarkibida)"],
@@ -1112,6 +1112,32 @@ const DB = {
   ["status","varchar(20)","NN","","calculated / approved"]]}
 ]},
 
+"multi-tenant-standart":{
+ group:"Standartlar va hujjatlar",doc:true,
+ desc:"STANDART — Multi-tenant va ma'lumot ko'lami (data scope). Tenant = root org_structure (qattiq izolyatsiya). Branch/department = ko'rinish doirasi (a'zolik istisno bilan). Quyidagi ustunlar HAR BIR biznes tablega qo'shiladi (audit kabi), filtrlash base repository'da majburiy + Postgres RLS sug'urta qatlami.",
+ tables:[
+ {name:"scope_columns",noaudit:true,desc:"STANDART HUDUD USTUNLARI — har bir biznes tablega qo'shiladi (lug'at/texnik tablelar bundan mustasno: global-reference, i18n, ui_table, outbox). Qiymatlar yozuv yaratilganda yaratuvchining assignment kontekstidan (JWT) avtomatik olinadi. UK'lar kompozit bo'ladi: UK(org_structure_id, short_code).",cols:[
+  ["org_structure_id","bigint","NN","","TENANT — root org_structure. Qattiq izolyatsiya: hech bir so'rov chegaradan o'tmaydi. RLS bilan DB darajasida ham himoyalanadi"],
+  ["branch_id","bigint","NN","","Yozuv qaysi filialga tegishli — yaratuvchi assignmentining filiali"],
+  ["department_id","bigint","","","Qaysi bo'limga tegishli — mantiqan mos kelmasa NULL (masalan contract filial darajasida)"]]},
+ {name:"data_scope_levels",noaudit:true,desc:"KO'LAM DARAJALARI — HRM permission tablesiga data_scope ustuni sifatida qo'shiladi (QILINISHI KERAK). Rol qaysi resursni qancha ko'rishini belgilaydi.",cols:[
+  ["OWN","scope","","","Faqat o'zi yaratgan / o'ziga biriktirilgan yozuvlar"],
+  ["DEPARTMENT","scope","","","O'z bo'limi yozuvlari"],
+  ["DEPARTMENT_TREE","scope","","","Bo'limi + barcha quyi bo'limlari (parent_department_id ierarxiyasi bo'yicha)"],
+  ["BRANCH","scope","","","O'z filiali yozuvlari"],
+  ["BRANCH_TREE","scope","","","Filiali + quyi filiallari (parent_branch_id ierarxiyasi)"],
+  ["ORGANIZATION","scope","","","Butun tashkilot — tenant ichidagi hamma narsa"]]},
+ {name:"scope_qoidalari",noaudit:true,desc:"MAJBURIY QOIDALAR — har bir service implementatsiyasida.",cols:[
+  ["filtr_avtomatik","qoida","","","Har list-so'rovga base repository avtomatik qo'shadi: WHERE org_structure_id=:tenant AND branch_id IN (:visible...). Dasturchi qo'lda yozmaydi"],
+  ["azolik_ustunligi","qoida","","","To'g'ridan-to'g'ri biriktirilganlik scope'dan USTUN: project_members / issue_assignments / ticket operator / issue_watchers bo'lsang — yozuvni ko'rasan, filialingdan qat'i nazar. Formula: (scope) OR (a'zolik)"],
+  ["tree_hisoblash","qoida","","","TREE darajalar uchun ko'rinadigan branch/department ID ro'yxati HRM'dan olinadi va keshlanadi; org tuzilma o'zgarganda hrm eventi bilan yangilanadi"],
+  ["jwt_claims","qoida","","","Tokenda majburiy: tenant_id, branch_id, department_id, assignment_id — Keycloak token mapper orqali"],
+  ["cross_service","qoida","","","Boshqa servicedan kelgan id qabul qilinganda (masalan ticketdagi project_id) obyekt shu tenantga tegishliligi tekshiriladi"],
+  ["seed_lugatlar","qoida","","","Lug'at/status tablelar tenant darajasida (branch'ga bo'linmaydi); yangi tenant ochilganda seed to'plami nusxalanadi (provisioning qadami)"],
+  ["rls_sugurta","qoida","","","Postgres Row Level Security org_structure_id bo'yicha yoqiladi — ilova xatosida ham DB boshqa tenant qatorini qaytarmaydi"],
+  ["kafka_tenant","qoida","","","event_envelope'da tenant_id majburiy — consumer eventni o'sha tenant kontekstida qayta ishlaydi"]]}
+]},
+
 "kafka-event-standart":{
  kind:"doc",
  group:"Standartlar & hujjatlar",
@@ -1141,6 +1167,7 @@ const DB = {
   ["aggregate_id","string","NN","","Obyekt ID"],
   ["occurred_at","ISO-8601","NN","","Hodisa vaqti"],
   ["producer","string","NN","","Qaysi service chiqargan (project-service)"],
+  ["tenant_id","bigint","NN","","Tenant (root org_structure) — consumer shu kontekstda qayta ishlaydi (multi-tenant-standart)"],
   ["version","int","NN","","Sxema versiyasi — payload strukturasi o'zgarsa oshiriladi, consumerlar eski versiyani ham qo'llab-quvvatlaydi"],
   ["actor_assignment_id","bigint","","","Hodisani kim qilgani (bo'lsa)"],
   ["data","object","NN","","Domen ma'lumotlari — event turiga xos"]]}
