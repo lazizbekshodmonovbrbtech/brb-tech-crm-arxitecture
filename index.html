@@ -778,7 +778,7 @@ const DB = {
   ["end_date","date","","","Tugash sanasi"],
   ["status","varchar(20)","NN","","planned / active / completed"],
   ["velocity","int","","","Yakunda bajarilgan hajm — point yoki daqiqa (estimation_type bo'yicha)"]]},
- {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status COMPLETED kategoriyaga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. HIMOYA: COMPLETED (fakt yozilgan) vazifa to'g'ridan-to'g'ri o'chirilmaydi — avval reopen (issue.reopened eventi KPI faktni VOID qiladi, davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
+ {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status COMPLETED kategoriyaga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. KPI QOIDASI: COMPLETED bo'lib fakt yozilgan vazifa keyin bekor qilinsa — fakt QOLADI (ish bajarilgan, jamoa resurs sarflagan; bekor bo'lish xodim aybi emas). VOID faqat reopen holatida: ish aslida tugamagan degani (davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
   ["id","bigint","PK","","Vazifa identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
@@ -1101,7 +1101,7 @@ const DB = {
   ["source_ref","varchar(100)","NN","","Manba yozuv ID (issue_id, ticket_id, call_id...) — takroriylikni oldini olish uchun"],
   ["value","decimal(12,2)","NN","","Fakt qiymati (point, daqiqa, baho, score)"],
   ["occurred_at","timestamp","NN","","Hodisa sodir bo'lgan vaqt — davrga biriktirishda shu ishlatiladi"],
-  ["status","varchar(15)","NN","","ACTIVE / VOIDED — issue.reopened kelganda source_ref bo'yicha VOIDED qilinadi (faqat davr ochiq bo'lsa); hisoblash faqat ACTIVE faktlarni oladi"],
+  ["status","varchar(15)","NN","","ACTIVE / VOIDED — FAQAT issue.reopened (ish tugamagan) holatida VOIDED qilinadi, davr ochiq bo'lsa. Vazifa bekor qilinsa (soft delete) fakt ACTIVE qoladi — bajarilgan ish hisobdan chiqmaydi. Hisoblash faqat ACTIVE faktlarni oladi"],
   ["payload","jsonb","","","Qo'shimcha kontekst (audit/tekshiruv uchun)"]]},
  {name:"attendance_records",desc:"Turniket ma'lumotlari — kelish/ketish vaqtlari. Jismoniy fakt bo'lgani uchun EMPLOYEE'ga bog'lanadi (inventory kabi); DISCIPLINE hisoblanayotganda faol assignmentga o'giriladi. UK: (employee_id, work_date).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -1225,7 +1225,7 @@ const DB = {
   ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
   ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
   ["issue.completed","ISSUE","","","Vazifa COMPLETED kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt: point/estimated_minutes), notification"],
-  ["issue.reopened","ISSUE","","","COMPLETED vazifa qayta ochilganda → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa)"],
+  ["issue.reopened","ISSUE","","","COMPLETED vazifa qayta ochilganda (ish aslida tugamagan) → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa). DIQQAT: bekor qilish (soft delete) fakt VOID qilmaydi — bajarilgan ish KPI'da qoladi"],
   ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
  {name:"support_service_events",noaudit:true,desc:"support-service chiqaradigan eventlar. Topic prefiksi: crm.support.*",cols:[
   ["ticket.created","TICKET","","","Ticket ochilganda → notification (operatorga)"],
