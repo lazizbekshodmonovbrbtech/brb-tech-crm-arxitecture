@@ -756,12 +756,12 @@ const DB = {
   ["to_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga"],
   
   ["condition","jsonb","","","Shart (masalan: barcha subtasklar yopiq)"]]},
- {name:"boards",desc:"Boardlar — har biri O'Z REJIMIga ega (Jira modeli). Bitta loyihada bir nechta: Dev jamoasi scrum board (sprint bilan), Maintenance jamoasi kanban board (sprint'siz oqim) — ikkalasi BITTA issues hovuzidan o'qiydi, filter qaysi vazifa qaysi boardda ko'rinishini belgilaydi.",cols:[
+ {name:"boards",desc:"Boardlar — har biri O'Z REJIMIga ega (Jira modeli). Bitta loyihada bir nechta: Dev jamoasi scrum board (sprint bilan), Maintenance jamoasi kanban board (sprint'siz oqim: bug, kichik vazifa, mayda yaxshilashlar) — ikkalasi BITTA issues hovuzidan o'qiydi. Ajratish mezoni odatda LABEL (masalan maintenance tegi) — type emas, chunki Task ham katta (sprint), ham kichik (oqim) bo'lishi mumkin.",cols:[
   ["id","bigint","PK","","Board identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
   ["name","varchar(100)","NN","","Board nomi (Development, Maintenance...)"],
   ["mode","varchar(10)","NN","","scrum / kanban — REJIM SHU YERDA: scrum'da sprint filtri + velocity, kanban'da doimiy oqim + wip_limit"],
-  ["filter_issue_type_ids","jsonb","","","Qaysi vazifa turlari ko'rinadi (masalan Dev: [Epic,Story,Task], Maintenance: [Bug]). NULL = hammasi. Kelajakda murakkab filter kerak bo'lsa jsonb kengayadi"],
+  ["filter","jsonb","","","Board filtri — qaysi vazifalar ko'rinadi. Mezonlar birga ishlaydi (AND): issue_type_ids, label_ids, sprint_scope. NULL = loyihaning hamma vazifalari. Masalan Maintenance: {\"label_ids\": [maintenance]} — bug ham, kichik vazifa ham shu label bilan tushadi; Dev: {\"label_ids_not\": [maintenance]}"],
   ["position","int","NN","","Tab tartibida ko'rsatilish o'rni"]]},
  {name:"board_columns",desc:"Board ustunlari — loyiha statuslariga bog'lanadi. Har board o'ziga kerakli statuslarnigina ustun qiladi: Dev board 5 ustun (To Do→In Progress→Code Review→QA→Done), Maintenance board 3 ustun (Code Review/QA ishlatmaydi). WIP limit ustunniki (kanban boardlarda).",cols:[
   ["id","bigint","PK","","Ustun identifikatori"],
