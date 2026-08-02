@@ -164,6 +164,12 @@ body{
 }
 .tbl-h b{font-size:12.5px;font-weight:600;letter-spacing:.02em}
 .tbl-h .n{margin-left:auto;font-size:9.5px;color:var(--faint)}
+.tbl-h .lnk{
+  background:none;border:1px solid transparent;color:var(--faint);
+  cursor:pointer;font-size:13px;line-height:1.2;padding:0 4px;border-radius:4px;flex:none;
+  transition:color .15s,border-color .15s;
+}
+.tbl-h .lnk:hover{color:var(--fk);border-color:var(--line)}
 .row{
   display:flex;align-items:center;gap:6px;
   padding:3.5px 12px;font-size:11px;line-height:1.35;
@@ -1339,11 +1345,12 @@ function render(key){
     }).join('');
     const audFoot=t.noaudit?'':'<div class="row aud">⊞ +7 standart audit ustun</div>';
     const cntTxt=t.noaudit?t.cols.length:`${t.cols.length}+7`;
-    el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${cntTxt}</span></div>${rows}${audFoot}`;
+    el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${cntTxt}</span><button class="lnk" title="Bog'langan tablelarga fokus">⌖</button></div>${rows}${audFoot}`;
     el.style.left='0px';el.style.top='0px';
     canvas.appendChild(el);
     els[t.name]=el;heights[t.name]=el.offsetHeight;
     el.onclick=e=>{e.stopPropagation();focusTable(key,t.name)};
+    el.querySelector('.lnk').onclick=e=>{e.stopPropagation();focusConnections(key,t.name)};
   });
 
   // 2) Qo'shnilar grafi (ichki FK'lar bo'yicha)
@@ -1457,6 +1464,30 @@ function drawWire(srcEl,dstEl,col,srcName,dstName){
   g.appendChild(tip);g.appendChild(hit);g.appendChild(p);
   g.onclick=e=>{e.stopPropagation();focusWire(srcName,dstName,p)};
   wires.appendChild(g);
+}
+
+/* Tugma: table + barcha bog'langan tablelar va chiziqlarga fokus (drawer ochilmaydi) */
+function focusConnections(svcKey,tblName){
+  const svc=DB[svcKey];
+  clearFocusStyles();
+  closeDrawerPanel();
+  canvas.classList.add('has-focus');
+  const rel=new Set();
+  svc.tables.forEach(t=>t.cols.forEach(c=>{
+    const r=c[3];
+    if(r&&!r.startsWith('ext:')){
+      const tg=r.split('.')[0];
+      if(t.name===tblName&&tg!==tblName)rel.add(tg);
+      if(tg===tblName&&t.name!==tblName)rel.add(t.name);
+    }
+  }));
+  canvas.querySelectorAll('.tbl').forEach(el=>{
+    if(el.dataset.tbl===tblName)el.classList.add('focused');
+    else if(rel.has(el.dataset.tbl))el.classList.add('wired');
+  });
+  wires.querySelectorAll('.wire').forEach(w=>{
+    if(w.dataset.src===tblName||w.dataset.dst===tblName)w.classList.add('hot');
+  });
 }
 
 /* Chiziqqa bosilganda: ikkala table yoritiladi, shu yo'nalishdagi chiziqlar hot bo'ladi */
@@ -1618,9 +1649,12 @@ function openDrawer(svcKey,tbl){
   overlay.classList.add('show');
 }
 
-function closeDrawer(){
+function closeDrawerPanel(){
   drawer.classList.remove('open');
   overlay.classList.remove('show');
+}
+function closeDrawer(){
+  closeDrawerPanel();
   clearFocusStyles();
   focused=null;
 }
