@@ -694,12 +694,22 @@ const DB = {
   ["role_id","bigint","FK,UK,NN","project_member_roles.id","Qaysi rol (UK tarkibida)"],
   ["action_id","bigint","FK,UK,NN","project_actions.id","Qaysi amal (UK tarkibida)"],
   ["is_active","boolean","NN","","Faolmi"]]},
- {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi (lavozim o'zgarsa yangi assignment bilan qayta biriktiriladi).",cols:[
+ {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi. Tayinlov tugaganda (hrm: assignment.ended eventi) status ENDED bo'ladi va handover jarayoni boshlanadi — yozuv o'chirilmaydi, tarix saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Xodim tayinlovi"],
   ["role_id","bigint","FK,NN","project_member_roles.id","Loyihadagi roli"],
+  ["status","varchar(20)","NN","","ACTIVE / ENDED — assignment.ended eventida yopiladi"],
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
+ {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Yopilgan vazifalar ko'chirilmaydi.",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["project_id","bigint","FK,NN","projects.id","Qaysi loyihada"],
+  ["from_assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Tugagan tayinlov — vazifalar shundan olinadi"],
+  ["suggested_assignment_id","bigint","EXT","ext:hrm.assignment.id","Tizim taklifi — vorisi (old_employee zanjiri orqali aniqlanadi)"],
+  ["to_assignment_id","bigint","EXT","ext:hrm.assignment.id","PM tanlagan yakuniy qabul qiluvchi (bo'lib taqsimlansa NULL, taqsimot issue_history da)"],
+  ["open_issues_count","int","NN","","Handover ochilgan paytdagi ochiq vazifalar soni"],
+  ["status","varchar(20)","NN","","PENDING / IN_PROGRESS / COMPLETED / CANCELLED"],
+  ["completed_at","timestamptz","","","Yakunlangan vaqt"]]},
  {name:"priorities",desc:"Muhimlik darajalari — UI'dan boshqariladi (qo'shish, rang, tartib). short_code ustuni logika uchun barqaror qoladi.",cols:[
   ["id","bigint","PK","","Daraja identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod (low, medium, high, critical) — seed, tizim logikasi shunga qurilgan, o'zgartirish taqiqlangan"],
