@@ -416,7 +416,7 @@ const DB = {
   ["pinfl","varchar(14)","UK,NN","","JShShIR"],
   ["email","varchar(255)","UK","","Elektron pochta"],
   ["lang_key","varchar(255)","","","Interfeys tili"]]},
- {name:"assignment",desc:"Tayinlov — platformaning eng markaziy jadvali, barcha servicelardagi audit ustunlar shunga ishora qiladi. AssignmentStatus: ACTIVE/PENDING/RELEASED/TERMINATED — soft delete YO'Q, hayot sikli bo'yicha yopiladi.",cols:[
+ {name:"assignment",desc:"Tayinlov — platformaning eng markaziy jadvali. AssignmentStatus: ACTIVE/PENDING/RELEASED/TERMINATED — soft delete YO'Q, hayot sikli bo'yicha yopiladi. QILINISHI KERAK: status RELEASED/TERMINATED bo'lganda outbox orqali assignment.ended, yangi yozuvda assignment.created eventi chiqarilishi kerak — project/support/callcenter handover jarayonlari shunga tayanadi.",cols:[
   ["id","bigint","PK","","SEQ_ASSIGNMENT_ID"],
   ["status","varchar(255)","NN","","ACTIVE / PENDING / RELEASED / TERMINATED"],
   ["staff_unit_id","bigint","FK","staff_unit.id","Qaysi shtat birligiga"],
@@ -1183,9 +1183,11 @@ const DB = {
   ["item.returned","ITEM","","","Jihoz qaytarilganda → notification"]]},
  {name:"kpi_service_events",noaudit:true,desc:"kpi-service chiqaradigan eventlar. Topic prefiksi: crm.kpi.*",cols:[
   ["kpi.calculated","KPI_RESULT","","","Davr yopilib KPI hisoblanganda → notification (xodim va rahbarga natija)"]]},
- {name:"hrm_service_events",noaudit:true,desc:"hrm-service (MAVJUD) — hozircha outbox/event chiqarmaydi. Keyingi bosqichda rejalashtirilgan eventlar quyida; CRM servicelar bularni tinglashi kerak bo'ladi.",cols:[
-  ["assignment.ended","ASSIGNMENT","","","(REJA) Tayinlov tugaganda → project/support/callcenter (ochiq vazifalarni qayta taqsimlash)"],
-  ["employee.blocked","EMPLOYEE","","","(REJA) Xodim bloklanganda → barcha servicelar (kirishni cheklash)"]]},
+ {name:"hrm_service_events",noaudit:true,desc:"hrm-service (MAVJUD) — QILINISHI KERAK: outbox_events + processed_events qo'shilishi va quyidagi eventlar chiqarilishi SHART (kafka-event-standart naqshi). Topic prefiksi: crm.hrm.* — CRM'dagi handover va kirish nazorati shu eventlarga qurilgan.",cols:[
+  ["assignment.created","ASSIGNMENT","","","Yangi tayinlov yaratilganda (old_employee_id bilan) → project-service (handover'da voris taklifi), kpi-service (profil biriktirish)"],
+  ["assignment.ended","ASSIGNMENT","","","Tayinlov RELEASED/TERMINATED bo'lganda → project/support/callcenter (handover ochish, a'zolikni yopish), kpi-service (davr hisobini yopish)"],
+  ["employee.blocked","EMPLOYEE","","","Xodim BLOCKED bo'lganda → barcha servicelar (kirishni cheklash)"],
+  ["employee.dismissed","EMPLOYEE","","","Xodim DELETED/ishdan bo'shaganda → inventory-service (jihozlarni qaytarish eslatmasi), barcha servicelar"]]},
  {name:"notification_consumer",noaudit:true,desc:"notification-service — SOF ISTE'MOLCHI: o'zi domen event chiqarmaydi, deyarli barcha topiclarga obuna bo'lib xabarnoma yuboradi. Consumer group: notification-service-main",cols:[
   ["obuna","*","","","crm.lead.*, crm.contract.*, crm.project.*, crm.support.*, crm.inventory.*, crm.kpi.* — template short_code bo'yicha xabarnoma shakllantiradi"]]}
 ]},
