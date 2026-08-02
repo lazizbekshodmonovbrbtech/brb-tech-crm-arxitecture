@@ -1116,6 +1116,10 @@ const DB = {
  group:"Standartlar va hujjatlar",doc:true,
  desc:"STANDART — Multi-tenant va ma'lumot ko'lami (data scope). Tenant = root org_structure (qattiq izolyatsiya). Branch/department = ko'rinish doirasi (a'zolik istisno bilan). Quyidagi ustunlar HAR BIR biznes tablega qo'shiladi (audit kabi), filtrlash base repository'da majburiy + Postgres RLS sug'urta qatlami.",
  tables:[
+ {name:"adr_001_multitenancy",noaudit:true,desc:"ARXITEKTURA QARORI (ADR-001) — 2026-08. Uch variant ko'rildi, COLUMN-BASED tanlandi. Qayta ko'rish sharti: tashqi mijoz shartnomada fizik izolyatsiya talab qilsa — o'shanda hybrid (o'sha mijoz uchun alohida deployment, arxitektura o'zgarmaydi).",cols:[
+  ["1_column_based","TANLANDI","","","Hamma tableda tenant id. Sabab: 14 microservice'da migration/pool murakkabligi ko'paymaydi; data scope (branch/department) baribir column filtr talab qiladi — bitta mexanizm ikkalasiga xizmat qiladi; HRM allaqachon shu yo'lda; Kafka envelope bilan tabiiy mos; RLS bilan mustahkamlanadi"],
+  ["2_schema_based","RAD ETILDI","","","Har tenant alohida schemada. Sabab: har deploy N schema × 14 service migration; cross-tenant hisobot og'ir; data scope uchun baribir column kerak — ikkita parallel izolyatsiya mexanizmi bo'lib qolardi"],
+  ["3_database_based","RAD ETILDI","","","Har tenant alohida DB, global db'da routing. Sabab: connection pool portlashi (N tenant × 14 service); operatsion xarajat; ichki holding tashkilotlari uchun ortiqcha. Kelajakda yirik tashqi mijozga hybrid sifatida qo'llanilishi mumkin"]]},
  {name:"scope_columns",noaudit:true,desc:"STANDART HUDUD USTUNLARI — har bir biznes tablega qo'shiladi (lug'at/texnik tablelar bundan mustasno: global-reference, i18n, ui_table, outbox). Qiymatlar yozuv yaratilganda yaratuvchining assignment kontekstidan (JWT) avtomatik olinadi. UK'lar kompozit bo'ladi: UK(org_structure_id, short_code).",cols:[
   ["org_structure_id","bigint","NN","","TENANT — root org_structure. Qattiq izolyatsiya: hech bir so'rov chegaradan o'tmaydi. RLS bilan DB darajasida ham himoyalanadi"],
   ["branch_id","bigint","NN","","Yozuv qaysi filialga tegishli — yaratuvchi assignmentining filiali"],
@@ -1298,7 +1302,7 @@ const DB = {
  group:"Mavjud tizim",
  desc:"MAVJUD — file_service_db. 1 jadval, 0 FK. Fayllar MinIO'da; tashqi tizimlar faylga id emas, HASH orqali murojaat qiladi.",
  tables:[
- {name:"file_storage",desc:"Fayl metadatasi. Object key formati: {LOCATION}/{YYYY}/{MM}/{DD}/{uuid}.{ext}. Audit ustunlari employee/assignment ma'lumotini RestClient orqali hrm-service'dan oladi.",cols:[
+ {name:"file_storage",desc:"Fayl metadatasi. Object key formati: {LOCATION}/{YYYY}/{MM}/{DD}/{uuid}.{ext}. QILINISHI KERAK: org_structure_id ustuni + object key'ga tenant prefiksi ({TENANT}/{LOCATION}/...) va hash orqali olishda tenant tekshiruvi (multi-tenant-standart). Audit ustunlari employee/assignment ma'lumotini RestClient orqali hrm-service'dan oladi.",cols:[
   ["id","bigint","PK","","SEQ_FILE_STORAGE_ID"],
   ["name","varchar(2000)","NN","","Asl fayl nomi"],
   ["file_path","varchar(2000)","NN","","MinIO object key (disk yo'li emas)"],
@@ -1322,6 +1326,24 @@ const AUDIT_COLS=[
  ["last_modified_employee_id","bigint","NN,EXT","ext:hrm.employee.id","O'zgartirgan xodim (FKsiz)"],
  ["last_updated_id","bigint","UK,NN","","Optimistik qulflash hisoblagichi — SEQ_{TABLE}_LAST_UPDATED_ID"]
 ];
+
+/* Tenant/scope ustunlari — multi-tenant-standart bo'yicha har bir REJALASHTIRILGAN
+   service tablesiga avtomatik qo'llanadi. Aggregate root'lar to'liq scope (3 ustun),
+   qolganlari (lug'at/child) faqat tenant (1 ustun) — branch/dept ota yozuv orqali. */
+const SCOPE_FULL=new Set(['customers','leads','contracts','projects','issues','tickets','calls','items','warehouses']);
+const SCOPE_COLS={
+ full:[
+  ["org_structure_id","bigint","NN,EXT","ext:hrm.org_structure.id","TENANT (root org_structure) — qattiq izolyatsiya, RLS bilan himoyalangan"],
+  ["branch_id","bigint","NN,EXT","ext:hrm.branch.id","Yozuv filiali — yaratuvchining assignment kontekstidan (JWT) avtomatik"],
+  ["department_id","bigint","EXT","ext:hrm.department.id","Yozuv bo'limi — mantiqan mos kelmasa NULL"]],
+ tenant:[
+  ["org_structure_id","bigint","NN,EXT","ext:hrm.org_structure.id","TENANT — qattiq izolyatsiya (RLS). Lug'at/child table: branch/department filtri ota yozuv (aggregate root) orqali"]]
+};
+function scopeKind(svcKey,tbl){
+  const svc=DB[svcKey];
+  if(svc.doc||svc.group==='Mavjud tizim'||tbl.noaudit)return null;
+  return SCOPE_FULL.has(tbl.name)?'full':'tenant';
+}
 
 /* ========================================================= */
 const $=s=>document.querySelector(s);
@@ -1382,8 +1404,9 @@ function render(key){
         .map(f=>`<span class="k ${f.toLowerCase()}">${f}</span>`).join('');
       return `<div class="row" data-col="${c[0]}">${ks}<span class="cn">${c[0]}</span><span class="ct">${c[1]}</span></div>`;
     }).join('');
-    const audFoot=t.noaudit?'':'<div class="row aud">⊞ +7 standart audit ustun</div>';
-    const cntTxt=t.noaudit?t.cols.length:`${t.cols.length}+7`;
+    const sk=scopeKind(key,t);
+    const audFoot=t.noaudit?'':`<div class="row aud">⊞ +7 audit${sk?(sk==='full'?' · +3 scope':' · +1 tenant'):''}</div>`;
+    const cntTxt=t.noaudit?t.cols.length:`${t.cols.length}+7${sk?(sk==='full'?'+3':'+1'):''}`;
     el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${cntTxt}</span><button class="lnk" title="Bog'langan tablelarga fokus">⌖</button></div>${rows}${audFoot}`;
     el.style.left='0px';el.style.top='0px';
     canvas.appendChild(el);
@@ -1584,6 +1607,15 @@ function genSQL(svcKey,tbl){
       FKs.push(`    CONSTRAINT fk_${T}__${nm} FOREIGN KEY (${nm}) REFERENCES ${rt} (${rc})`);
     }
   });
+  const sk2=scopeKind(svcKey,tbl);
+  if(sk2){
+    body.push('    -- tenant/scope ustunlari (multi-tenant-standart)');
+    body.push('    org_structure_id BIGINT NOT NULL  -- TENANT, mantiqiy ref: hrm.org_structure.id (RLS)');
+    if(sk2==='full'){
+      body.push('    branch_id BIGINT NOT NULL  -- mantiqiy ref: hrm.branch.id');
+      body.push('    department_id BIGINT  -- mantiqiy ref: hrm.department.id');
+    }
+  }
   if(!tbl.noaudit){
     body.push('    -- standart audit ustunlari (butun loyihada bir xil)');
     body.push('    created_date TIMESTAMP NOT NULL');
@@ -1656,6 +1688,23 @@ function openDrawer(svcKey,tbl){
       <span class="dsc">${c[4]||''}${refHtml}</span>
     </div>`;
   });
+  // tenant/scope ustunlari (multi-tenant-standart)
+  const sk=scopeKind(svcKey,tbl);
+  if(sk){
+    html+=`<div class="d-sec">Tenant / scope ustunlari — multi-tenant-standart</div>`;
+    SCOPE_COLS[sk].forEach(c=>{
+      const flags=c[2]?c[2].split(','):[];
+      const ks=flags.map(f=>{
+        const cls=['PK','FK','UK','EXT'].includes(f)?f.toLowerCase():'';
+        return cls?`<span class="k ${cls}">${f}</span>`:`<span class="k" style="background:rgba(124,150,182,.15);color:var(--muted)">${f}</span>`;
+      }).join('');
+      const refHtml=c[3]?`<span class="ref ext">→ ${c[3].slice(4)} (tashqi)</span>`:'';
+      html+=`<div class="d-col aud-col">
+        <span class="nm">${c[0]}</span><span class="tp">${c[1]}</span><span class="kk">${ks}</span>
+        <span class="dsc">${c[4]||''}${refHtml}</span>
+      </div>`;
+    });
+  }
   // audit ustunlari (standart pattern)
   if(!tbl.noaudit){
     html+=`<div class="d-sec">Audit ustunlari — butun loyihada bir xil</div>`;
