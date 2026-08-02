@@ -693,7 +693,7 @@ const DB = {
   ["name","varchar(50)","NN","","Rol nomi — UI'da o'zgartiriladi"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],
   ["is_active","boolean","NN","","Faolmi"]]},
- {name:"project_actions",desc:"Loyiha ichidagi amallar katalogi — HRM'dagi action_catalog naqshi. Seed: ISSUE_CREATE, ISSUE_EDIT, ISSUE_DELETE, STATUS_CHANGE, SPRINT_MANAGE, STATUS_MANAGE (statuslar), BOARD_CONFIGURE (boardlar), MEMBER_MANAGE, SETTINGS_EDIT.",cols:[
+ {name:"project_actions",desc:"Loyiha ichidagi amallar katalogi — HRM'dagi action_catalog naqshi. Seed: ISSUE_CREATE, ISSUE_EDIT, ISSUE_DELETE, STATUS_CHANGE, SPRINT_MANAGE, BOARD_CONFIGURE (boardlar/ustunlar), MEMBER_MANAGE, SETTINGS_EDIT.",cols:[
   ["id","bigint","PK","","Amal identifikatori"],
   ["short_code","varchar(50)","UK,NN","","Amal kodi — seed, logika shunga tayanadi"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"],
@@ -713,7 +713,7 @@ const DB = {
   ["role_id","bigint","FK,NN","project_member_roles.id","Loyihadagi roli"],
   ["status","varchar(20)","NN","","ACTIVE / ENDED — assignment.ended yoki partnership.ended eventida yopiladi"],
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
- {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Faqat ochiq (category: DRAFT/ACTIVE/INACTIVE) vazifalar ko'chiriladi; COMPLETED va soft-delete qilinganlar tegilmaydi.",cols:[
+ {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Faqat ochiq (TO_DO/IN_PROGRESS/IN_REVIEW) vazifalar ko'chiriladi; DONE va soft-delete qilinganlar tegilmaydi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihada"],
   ["from_assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Tugagan tayinlov — vazifalar shundan olinadi"],
@@ -736,13 +736,6 @@ const DB = {
   ["level","int","NN","","Ierarxiya darajasi: 0=Epic, 1=Story/Task/Bug, 2=Subtask"],
   ["icon","varchar(50)","","","Ikonka kodi"],
   ["color","varchar(7)","","","Rang (hex)"]]},
- {name:"project_statuses",desc:"Loyihaga xos statuslar — LOYIHA darajasida yagona to'plam (boardlar shundan o'z ustunlarini tanlaydi). Nomlari erkin (UI'da boshqariladi), har biri platforma enum kategoriyasiga (DRAFT/ACTIVE/INACTIVE/COMPLETED) bog'lanadi: tizim logikasi nomga emas, kategoriyaga qaraydi.",cols:[
-  ["id","bigint","PK","","Status identifikatori"],
-  ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
-  ["short_code","varchar(30)","UK,NN","","Barqaror kod (UK: project_id + short_code) — workflow logikasi shunga tayanadi, o'zgartirish taqiqlangan"],
-  ["name","varchar(50)","NN","","Status nomi"],
-  ["category","enum","NN","","DRAFT / ACTIVE / INACTIVE / COMPLETED — platforma standart enum (CHECK constraint). Tizim logikasi FAQAT shunga qurilgan: COMPLETED'ga o'tish = issue.completed + KPI fakt; INACTIVE = pauza/blok. DELETED kategoriyasi YO'Q — bekor qilish workflow emas, soft delete (record status) orqali: yozuv boarddan/KPI'dan yo'qoladi, audit va issue_history'da saqlanadi"],
-  ["position","int","NN","","Tartib raqami"]]},
  {name:"status_rule_roles",desc:"Workflow qoidasi × rol — qaysi rollar shu o'tishni qila oladi. Qoidada yozuv bo'lmasa = hamma o'tkaza oladi. UK: (rule_id, role_id).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["rule_id","bigint","FK,UK,NN","status_pipeline_rules.id","Qaysi qoida (UK tarkibida)"],
@@ -750,10 +743,10 @@ const DB = {
  {name:"status_pipeline_rules",desc:"Workflow qoidalari — qaysi statusdan qaysi statusga o'tish mumkin. Rollar cheklovi status_rule_roles orqali (normallashtirilgan). condition jsonb qoladi — shart turlari har xil bo'lgani uchun chinakam moslashuvchan tuzilma.",cols:[
   ["id","bigint","PK","","Qoida identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha uchun"],
-  ["from_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusdan"],
-  ["to_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga"],
+  ["from_status","enum","NN","","Qaysi statusdan (TO_DO/IN_PROGRESS/IN_REVIEW/DONE)"],
+  ["to_status","enum","NN","","Qaysi statusga"],
   
-  ["condition","jsonb","","","Shart, masalan: {\"all_subtasks_done\": true}, {\"require_estimated_minutes\": true} (kanban yopish), {\"require_blocker_reason\": true} (INACTIVE'ga o'tishda sabab majburiy)"]]},
+  ["condition","jsonb","","","Shart, masalan: {\"all_subtasks_done\": true}, {\"require_estimated_minutes\": true} (kanban DONE), {\"no_active_blockers\": true} (faol blocker borida DONE taqiqlanadi)"]]},
  {name:"boards",desc:"Boardlar — har biri O'Z REJIMIga ega. Bitta loyihada bir nechta: Dev jamoasi scrum board (sprint bilan), Maintenance jamoasi kanban board (sprint'siz oqim: bug, kichik vazifa, mayda yaxshilashlar). Vazifa boardga TO'G'RIDAN-TO'G'RI bog'lanadi (issues.board_id) — yaratilganda tanlanadi, kerak bo'lsa boshqa boardga o'tkaziladi (board_id o'zgartiriladi, issue_history'ga tushadi).",cols:[
   ["id","bigint","PK","","Board identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
@@ -766,11 +759,11 @@ const DB = {
   ["board_id","bigint","FK,UK,NN","boards.id","Qaysi board (1:1)"],
   ["sprint_duration_days","int","","","Sprint davomiyligi (mode=scrum bo'lsa, odatda 14)"],
   ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (mode=kanban bo'lsa)"]]},
- {name:"board_columns",desc:"Board ustunlari — loyiha statuslariga bog'lanadi. Har board o'ziga kerakli statuslarnigina ustun qiladi: Dev board 5 ustun (To Do→In Progress→Code Review→QA→Done), Maintenance board 3 ustun (Code Review/QA ishlatmaydi). Vazifa O'Z boardining ustunlari bo'ylab yuradi — status o'tishlari shu boardda mavjud ustunlar bilan cheklanadi. WIP limit ustunniki (kanban boardlarda).",cols:[
+ {name:"board_columns",desc:"Board ustunlari — enum statuslarga bog'lanadi. Har board o'ziga keraklisini oladi va nomlaydi: Dev board 4 ustun (IN_REVIEW → \"Code Review\"), Maintenance board 3 ustun (IN_REVIEW ishlatmaydi — bug to'g'ridan-to'g'ri DONE'ga). Vazifa o'z boardida mavjud ustunlar bo'ylab yuradi. WIP limit ustunniki (kanban boardlarda).",cols:[
   ["id","bigint","PK","","Ustun identifikatori"],
   ["board_id","bigint","FK,NN","boards.id","Qaysi boardga tegishli"],
-  ["status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga mos (bir ustun bir status; UK: board_id+status_id)"],
-  ["name","varchar(50)","","","Ustun nomi (bo'sh = status nomi olinadi)"],
+  ["status","enum","NN","","Qaysi enum statusga mos: TO_DO / IN_PROGRESS / IN_REVIEW / DONE (UK: board_id+status)"],
+  ["name","varchar(50)","","","Ustun ko'rinish nomi (bo'sh = enum nomi). Masalan Dev boardda IN_REVIEW ustuni \"Code Review\" deb ko'rsatiladi"],
   ["position","int","NN","","Ustun tartibi"],
   ["wip_limit","int","","","Work-In-Progress limiti (null = cheksiz) — kanban boardda ishlaydi"]]},
  {name:"sprints",desc:"Sprintlar — faqat scrum rejimidagi boardlar ishlatadi. Kanban boardlarda vazifa sprint'siz yuradi (issues.sprint_id NULL).",cols:[
@@ -782,20 +775,20 @@ const DB = {
   ["end_date","date","","","Tugash sanasi"],
   ["status","varchar(20)","NN","","planned / active / completed"],
   ["velocity","int","","","Yakunda bajarilgan hajm — point yoki daqiqa (estimation_type bo'yicha)"]]},
- {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status COMPLETED kategoriyaga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. KPI QOIDASI: COMPLETED bo'lib fakt yozilgan vazifa keyin bekor qilinsa — fakt QOLADI (ish bajarilgan, jamoa resurs sarflagan; bekor bo'lish xodim aybi emas). VOID faqat reopen holatida: ish aslida tugamagan degani (davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
+ {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status DONE'ga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. KPI QOIDASI: COMPLETED bo'lib fakt yozilgan vazifa keyin bekor qilinsa — fakt QOLADI (ish bajarilgan, jamoa resurs sarflagan; bekor bo'lish xodim aybi emas). VOID faqat reopen holatida: ish aslida tugamagan degani (davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
   ["id","bigint","PK","","Vazifa identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
   ["parent_issue_id","bigint","FK","issues.id","Yuqori vazifa (Epic/Story ierarxiyasi)"],
   ["board_id","bigint","FK,NN","boards.id","Qaysi boardga tegishli — yaratilganda tanlanadi (Dev / Maintenance). Boshqa boardga o'tkazish = shu ustunni o'zgartirish (issue_history'ga yoziladi)"],
   ["sprint_id","bigint","FK","sprints.id","Sprint — faqat scrum rejimidagi boardga tegishli vazifalarda; kanban board vazifalarida NULL (validatsiya: board.mode bo'yicha)"],
-  ["status_id","bigint","FK,NN","project_statuses.id","Joriy status"],
+  ["status","enum","NN","","TO_DO / IN_PROGRESS / IN_REVIEW / DONE — platforma enum (CHECK constraint), loyihaga xos statuslar YO'Q (ADR: soddalik). DONE'ga o'tish = issue.completed + KPI fakt. Ochiq = TO_DO/IN_PROGRESS/IN_REVIEW"],
   ["number","int","NN","","Loyiha ichidagi raqam (KEY-123)"],
   ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
   ["description","text","","","Batafsil tavsif"],
   ["priority_id","bigint","FK,NN","priorities.id","Muhimlik darajasi — priorities tablesidan (UI'da boshqariladi)"],
-  ["point","int","","","Baholash — SCRUM boarddagi vazifalarda, sprint planning'da belgilanadi. Vazifa ochiq ekan istalgan payt YANGILANISHI mumkin (re-estimation; har o'zgarish issue_history'ga tushadi). COMPLETED bo'lgach QULFLANADI — o'zgartirish faqat reopen orqali (fakt VOID → qayta yopishda yangi fakt). Validatsiya: point'siz vazifa sprintga kiritilmaydi"],
-  ["estimated_minutes","int","","","Baholash — KANBAN boarddagi vazifalarda. Ochiq paytda dastlabki taxmin sifatida kiritilishi va istalgan payt yangilanishi mumkin (issue_history'ga tushadi); YOPISHDA (COMPLETED'ga o'tishda) yakuniy qiymat majburiy — kiritmasdan yopib bo'lmaydi (status_pipeline_rules condition). COMPLETED bo'lgach QULFLANADI — o'zgartirish faqat reopen orqali. Alohida estimate+worklog yuritilmaydi"],
+  ["point","int","","","Baholash — SCRUM boarddagi vazifalarda, sprint planning'da belgilanadi. Vazifa ochiq ekan istalgan payt YANGILANISHI mumkin (re-estimation; har o'zgarish issue_history'ga tushadi). DONE bo'lgach QULFLANADI — o'zgartirish faqat reopen orqali (fakt VOID → qayta yopishda yangi fakt). Validatsiya: point'siz vazifa sprintga kiritilmaydi"],
+  ["estimated_minutes","int","","","Baholash — KANBAN boarddagi vazifalarda. Ochiq paytda dastlabki taxmin sifatida kiritilishi va istalgan payt yangilanishi mumkin (issue_history'ga tushadi); YOPISHDA (DONE'ga o'tishda) yakuniy qiymat majburiy — kiritmasdan yopib bo'lmaydi (status_pipeline_rules condition). DONE bo'lgach QULFLANADI — o'zgartirish faqat reopen orqali. Alohida estimate+worklog yuritilmaydi"],
   ["due_date","date","","","Muddat"],
   ["updated_at","timestamptz","NN","","Oxirgi o'zgarish"]]},
  {name:"issue_assignments",desc:"Vazifa mas'ullari — bir vazifaga bir nechta xodim biriktirilishi mumkin.",cols:[
@@ -835,7 +828,7 @@ const DB = {
  {name:"issue_labels",desc:"Vazifa–teg bog'lanishi (many-to-many).",cols:[
   ["issue_id","bigint","PK,FK","issues.id","Vazifa"],
   ["label_id","bigint","PK,FK","labels.id","Teg"]]},
- {name:"issue_blockers",desc:"Rasmiy bloklash yozuvi — vazifa INACTIVE (blok) kategoriyali statusga o'tkazilganda SABAB majburiy (workflow condition: require_blocker_reason). Muammo alohida issue sifatida ochilib mas'ulga biriktirilishi mumkin (blocking_issue_id) — u COMPLETED bo'lganda bloklangan vazifa egasi va watcherlarga notification boradi; ishga qaytarish QO'LDA (bir vazifada bir nechta blocker bo'lishi mumkin — hammasi hal bo'lishi kutiladi). resolved_at NULL = hali blokda. Blok davri (blocked→resolved) cycle time tahlilida o'lchanadi.",cols:[
+ {name:"issue_blockers",desc:"Rasmiy bloklash yozuvi. BLOK STATUS EMAS (enumda BLOCKED yo'q) — bayroq: faol blocker (resolved_at NULL) mavjud bo'lsa vazifa o'z ustunida \"blocked\" belgisi bilan turadi va DONE'ga o'tolmaydi (condition: no_active_blockers). Yaratishda SABAB majburiy. Muammo alohida issue ochilib mas'ulga biriktirilishi mumkin (blocking_issue_id) — u DONE bo'lganda bloklangan vazifa egasi va watcherlarga notification; blockerni yopish QO'LDA (bir nechta bo'lishi mumkin). Blok davri cycle time tahlilida o'lchanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["issue_id","bigint","FK,NN","issues.id","Bloklangan vazifa"],
   ["reason","text","NN","","Bloklash sababi — MAJBURIY (masalan: integratsiya API xatosi, hamkor javobini kutyapmiz)"],
@@ -1236,10 +1229,10 @@ const DB = {
   ["project.created","PROJECT","","","Loyiha yaratilganda → contract-service (project_id to'ldirish), support-service (bot tayyorlash), notification"],
   ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
   ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
-  ["issue.blocked","ISSUE","","","Vazifa INACTIVE (blok) kategoriyaga sabab bilan o'tkazilganda → notification (PM va watcherlarga)"],
+  ["issue.blocked","ISSUE","","","Vazifaga blocker yozuvi ochilganda (sabab majburiy) → notification (PM va watcherlarga)"],
   ["issue.unblocked","ISSUE","","","Blocker yechilib vazifa ishga qaytarilganda → notification. Blocking issue COMPLETED bo'lganda esa bloklangan vazifa egasiga \"davom ettirish mumkin\" xabari boradi"],
-  ["issue.completed","ISSUE","","","Vazifa COMPLETED kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt, qiymat DAQIQADA: kanban boardda yopishda kiritilgan estimated_minutes, scrum boardda point×point_to_minutes), notification"],
-  ["issue.reopened","ISSUE","","","COMPLETED vazifa qayta ochilganda (ish aslida tugamagan) → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa). DIQQAT: bekor qilish (soft delete) fakt VOID qilmaydi — bajarilgan ish KPI'da qoladi"],
+  ["issue.completed","ISSUE","","","Vazifa DONE statusga o'tganda → kpi-service (TASK_COMPLETION fakt, qiymat DAQIQADA: kanban boardda yopishda kiritilgan estimated_minutes, scrum boardda point×point_to_minutes), notification"],
+  ["issue.reopened","ISSUE","","","DONE vazifa qayta ochilganda (ish aslida tugamagan) → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa). DIQQAT: bekor qilish (soft delete) fakt VOID qilmaydi — bajarilgan ish KPI'da qoladi"],
   ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
  {name:"support_service_events",noaudit:true,desc:"support-service chiqaradigan eventlar. Topic prefiksi: crm.support.*",cols:[
   ["ticket.created","TICKET","","","Ticket ochilganda → notification (operatorga)"],
