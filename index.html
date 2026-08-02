@@ -451,13 +451,20 @@ const DB = {
   ["assignment_id","bigint","FK,UK,NN","assignment.id","Qaysi tayinlovga"],
   ["permission_id","bigint","FK,UK,NN","permission.id","Qaysi ruxsat"],
   ["status","varchar(255)","NN","","Soft delete status"]]},
- {name:"tenant_partnership",desc:"QO'SHILADI (yangi jadval) — tashkilotlararo hamkorlik shartnomasi. Mehmon a'zolik (cross-tenant) faqat ACTIVE hamkorlik mavjud bo'lganda ruxsat etiladi. ENDED bo'lganda partnership.ended eventi chiqadi → barcha mehmon a'zoliklar avtomatik yopiladi. UK: (requester_org_structure_id, partner_org_structure_id).",cols:[
+ {name:"tenant_partnership",desc:"QO'SHILADI (yangi jadval) — tashkilotlararo hamkorlik shartnomasi. Bu FAQAT eshik — hech kimni avtomatik a'zo qilmaydi: hamkor o'z xodimlarini partnership_employee orqali ajratadi, mezbon PM faqat shu pool'dan tanlaydi. ENDED bo'lganda partnership.ended eventi chiqadi → barcha mehmon a'zoliklar avtomatik yopiladi. UK: (requester_org_structure_id, partner_org_structure_id).",cols:[
   ["id","bigint","PK","","SEQ_TENANT_PARTNERSHIP_ID"],
   ["requester_org_structure_id","bigint","FK,UK,NN","org_structure.id","Tashabbuskor tashkilot (root org_structure)"],
   ["partner_org_structure_id","bigint","FK,UK,NN","org_structure.id","Hamkor tashkilot (root org_structure)"],
   ["status","varchar(20)","NN","","PENDING / ACTIVE / SUSPENDED / ENDED"],
   ["start_date","date","","","Hamkorlik boshlanishi"],
   ["end_date","date","","","Tugashi (null = muddatsiz)"]]},
+ {name:"partnership_employee",desc:"QO'SHILADI (yangi jadval) — hamkorlikka AJRATILGAN xodimlar pool'i. Hamkor tashkilot O'ZI qaysi xodimlari autsors ishlashi mumkinligini belgilaydi; mezbon PM mehmon tanlashda FAQAT shu ro'yxatni ko'radi (butun xodimlar reyestri ochilmaydi — maxfiylik). UK: (partnership_id, assignment_id).",cols:[
+  ["id","bigint","PK","","SEQ_PARTNERSHIP_EMPLOYEE_ID"],
+  ["partnership_id","bigint","FK,UK,NN","tenant_partnership.id","Qaysi hamkorlik doirasida"],
+  ["assignment_id","bigint","FK,UK,NN","assignment.id","Ajratilgan xodim tayinlovi (xodim tenantiniki)"],
+  ["status","varchar(20)","NN","","ACTIVE / WITHDRAWN — hamkor istalgan payt qaytarib olishi mumkin"],
+  ["start_date","date","","","Ajratilish boshlanishi"],
+  ["end_date","date","","","Tugashi (null = partnership tugaguncha)"]]},
  {name:"ref_branch_type",desc:"HR ma'lumotnomasi: filial turi.",cols:[
   ["id","bigint","PK","","SEQ ..._ID"],
   ["sort_order","bigint","","","Tartib"],
@@ -704,7 +711,7 @@ const DB = {
  {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi. Tayinlov tugaganda (hrm: assignment.ended eventi) status ENDED bo'ladi va handover jarayoni boshlanadi — yozuv o'chirilmaydi, tarix saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
-  ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Xodim tayinlovi — BOSHQA tenantdan bo'lishi mumkin (mehmon a'zo), faqat faol tenant_partnership mavjud bo'lsa"],
+  ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Xodim tayinlovi — BOSHQA tenantdan bo'lishi mumkin (mehmon a'zo) — faqat faol tenant_partnership VA partnership_employee pool'ida ajratilgan bo'lsa"],
   ["member_org_structure_id","bigint","EXT,NN","ext:hrm.org_structure.id","A'zoning UY tenanti — loyiha tenantidan farq qilsa = mehmon (cross-tenant). KPI faktlari shu tenant hisobiga yoziladi"],
   ["role_id","bigint","FK,NN","project_member_roles.id","Loyihadagi roli"],
   ["status","varchar(20)","NN","","ACTIVE / ENDED — assignment.ended yoki partnership.ended eventida yopiladi"],
@@ -1126,6 +1133,7 @@ const DB = {
  tables:[
  {name:"cross_tenant_hamkorlik",noaudit:true,desc:"TASHKILOTLARARO HAMKORLIK (autsors) QOIDALARI — mehmon a'zolik naqshi. Printsip: yozuv egasi DOIM bitta tenant; chegaradan o'tish faqat aniq berilgan a'zolik orqali (GitHub outside collaborator naqshi).",cols:[
   ["shartnoma_sharti","qoida","","","Mehmon a'zo qo'shishdan oldin hrm.tenant_partnership'da ACTIVE yozuv bo'lishi SHART — service buni tekshiradi"],
+  ["ajratilgan_pool","qoida","","","Partnership hech kimni avtomatik a'zo qilmaydi: hamkor tashkilot O'ZI partnership_employee orqali xodimlarini ajratadi; mezbon PM faqat shu pool'ni ko'radi va tanlaydi — hamkorning butun xodimlar reyestri ochilmaydi"],
   ["yagona_ega","qoida","","","Loyiha (va barcha child yozuvlari) faqat BITTA tenantga tegishli — org_structure_id o'zgarmaydi, umumiy egalik yo'q"],
   ["mehmon_korinishi","qoida","","","Mehmon FAQAT a'zo bo'lgan aggregate (loyiha) va uning childlarini (vazifa, izoh, board, sprint, fayl) ko'radi — mezbon tenantning boshqa hech narsasini emas"],
   ["kirish_formulasi","qoida","","","(o'z tenanti AND scope) OR (a'zolik — tenantdan qat'i nazar). RLS siyosati: tenant match OR membership subquery"],
@@ -1236,7 +1244,8 @@ const DB = {
   ["employee.blocked","EMPLOYEE","","","Xodim BLOCKED bo'lganda → barcha servicelar (kirishni cheklash)"],
   ["employee.dismissed","EMPLOYEE","","","Xodim DELETED/ishdan bo'shaganda → inventory-service (jihozlarni qaytarish eslatmasi), barcha servicelar"],
   ["partnership.activated","PARTNERSHIP","","","Hamkorlik ACTIVE bo'lganda → project-service (mehmon a'zo qo'shishga ruxsat ochiladi)"],
-  ["partnership.ended","PARTNERSHIP","","","Hamkorlik tugaganda → project/support (shu juftlikdagi barcha mehmon a'zoliklarni yopish + handover)"]]},
+  ["partnership.ended","PARTNERSHIP","","","Hamkorlik tugaganda → project/support (shu juftlikdagi barcha mehmon a'zoliklarni yopish + handover)"],
+  ["partnership_employee.withdrawn","PARTNERSHIP","","","Hamkor xodimini pool'dan qaytarib olganda → project-service (shu xodimning mehmon a'zoliklarini yopish + handover)"]]},
  {name:"notification_consumer",noaudit:true,desc:"notification-service — SOF ISTE'MOLCHI: o'zi domen event chiqarmaydi, deyarli barcha topiclarga obuna bo'lib xabarnoma yuboradi. Consumer group: notification-service-main",cols:[
   ["obuna","*","","","crm.lead.*, crm.contract.*, crm.project.*, crm.support.*, crm.inventory.*, crm.kpi.* — template short_code bo'yicha xabarnoma shakllantiradi"]]}
 ]},
