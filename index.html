@@ -753,7 +753,7 @@ const DB = {
   ["from_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusdan"],
   ["to_status_id","bigint","FK,NN","project_statuses.id","Qaysi statusga"],
   
-  ["condition","jsonb","","","Shart (masalan: barcha subtasklar yopiq)"]]},
+  ["condition","jsonb","","","Shart, masalan: {\"all_subtasks_done\": true}, {\"require_estimated_minutes\": true} (kanban yopish), {\"require_blocker_reason\": true} (INACTIVE'ga o'tishda sabab majburiy)"]]},
  {name:"boards",desc:"Boardlar — har biri O'Z REJIMIga ega. Bitta loyihada bir nechta: Dev jamoasi scrum board (sprint bilan), Maintenance jamoasi kanban board (sprint'siz oqim: bug, kichik vazifa, mayda yaxshilashlar). Vazifa boardga TO'G'RIDAN-TO'G'RI bog'lanadi (issues.board_id) — yaratilganda tanlanadi, kerak bo'lsa boshqa boardga o'tkaziladi (board_id o'zgartiriladi, issue_history'ga tushadi).",cols:[
   ["id","bigint","PK","","Board identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
@@ -835,7 +835,14 @@ const DB = {
  {name:"issue_labels",desc:"Vazifa–teg bog'lanishi (many-to-many).",cols:[
   ["issue_id","bigint","PK,FK","issues.id","Vazifa"],
   ["label_id","bigint","PK,FK","labels.id","Teg"]]},
- {name:"issue_links",desc:"Vazifalar orasidagi bog'lanishlar — blocks, relates, duplicates.",cols:[
+ {name:"issue_blockers",desc:"Rasmiy bloklash yozuvi — vazifa INACTIVE (blok) kategoriyali statusga o'tkazilganda SABAB majburiy (workflow condition: require_blocker_reason). Muammo alohida issue sifatida ochilib mas'ulga biriktirilishi mumkin (blocking_issue_id) — u COMPLETED bo'lganda bloklangan vazifa egasi va watcherlarga notification boradi; ishga qaytarish QO'LDA (bir vazifada bir nechta blocker bo'lishi mumkin — hammasi hal bo'lishi kutiladi). resolved_at NULL = hali blokda. Blok davri (blocked→resolved) cycle time tahlilida o'lchanadi.",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["issue_id","bigint","FK,NN","issues.id","Bloklangan vazifa"],
+  ["reason","text","NN","","Bloklash sababi — MAJBURIY (masalan: integratsiya API xatosi, hamkor javobini kutyapmiz)"],
+  ["blocking_issue_id","bigint","FK","issues.id","Muammoni hal qiluvchi issue (ochilgan bo'lsa) — COMPLETED bo'lganda xabar beriladi"],
+  ["blocked_at","timestamp","NN","","Blok boshlangan vaqt"],
+  ["resolved_at","timestamp","","","Blok yechilgan vaqt (NULL = hali blokda)"]]},
+ {name:"issue_links",desc:"Vazifalar orasidagi AXBOROT bog'lanishlari. RASMIY bloklash bu yerda EMAS — issue_blockers orqali (sabab va vaqt bilan): bitta tushuncha uchun ikki mexanizm bo'lmasligi kerak.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["source_issue_id","bigint","FK,NN","issues.id","Manba vazifa"],
   ["target_issue_id","bigint","FK,NN","issues.id","Nishon vazifa"],
@@ -1229,6 +1236,8 @@ const DB = {
   ["project.created","PROJECT","","","Loyiha yaratilganda → contract-service (project_id to'ldirish), support-service (bot tayyorlash), notification"],
   ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
   ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
+  ["issue.blocked","ISSUE","","","Vazifa INACTIVE (blok) kategoriyaga sabab bilan o'tkazilganda → notification (PM va watcherlarga)"],
+  ["issue.unblocked","ISSUE","","","Blocker yechilib vazifa ishga qaytarilganda → notification. Blocking issue COMPLETED bo'lganda esa bloklangan vazifa egasiga \"davom ettirish mumkin\" xabari boradi"],
   ["issue.completed","ISSUE","","","Vazifa COMPLETED kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt, qiymat DAQIQADA: kanban boardda yopishda kiritilgan estimated_minutes, scrum boardda point×point_to_minutes), notification"],
   ["issue.reopened","ISSUE","","","COMPLETED vazifa qayta ochilganda (ish aslida tugamagan) → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa). DIQQAT: bekor qilish (soft delete) fakt VOID qilmaydi — bajarilgan ish KPI'da qoladi"],
   ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
