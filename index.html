@@ -775,7 +775,7 @@ const DB = {
   ["end_date","date","","","Tugash sanasi"],
   ["status","varchar(20)","NN","","planned / active / completed"],
   ["velocity","int","","","Yakunda bajarilgan hajm — point yoki daqiqa (estimation_type bo'yicha)"]]},
- {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status DONE'ga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. KPI QOIDASI: COMPLETED bo'lib fakt yozilgan vazifa keyin bekor qilinsa — fakt QOLADI (ish bajarilgan, jamoa resurs sarflagan; bekor bo'lish xodim aybi emas). VOID faqat reopen holatida: ish aslida tugamagan degani (davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
+ {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status DONE'ga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. KPI QOIDASI: DONE bo'lib fakt yozilgan vazifa keyin bekor qilinsa — fakt QOLADI (ish bajarilgan, jamoa resurs sarflagan; bekor bo'lish xodim aybi emas). VOID faqat reopen holatida: ish aslida tugamagan degani (davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
   ["id","bigint","PK","","Vazifa identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["issue_type_id","bigint","FK,NN","issue_types.id","Vazifa turi"],
@@ -832,7 +832,7 @@ const DB = {
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["issue_id","bigint","FK,NN","issues.id","Bloklangan vazifa"],
   ["reason","text","NN","","Bloklash sababi — MAJBURIY (masalan: integratsiya API xatosi, hamkor javobini kutyapmiz)"],
-  ["blocking_issue_id","bigint","FK","issues.id","Muammoni hal qiluvchi issue (ochilgan bo'lsa) — COMPLETED bo'lganda xabar beriladi"],
+  ["blocking_issue_id","bigint","FK","issues.id","Muammoni hal qiluvchi issue (ochilgan bo'lsa) — DONE bo'lganda xabar beriladi"],
   ["blocked_at","timestamp","NN","","Blok boshlangan vaqt"],
   ["resolved_at","timestamp","","","Blok yechilgan vaqt (NULL = hali blokda)"]]},
  {name:"issue_links",desc:"Vazifalar orasidagi AXBOROT bog'lanishlari. RASMIY bloklash bu yerda EMAS — issue_blockers orqali (sabab va vaqt bilan): bitta tushuncha uchun ikki mexanizm bo'lmasligi kerak.",cols:[
@@ -1230,7 +1230,7 @@ const DB = {
   ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
   ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
   ["issue.blocked","ISSUE","","","Vazifaga blocker yozuvi ochilganda (sabab majburiy) → notification (PM va watcherlarga)"],
-  ["issue.unblocked","ISSUE","","","Blocker yechilib vazifa ishga qaytarilganda → notification. Blocking issue COMPLETED bo'lganda esa bloklangan vazifa egasiga \"davom ettirish mumkin\" xabari boradi"],
+  ["issue.unblocked","ISSUE","","","Blocker yechilib vazifa ishga qaytarilganda → notification. Blocking issue DONE bo'lganda esa bloklangan vazifa egasiga \"davom ettirish mumkin\" xabari boradi"],
   ["issue.completed","ISSUE","","","Vazifa DONE statusga o'tganda → kpi-service (TASK_COMPLETION fakt, qiymat DAQIQADA: kanban boardda yopishda kiritilgan estimated_minutes, scrum boardda point×point_to_minutes), notification"],
   ["issue.reopened","ISSUE","","","DONE vazifa qayta ochilganda (ish aslida tugamagan) → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa). DIQQAT: bekor qilish (soft delete) fakt VOID qilmaydi — bajarilgan ish KPI'da qoladi"],
   ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
