@@ -682,13 +682,11 @@ const DB = {
   ["name","varchar(255)","NN","","Loyiha nomi"],
   ["description","text","","","Loyiha tavsifi"],
   ["status","varchar(20)","NN","","active / paused / completed / archived"]]},
- {name:"project_settings",desc:"Loyiha sozlamalari. DIQQAT (ADR): mode (scrum/kanban) LOYIHANIKI EMAS — har boardning o'z rejimi bor (boards.mode): bitta loyihada Dev jamoasi scrum boardda, Maintenance/support jamoasi kanban boardda parallel ishlaydi. estimation_type — baholash usuli, boarddan qat'i nazar barcha issuelar uchun yagona: KPI hisoblash shunga quriladi.",cols:[
+ {name:"project_settings",desc:"Loyiha sozlamalari — faqat loyiha darajasidagi umumiy narsalar. Rejim (mode), baholash usuli (estimation_type), sprint davomiyligi, WIP — bularning hammasi BOARD darajasida (board_settings): har board o'ziga mosini tanlaydi. Bu yerda faqat KPI birlashtirish koeffitsiyenti qoladi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,UK,NN","projects.id","Qaysi loyiha (1:1)"],
   ["default_board_id","bigint","FK","boards.id","Loyiha ochilganda ko'rsatiladigan board"],
-  ["sprint_duration_days","int","","","Sprint davomiyligi (scrum boardlar uchun, odatda 14)"],
-  ["estimation_type","varchar(20)","NN","","point / estimate — Agile va Kanban IKKALASIDA ham qo'llanadi (KPI uchun); loyihadagi barcha issuelar shu bo'yicha baholanadi"],
-  ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (kanban boardlarda ishlaydi)"]]},
+  ["point_to_minutes","int","NN","","KONVERTATSIYA: 1 point ≈ N daqiqa (masalan 480). Turli boardlar turli usulda baholagani uchun KPI faktlari yagona o'lchovga (daqiqa) keltiriladi: point×point_to_minutes"]]},
  {name:"project_member_roles",desc:"Loyiha ichidagi rollar (seed: pm, developer, qa, viewer). Ruxsatlar HRM naqshidagi kabi normallashtirilgan: project_role_permissions orqali.",cols:[
   ["id","bigint","PK","","Rol identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — seed, UPDATE taqiqlangan"],
@@ -763,6 +761,12 @@ const DB = {
   ["mode","varchar(10)","NN","","scrum / kanban — REJIM SHU YERDA: scrum'da sprint filtri + velocity, kanban'da doimiy oqim + wip_limit"],
   
   ["position","int","NN","","Tab tartibida ko'rsatilish o'rni"]]},
+ {name:"board_settings",desc:"Board sozlamalari (1:1) — rejimga bog'liq hamma narsa shu yerda. Har board O'Z baholash usulini tanlaydi: scrum board point bilan, kanban board vaqt (estimate) bilan — YOKI TESKARISI, cheklov yo'q.",cols:[
+  ["id","bigint","PK","","Yozuv identifikatori"],
+  ["board_id","bigint","FK,UK,NN","boards.id","Qaysi board (1:1)"],
+  ["estimation_type","varchar(20)","NN","","point / estimate — SHU BOARDDAGI vazifalar qaysi usulda baholanadi. KPI'da point_to_minutes orqali yagona o'lchovga keltiriladi"],
+  ["sprint_duration_days","int","","","Sprint davomiyligi (mode=scrum bo'lsa, odatda 14)"],
+  ["wip_limit_enabled","boolean","NN","","WIP limit yoqilganmi (mode=kanban bo'lsa)"]]},
  {name:"board_columns",desc:"Board ustunlari — loyiha statuslariga bog'lanadi. Har board o'ziga kerakli statuslarnigina ustun qiladi: Dev board 5 ustun (To Do→In Progress→Code Review→QA→Done), Maintenance board 3 ustun (Code Review/QA ishlatmaydi). Vazifa O'Z boardining ustunlari bo'ylab yuradi — status o'tishlari shu boardda mavjud ustunlar bilan cheklanadi. WIP limit ustunniki (kanban boardlarda).",cols:[
   ["id","bigint","PK","","Ustun identifikatori"],
   ["board_id","bigint","FK,NN","boards.id","Qaysi boardga tegishli"],
@@ -791,8 +795,8 @@ const DB = {
   ["title","varchar(500)","NN","","Vazifa sarlavhasi"],
   ["description","text","","","Batafsil tavsif"],
   ["priority_id","bigint","FK,NN","priorities.id","Muhimlik darajasi — priorities tablesidan (UI'da boshqariladi)"],
-  ["point","int","","","Baholash — estimation_type=point bo'lganda to'ldiriladi"],
-  ["estimated_minutes","int","","","Baholash — estimation_type=estimate bo'lganda: dasturchi va PM KELISHIB bitta vaqt qo'yadi (daqiqa). Alohida estimate+worklog yuritilmaydi"],
+  ["point","int","","","Baholash — vazifa boardining board_settings.estimation_type=point bo'lganda to'ldiriladi"],
+  ["estimated_minutes","int","","","Baholash — boardning estimation_type=estimate bo'lganda: dasturchi va PM KELISHIB bitta vaqt qo'yadi (daqiqa). Alohida estimate+worklog yuritilmaydi"],
   ["due_date","date","","","Muddat"],
   ["updated_at","timestamptz","NN","","Oxirgi o'zgarish"]]},
  {name:"issue_assignments",desc:"Vazifa mas'ullari — bir vazifaga bir nechta xodim biriktirilishi mumkin.",cols:[
@@ -1101,7 +1105,7 @@ const DB = {
   ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Qaysi xodim tayinloviga hisoblanadi"],
   ["source_service","varchar(50)","NN","","Qaysi servicedan kelgan"],
   ["source_ref","varchar(100)","NN","","Manba yozuv ID (issue_id, ticket_id, call_id...) — takroriylikni oldini olish uchun"],
-  ["value","decimal(12,2)","NN","","Fakt qiymati (point, daqiqa, baho, score)"],
+  ["value","decimal(12,2)","NN","","Fakt qiymati — TASK_COMPLETION uchun doim DAQIQADA (point konvertatsiya qilingan holda keladi), boshqa kriteriyalar o'z birligida (baho, score, soni)"],
   ["occurred_at","timestamp","NN","","Hodisa sodir bo'lgan vaqt — davrga biriktirishda shu ishlatiladi"],
   ["status","varchar(15)","NN","","ACTIVE / VOIDED — FAQAT issue.reopened (ish tugamagan) holatida VOIDED qilinadi, davr ochiq bo'lsa. Vazifa bekor qilinsa (soft delete) fakt ACTIVE qoladi — bajarilgan ish hisobdan chiqmaydi. Hisoblash faqat ACTIVE faktlarni oladi"],
   ["payload","jsonb","","","Qo'shimcha kontekst (audit/tekshiruv uchun)"]]},
@@ -1226,7 +1230,7 @@ const DB = {
   ["project.created","PROJECT","","","Loyiha yaratilganda → contract-service (project_id to'ldirish), support-service (bot tayyorlash), notification"],
   ["issue.created","ISSUE","","","Vazifa yaratilganda → notification (assignee'ga)"],
   ["issue.status_changed","ISSUE","","","Status o'zgarganda → notification (watcherlarga)"],
-  ["issue.completed","ISSUE","","","Vazifa COMPLETED kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt: point/estimated_minutes), notification"],
+  ["issue.completed","ISSUE","","","Vazifa COMPLETED kategoriyaga o'tganda → kpi-service (TASK_COMPLETION fakt, qiymat DAQIQADA: estimate boardda estimated_minutes, point boardda point×point_to_minutes), notification"],
   ["issue.reopened","ISSUE","","","COMPLETED vazifa qayta ochilganda (ish aslida tugamagan) → kpi-service (source_ref bo'yicha faktni VOID qilish — davr ochiq bo'lsa). DIQQAT: bekor qilish (soft delete) fakt VOID qilmaydi — bajarilgan ish KPI'da qoladi"],
   ["sprint.completed","SPRINT","","","Sprint yopilganda → notification (jamoa hisobot)"]]},
  {name:"support_service_events",noaudit:true,desc:"support-service chiqaradigan eventlar. Topic prefiksi: crm.support.*",cols:[
