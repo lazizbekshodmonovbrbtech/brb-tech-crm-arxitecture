@@ -277,6 +277,12 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   line-height:1.4;color:var(--m-warn)}
 .blocked-note .material-icons-outlined{font-size:14px;flex-shrink:0;margin-top:1px}
 .bcol.done .bcard{opacity:.72}
+.bcard.dragging{opacity:.45;transform:rotate(2deg);box-shadow:0 14px 30px rgba(15,23,42,.18);
+  border-color:var(--primary)}
+.bcol.over{outline:2px dashed var(--primary);outline-offset:-2px;background:#e8f0fe}
+.bcol.block.over{outline-color:var(--warn)}
+.bcol.wip-broken{outline:2px solid #e0564a;outline-offset:-2px}
+.bcol.wip-broken .wip-chip{color:#c81e1e;border-color:#e0564a}
 /* Lead pipeline kartasi */
 .lcard-sum{font-family:var(--font-mono);font-size:13.5px;font-weight:700;color:#182634;margin-top:5px}
 .lcard-src{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;
@@ -1233,7 +1239,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <span class="bcol-name">In Progress</span><span class="wip-chip">WIP 3/5</span>
           <span class="bcol-count">3</span></div>
         <div class="bcol-body">
-          <div class="bcard drag" onclick="openIssue()">
+          <div class="bcard" onclick="openIssue()">
             <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
               <span class="bcard-key">MOB-142</span><span class="bcard-est">8 pt</span></div>
             <div class="bcard-title">OAuth 2.0 integratsiyasi (Google, Apple)</div>
@@ -2337,6 +2343,56 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   </div>
 </div>
 
+
+<!-- ════════════ DnD: KANBAN YOPISH — VAQT MAJBURIY ════════════ -->
+<div class="overlay" id="dd-est">
+  <div class="modal" style="width:min(440px,94vw)">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">timer</span></span>
+        <div class="mh-t"><h1>Vazifani yopish</h1>
+          <div class="mh-id">Kanban qoidasi: sarflangan vaqt kiritilmasdan yopib bo'lmaydi</div></div>
+      </div>
+      <button class="close-x" onclick="ddCancel('dd-est')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body" style="background:var(--surface)">
+      <div class="fld"><label>Sarflangan vaqt (daqiqa) <b>*</b></label>
+        <input type="number" id="dd-est-input" value="60" min="1"></div>
+      <div style="font-size:12px;color:#8b9aa9">Dasturchi va PM kelishgan yakuniy qiymat.
+        KPI fakt shu qiymatda yoziladi (issue.completed).</div>
+    </div>
+    <div class="fm-foot">
+      <button class="btn-flat" style="margin-right:auto" onclick="ddCancel('dd-est')">Bekor qilish</button>
+      <button class="btn-edit" onclick="ddEstConfirm()">
+        <span class="material-icons-outlined" style="font-size:18px">check_circle</span> Yopish</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ DnD: BLOCK — SABAB MAJBURIY ════════════ -->
+<div class="overlay" id="dd-block">
+  <div class="modal" style="width:min(460px,94vw)">
+    <div class="fm-head" style="background:var(--m-warn)">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">block</span></span>
+        <div class="mh-t"><h1>Vazifani bloklash</h1>
+          <div class="mh-id">Workflow qoidasi: sababsiz BLOCK'ga o'tkazib bo'lmaydi</div></div>
+      </div>
+      <button class="close-x" onclick="ddCancel('dd-block')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body" style="background:var(--surface)">
+      <div class="fld"><label>Bloklash sababi <b>*</b></label>
+        <textarea id="dd-block-input" placeholder="Masalan: hamkor API javobini kutyapmiz..."></textarea></div>
+      <div style="font-size:12px;color:#8b9aa9">issue_blockers yozuvi ochiladi; PM va watcherlarga
+        notification boradi.</div>
+    </div>
+    <div class="fm-foot">
+      <button class="btn-flat" style="margin-right:auto" onclick="ddCancel('dd-block')">Bekor qilish</button>
+      <button class="btn-edit" style="background:var(--m-warn)" onclick="ddBlockConfirm()">
+        <span class="material-icons-outlined" style="font-size:18px">block</span> Bloklash</button>
+    </div>
+  </div>
+</div>
 <!-- TOAST -->
 <div class="toast" id="toast"><span class="material-icons-outlined">check_circle</span><span>OK</span></div>
 
@@ -2626,6 +2682,137 @@ document.addEventListener('click',function(e){
   var n=document.getElementById('notif');
   if(n.classList.contains('open')&&!n.contains(e.target))n.classList.remove('open');
 });
+
+/* ═══════ DRAG & DROP ═══════ */
+var dragCard=null, ddPending=null;
+function initDnD(){
+  var cards=document.querySelectorAll('.bcard');
+  for(var i=0;i<cards.length;i++)cards[i].setAttribute('draggable','true');
+}
+function clearOver(){
+  var o=document.querySelectorAll('.bcol.over');
+  for(var i=0;i<o.length;i++)o[i].classList.remove('over');
+}
+document.addEventListener('dragstart',function(e){
+  var c=e.target.closest?e.target.closest('.bcard'):null;
+  if(!c)return;
+  dragCard=c;
+  c.classList.add('dragging');
+  if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text','');}
+});
+document.addEventListener('dragend',function(e){
+  if(dragCard)dragCard.classList.remove('dragging');
+  clearOver();
+});
+document.addEventListener('dragover',function(e){
+  if(!dragCard)return;
+  var body=e.target.closest?e.target.closest('.bcol-body'):null;
+  if(!body)return;
+  e.preventDefault();
+  if(e.dataTransfer)e.dataTransfer.dropEffect='move';
+  var col=body.closest('.bcol');
+  if(!col.classList.contains('over')){clearOver();col.classList.add('over');}
+});
+document.addEventListener('drop',function(e){
+  if(!dragCard)return;
+  var body=e.target.closest?e.target.closest('.bcol-body'):null;
+  if(!body)return;
+  e.preventDefault();
+  clearOver();
+  var col=body.closest('.bcol');
+  var srcCol=dragCard.closest('.bcol');
+  if(col===srcCol){dragCard.classList.remove('dragging');dragCard=null;return;}
+  var inProjBoard=!!col.closest('#pv-board');
+  var isKanban=!!col.closest('#board-kanban');
+  var key=dragCard.querySelector('.bcard-key');
+  key=key?key.textContent:'Vazifa';
+  if(inProjBoard && col.classList.contains('block')){
+    ddPending={card:dragCard,body:body};
+    document.getElementById('dd-block-input').value='';
+    document.getElementById('dd-block').classList.add('open');
+  }
+  else if(inProjBoard && col.classList.contains('done')){
+    if(isKanban){
+      ddPending={card:dragCard,body:body,key:key};
+      document.getElementById('dd-est-input').value='60';
+      document.getElementById('dd-est').classList.add('open');
+    }else{
+      var est=dragCard.querySelector('.bcard-est');
+      var pt=est?est.textContent:'';
+      ddFinalize(dragCard,body);
+      toast(key+" yopildi \u2014 issue.completed \u2192 KPI fakt"+(pt?(' ('+pt+')'):''));
+    }
+  }
+  else{
+    var wasBlocked=!!dragCard.querySelector('.blocked-note');
+    ddFinalize(dragCard,body);
+    if(wasBlocked)toast(key+' \u2014 blok yechildi (blocker resolved)');
+  }
+  if(dragCard)dragCard.classList.remove('dragging');
+  dragCard=null;
+});
+function ddFinalize(card,body){
+  var toCol=body.closest('.bcol');
+  // block bo'lmagan ustunga tushsa — blok yozuvi olib tashlanadi
+  if(!toCol.classList.contains('block')){
+    var bn=card.querySelector('.blocked-note');
+    if(bn)bn.remove();
+  }
+  body.appendChild(card);
+  refreshCounts();
+}
+function refreshCounts(){
+  var cols=document.querySelectorAll('.bcol');
+  for(var i=0;i<cols.length;i++){
+    var n=cols[i].querySelectorAll('.bcard').length;
+    var cnt=cols[i].querySelector('.bcol-count');
+    if(cnt)cnt.textContent=n;
+    var wip=cols[i].querySelector('.wip-chip');
+    if(wip){
+      var lim=parseInt(wip.textContent.split('/')[1])||5;
+      wip.textContent='WIP '+n+'/'+lim;
+      cols[i].classList.toggle('wip-broken',n>lim);
+      if(n>lim)toast('WIP limit buzildi \u2014 '+n+'/'+lim);
+    }
+  }
+}
+function ddCancel(id){
+  document.getElementById(id).classList.remove('open');
+  ddPending=null;
+}
+function ddEstConfirm(){
+  if(!ddPending)return;
+  var v=parseInt(document.getElementById('dd-est-input').value)||60;
+  var card=ddPending.card;
+  var est=card.querySelector('.bcard-est');
+  if(!est){
+    est=document.createElement('span');
+    est.className='bcard-est';
+    card.querySelector('.bcard-top').appendChild(est);
+  }
+  est.textContent=v+' min';
+  ddFinalize(card,ddPending.body);
+  toast((ddPending.key||'Vazifa')+' yopildi \u2014 KPI fakt: '+v+' daqiqa (issue.completed)');
+  ddCancel('dd-est');
+}
+function ddBlockConfirm(){
+  if(!ddPending)return;
+  var r=document.getElementById('dd-block-input').value.trim();
+  if(!r){toast('Sabab kiritilishi shart');return;}
+  var card=ddPending.card;
+  var bn=card.querySelector('.blocked-note');
+  if(!bn){
+    bn=document.createElement('div');
+    bn.className='blocked-note';
+    var title=card.querySelector('.bcard-title');
+    title.parentNode.insertBefore(bn,title.nextSibling);
+  }
+  bn.innerHTML='<span class="material-icons-outlined">block</span><span><b>Sabab:</b> '+r+'</span>';
+  ddFinalize(card,ddPending.body);
+  toast('issue_blockers yozuvi ochildi \u2014 PM xabardor qilindi');
+  ddCancel('dd-block');
+}
+initDnD();
 
 /* Jonli soat */
 setInterval(function(){
