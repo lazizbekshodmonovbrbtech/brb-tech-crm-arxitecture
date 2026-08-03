@@ -286,6 +286,19 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .bcol.won .bcol-name{color:var(--m-pos)}
 .bcol.lost .bcard{opacity:.6}
 
+/* ═══════ JIRA-USLUB TABLAR (underline) ═══════ */
+.ptabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--line-2);
+  margin-bottom:16px;overflow-x:auto}
+.ptab{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border:none;
+  background:transparent;font-family:var(--font-sans);font-size:13.5px;font-weight:600;
+  color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;
+  margin-bottom:-1px;white-space:nowrap}
+.ptab .material-icons-outlined{font-size:17px}
+.ptab:hover{color:var(--ink-1);background:#f7f8fa;border-radius:8px 8px 0 0}
+.ptab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.ptab-view{display:none}
+.ptab-view.active{display:block}
+
 /* ═══════ MODE CHIP va LOYIHA KARTALARI ═══════ */
 .mode-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;
   font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.08em}
@@ -930,7 +943,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   </div>
 </section>
 
-<!-- ════════════ LOYIHA ICHI (boardlar) ════════════ -->
+<!-- ════════════ LOYIHA ICHI (Jira-uslub tablar) ════════════ -->
 <section class="page-view" id="pv-project">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
     <button class="back-link" onclick="show('projects')"><span class="material-icons-outlined">arrow_back</span> Loyihalar</button>
@@ -941,44 +954,139 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="ava-stack" style="margin-left:auto">
       <span class="ava" style="background:#4f7cd1">DS</span><span class="ava" style="background:#3aa981">BK</span>
       <span class="ava" style="background:#b56bb0">SN</span><span class="ava-more">+4</span></div>
-    <button class="tb-icon-btn"><span class="material-icons-outlined">settings</span></button>
   </div>
-  <div class="stat-strip">
-    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">assignment</span>Ochiq vazifalar</div>
-      <div class="stat-value">17</div></div>
-    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">timer</span>Faol sprint</div>
-      <div class="stat-value">Sprint 14</div><div class="stat-sub">5 kun qoldi</div></div>
-    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">task_alt</span>Bu oy yopilgan</div>
-      <div class="stat-value">21</div></div>
-    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">speed</span>point_to_minutes</div>
-      <div class="stat-value">480</div><div class="stat-sub">1 pt ≈ 1 ish kuni</div></div>
+
+  <div class="ptabs">
+    <button class="ptab" data-ptab="summary" onclick="projTab('summary')">
+      <span class="material-icons-outlined">language</span> Umumiy</button>
+    <button class="ptab active" data-ptab="boards" onclick="projTab('boards')">
+      <span class="material-icons-outlined">view_kanban</span> Boardlar</button>
+    <button class="ptab" data-ptab="members" onclick="projTab('members')">
+      <span class="material-icons-outlined">group</span> A'zolar</button>
+    <button class="ptab" data-ptab="settings" onclick="projTab('settings')">
+      <span class="material-icons-outlined">settings</span> Sozlamalar</button>
   </div>
-  <div class="lp-head" style="padding:2px 2px 10px;border:none"><h3>Boardlar</h3></div>
-  <div class="proj-grid">
-    <div class="board-card" onclick="openBoard('scrum')">
-      <div class="bk-top"><span class="bk-ic" style="background:#2563eb"><span class="material-icons-outlined">rocket_launch</span></span>
-        <div><div class="bk-name">Development</div>
-          <span class="mode-chip scrum">SCRUM</span></div></div>
-      <div class="pc-meta">
-        <span class="m"><span class="material-icons-outlined">view_week</span><b>6</b> ustun</span>
-        <span class="m"><span class="material-icons-outlined">assignment</span><b>12</b> ochiq</span>
-        <span class="m"><span class="material-icons-outlined">timer</span>Sprint 14</span>
+
+  <!-- TAB: Umumiy -->
+  <div class="ptab-view" id="pt-summary">
+    <div class="stat-strip">
+      <div class="stat"><div class="stat-top"><span class="material-icons-outlined">assignment</span>Ochiq vazifalar</div>
+        <div class="stat-value">17</div></div>
+      <div class="stat"><div class="stat-top"><span class="material-icons-outlined">timer</span>Faol sprint</div>
+        <div class="stat-value">Sprint 14</div><div class="stat-sub">5 kun qoldi</div></div>
+      <div class="stat"><div class="stat-top"><span class="material-icons-outlined">task_alt</span>Bu oy yopilgan</div>
+        <div class="stat-value">21</div></div>
+      <div class="stat"><div class="stat-top"><span class="material-icons-outlined">speed</span>Velocity (o'rtacha)</div>
+        <div class="stat-value">38 pt</div><div class="stat-sub">oxirgi 3 sprint</div></div>
+    </div>
+    <div class="list-plain">
+      <div class="lp-head"><h3>Faollik lentasi</h3></div>
+      <div class="feed-row">Bekzod <b>MOB-150</b> uchun fix PR ochdi<div class="t">12 daqiqa oldin</div></div>
+      <div class="feed-row">Dilnoza <b>MOB-145</b> subtaskini yakunladi<div class="t">40 daqiqa oldin</div></div>
+      <div class="feed-row"><b>MOB-126</b> bloklandi — hamkor API kaliti kutilmoqda<div class="t">3 soat oldin</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: Boardlar -->
+  <div class="ptab-view active" id="pt-boards">
+    <div class="proj-grid">
+      <div class="board-card" onclick="openBoard('scrum')">
+        <div class="bk-top"><span class="bk-ic" style="background:#2563eb"><span class="material-icons-outlined">rocket_launch</span></span>
+          <div><div class="bk-name">Development</div>
+            <span class="mode-chip scrum">SCRUM</span></div></div>
+        <div class="pc-meta">
+          <span class="m"><span class="material-icons-outlined">view_week</span><b>6</b> ustun</span>
+          <span class="m"><span class="material-icons-outlined">assignment</span><b>12</b> ochiq</span>
+          <span class="m"><span class="material-icons-outlined">timer</span>Sprint 14</span>
+        </div>
+      </div>
+      <div class="board-card" onclick="openBoard('kanban')">
+        <div class="bk-top"><span class="bk-ic" style="background:#1b7a4d"><span class="material-icons-outlined">build</span></span>
+          <div><div class="bk-name">Maintenance</div>
+            <span class="mode-chip kanban">KANBAN</span></div></div>
+        <div class="pc-meta">
+          <span class="m"><span class="material-icons-outlined">view_week</span><b>4</b> ustun</span>
+          <span class="m"><span class="material-icons-outlined">assignment</span><b>5</b> ochiq</span>
+          <span class="m"><span class="material-icons-outlined">bolt</span>WIP nazorati</span>
+        </div>
+      </div>
+      <div class="board-card" style="border:1.5px dashed var(--line-table);box-shadow:none;
+        display:grid;place-items:center;min-height:120px;color:var(--ink-4)">
+        <div style="text-align:center"><span class="material-icons-outlined" style="font-size:26px">add_circle</span>
+          <div style="font-size:13px;font-weight:600;margin-top:4px">Yangi board</div></div>
       </div>
     </div>
-    <div class="board-card" onclick="openBoard('kanban')">
-      <div class="bk-top"><span class="bk-ic" style="background:#1b7a4d"><span class="material-icons-outlined">build</span></span>
-        <div><div class="bk-name">Maintenance</div>
-          <span class="mode-chip kanban">KANBAN</span></div></div>
-      <div class="pc-meta">
-        <span class="m"><span class="material-icons-outlined">view_week</span><b>4</b> ustun</span>
-        <span class="m"><span class="material-icons-outlined">assignment</span><b>5</b> ochiq</span>
-        <span class="m"><span class="material-icons-outlined">bolt</span>WIP nazorati</span>
+  </div>
+
+  <!-- TAB: A'zolar -->
+  <div class="ptab-view" id="pt-members">
+    <div class="table-card">
+      <div class="table-toolbar">
+        <h1 class="table-title" style="font-size:15px">Loyiha a'zolari</h1>
+        <button class="btn-primary"><span class="material-icons-outlined">person_add</span> A'ZO QO'SHISH</button>
+      </div>
+      <div class="table-wrap">
+        <table class="dt">
+          <thead><tr><th>Xodim</th><th>Roli</th><th>Tashkilot</th><th>Qo'shilgan</th><th>Status</th><th class="sticky-r">Amallar</th></tr></thead>
+          <tbody>
+            <tr><td><span class="mini-avatar" style="background:#4f7cd1">DS</span><b>D. Salimov</b></td>
+              <td><span class="chip soft-info">PM</span></td><td>BRB Tech</td>
+              <td class="mono">20.03.2026</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+            <tr><td><span class="mini-avatar" style="background:#3aa981">BK</span><b>B. Karimov</b></td>
+              <td><span class="chip neutral">Developer</span></td><td>BRB Tech</td>
+              <td class="mono">20.03.2026</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+            <tr><td><span class="mini-avatar" style="background:#b56bb0">SN</span><b>S. Nazarova</b></td>
+              <td><span class="chip neutral">QA</span></td><td>BRB Tech</td>
+              <td class="mono">02.04.2026</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+            <tr><td><span class="mini-avatar" style="background:#c98a3d">RT</span><b>R. Tohirov</b></td>
+              <td><span class="chip neutral">Developer</span></td>
+              <td>TechService MChJ <span class="chip soft-warn" style="font-size:10px;margin-left:5px">mehmon</span></td>
+              <td class="mono">15.06.2026</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="board-card" style="border:1.5px dashed var(--line-table);box-shadow:none;
-      display:grid;place-items:center;min-height:120px;color:var(--ink-4)">
-      <div style="text-align:center"><span class="material-icons-outlined" style="font-size:26px">add_circle</span>
-        <div style="font-size:13px;font-weight:600;margin-top:4px">Yangi board</div></div>
+  </div>
+
+  <!-- TAB: Sozlamalar -->
+  <div class="ptab-view" id="pt-settings">
+    <div style="max-width:680px">
+      <div class="desc-card">
+        <div class="dc-head"><h3>Loyiha sozlamalari</h3></div>
+        <div class="dc-body">
+          <div class="kv"><span class="kv-label">Standart board</span><span class="kv-dots"></span>
+            <span class="kv-value">Development</span></div>
+          <div class="kv"><span class="kv-label">point_to_minutes</span><span class="kv-dots"></span>
+            <span class="kv-value mono">480 <span style="color:#8b9aa9;font-family:var(--font-sans)">(1 pt ≈ 1 ish kuni)</span></span></div>
+          <div class="kv"><span class="kv-label">Baholash</span><span class="kv-dots"></span>
+            <span class="kv-value">rejimga qarab: scrum → point, kanban → estimate</span></div>
+        </div>
+      </div>
+      <div class="desc-card">
+        <div class="dc-head"><h3>Statuslar</h3><span class="dc-note">nom erkin · category qat'iy</span></div>
+        <div class="dc-body">
+          <div class="kv"><span class="kv-value" style="max-width:none">To Do</span><span class="kv-dots"></span>
+            <span class="score-pill">TO_DO</span></div>
+          <div class="kv"><span class="kv-value" style="max-width:none">In Progress</span><span class="kv-dots"></span>
+            <span class="score-pill hit">IN_PROGRESS</span></div>
+          <div class="kv"><span class="kv-value" style="max-width:none">Code Review</span><span class="kv-dots"></span>
+            <span class="score-pill hit">IN_REVIEW</span></div>
+          <div class="kv"><span class="kv-value" style="max-width:none">QA Testing</span><span class="kv-dots"></span>
+            <span class="score-pill hit">IN_REVIEW</span></div>
+          <div class="kv"><span class="kv-value" style="max-width:none">Blocked</span><span class="kv-dots"></span>
+            <span class="score-pill" style="background:var(--m-warn-soft);color:var(--m-warn)">BLOCK</span></div>
+          <div class="kv"><span class="kv-value" style="max-width:none">Done</span><span class="kv-dots"></span>
+            <span class="score-pill pos">DONE</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -986,22 +1094,18 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 <!-- ════════════ BOARD ════════════ -->
 <section class="page-view" id="pv-board">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <button class="back-link" onclick="show('project')"><span class="material-icons-outlined">arrow_back</span> Mobil ilova</button>
+      <button class="back-link" onclick="show('project');projTab('boards')"><span class="material-icons-outlined">arrow_back</span> Mobil ilova</button>
       <span style="color:#cbd5e1">/</span>
       <span class="bk-name" id="board-title">Development</span>
       <span class="mode-chip scrum" id="board-mode">SCRUM</span>
     </div>
+    <div class="ptabs" style="margin-bottom:12px">
+      <button class="ptab active"><span class="material-icons-outlined">view_kanban</span> Board</button>
+      <button class="ptab" id="stab-backlog"><span class="material-icons-outlined">list</span> Backlog</button>
+      <button class="ptab" id="stab-sprint" onclick="show('sprint')"><span class="material-icons-outlined">timer</span> Sprint rejalashtirish</button>
+      <button class="ptab" id="stab-reports"><span class="material-icons-outlined">insights</span> Hisobotlar</button>
+    </div>
     <div class="board-head">
-      <div class="board-tabs">
-        <button class="board-tab active" id="btab-scrum" onclick="openBoard('scrum')"><span class="material-icons-outlined">rocket_launch</span> Development</button>
-        <button class="board-tab" id="btab-kanban" onclick="openBoard('kanban')"><span class="material-icons-outlined">build</span> Maintenance</button>
-        <button class="board-tab add"><span class="material-icons-outlined">add</span> Board</button>
-      </div>
-      <div class="board-tabs" id="board-subtabs">
-        <button class="board-tab active">Board</button>
-        <button class="board-tab" id="stab-backlog">Backlog</button>
-        <button class="board-tab" id="stab-sprint" onclick="show('sprint')">Sprint rejalashtirish</button>
-      </div>
       <span class="sprint-chip" id="board-sprint-chip"><span class="material-icons-outlined">timer</span>
         Sprint 14 · <span class="mono">5 kun qoldi</span></span>
       <div class="ava-stack">
@@ -2036,8 +2140,6 @@ function openBoard(mode){
   var scrum = mode==='scrum';
   document.getElementById('board-scrum').style.display = scrum?'flex':'none';
   document.getElementById('board-kanban').style.display = scrum?'none':'flex';
-  document.getElementById('btab-scrum').classList.toggle('active',scrum);
-  document.getElementById('btab-kanban').classList.toggle('active',!scrum);
   document.getElementById('board-title').textContent = scrum?'Development':'Maintenance';
   var mc=document.getElementById('board-mode');
   mc.textContent = scrum?'SCRUM':'KANBAN';
@@ -2046,6 +2148,16 @@ function openBoard(mode){
   document.getElementById('stab-sprint').style.display = scrum?'':'none';
   document.getElementById('board-sprint-chip').style.display = scrum?'':'none';
   show('board');
+}
+
+/* Loyiha ichi tablari */
+function projTab(name){
+  var tabs=document.querySelectorAll('#pv-project .ptab');
+  for(var i=0;i<tabs.length;i++)
+    tabs[i].classList.toggle('active',tabs[i].getAttribute('data-ptab')===name);
+  var views=document.querySelectorAll('#pv-project .ptab-view');
+  for(var j=0;j<views.length;j++)
+    views[j].classList.toggle('active',views[j].id==='pt-'+name);
 }
 
 /* Modal */
