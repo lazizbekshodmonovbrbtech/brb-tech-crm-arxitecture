@@ -277,6 +277,22 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   line-height:1.4;color:var(--m-warn)}
 .blocked-note .material-icons-outlined{font-size:14px;flex-shrink:0;margin-top:1px}
 .bcol.done .bcard{opacity:.72}
+/* Subtask paneli (kartada ochiladigan) */
+.sub-count{cursor:pointer;border-radius:6px;padding:1px 6px;margin:-1px -2px;
+  transition:background .12s}
+.sub-count:hover{background:#e3e9f1;color:var(--ink-2)}
+.sub-count.open{background:var(--primary-soft);color:var(--primary)}
+.sub-count.open .material-icons-outlined{color:var(--primary)}
+.bcard-subs{display:none;margin-top:9px;padding-top:8px;border-top:1px dashed #dbe3ee}
+.bcard-subs.open{display:block}
+.sub-row{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-2);
+  padding:3px 2px;border-radius:6px;line-height:1.35}
+.sub-row:hover{background:#f4f7fb}
+.sub-row .material-icons,.sub-row .material-icons-outlined{font-size:14px;flex-shrink:0}
+.sub-row .sk{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-4);flex-shrink:0}
+.sub-row.sdone{color:var(--ink-4)}
+.sub-row.sdone .st{text-decoration:line-through}
+.sub-row .st{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bcard.dragging{opacity:.45;transform:rotate(2deg);box-shadow:0 14px 30px rgba(15,23,42,.18);
   border-color:var(--primary)}
 .bcol.over{outline:2px dashed var(--primary);outline-offset:-2px;background:#e8f0fe}
@@ -1207,6 +1223,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <div class="bcard-foot"><span class="prio md">O'rta</span>
               <span class="sub-count"><span class="material-icons-outlined">account_tree</span>0/3</span>
               <span class="ava" style="background:#4f7cd1">DS</span></div>
+            <div class="bcard-subs">
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-151a</span><span class="st">Sozlamalar ekrani UI</span></div>
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-151b</span><span class="st">Kategoriya bo'yicha toggle</span></div>
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-151c</span><span class="st">Tinch soatlar (DND)</span></div>
+            </div>
           </div>
           <div class="bcard">
             <div class="bcard-top"><span class="material-icons t-ic task">check_box</span>
@@ -1229,6 +1250,10 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <div class="bcard-foot"><span class="prio md">O'rta</span>
               <span class="sub-count"><span class="material-icons-outlined">account_tree</span>0/2</span>
               <span class="ava" style="background:#c98a3d">AA</span></div>
+            <div class="bcard-subs">
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-153a</span><span class="st">Taklif havolasi generatsiyasi</span></div>
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-153b</span><span class="st">Bonus hisoblash logikasi</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1239,13 +1264,19 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <span class="bcol-name">In Progress</span><span class="wip-chip">WIP 3/5</span>
           <span class="bcol-count">3</span></div>
         <div class="bcol-body">
-          <div class="bcard" onclick="openIssue()">
+          <div class="bcard" onclick="if(!event.target.closest('.sub-count')&&!event.target.closest('.bcard-subs'))openIssue()">
             <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
               <span class="bcard-key">MOB-142</span><span class="bcard-est">8 pt</span></div>
             <div class="bcard-title">OAuth 2.0 integratsiyasi (Google, Apple)</div>
             <div class="bcard-foot"><span class="prio hi">Yuqori</span>
               <span class="sub-count"><span class="material-icons-outlined">account_tree</span>2/4</span>
               <span class="ava" style="background:#4f7cd1">DS</span></div>
+            <div class="bcard-subs">
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-142a</span><span class="st">Google OAuth oqimi</span></div>
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-142b</span><span class="st">Token saqlash (Keychain)</span></div>
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-142c</span><span class="st">Apple Sign-In</span></div>
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-142d</span><span class="st">Xatolik ekranlari</span></div>
+            </div>
           </div>
           <div class="bcard">
             <div class="bcard-top"><span class="material-icons t-ic task">check_box</span>
@@ -1261,6 +1292,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <div class="bcard-foot"><span class="prio hi">Yuqori</span>
               <span class="sub-count"><span class="material-icons-outlined">account_tree</span>1/3</span>
               <span class="ava" style="background:#3aa981">BK</span></div>
+            <div class="bcard-subs">
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-139a</span><span class="st">Kesh sxemasi (SQLite)</span></div>
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-139b</span><span class="st">Sinxronizatsiya strategiyasi</span></div>
+              <div class="sub-row"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span><span class="sk">MOB-139c</span><span class="st">Offlayn rejim testlari</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1284,6 +1320,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <div class="bcard-foot"><span class="prio hi">Yuqori</span>
               <span class="sub-count"><span class="material-icons-outlined">account_tree</span>3/3</span>
               <span class="ava" style="background:#4f7cd1">DS</span></div>
+            <div class="bcard-subs">
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-133a</span><span class="st">Tranzaksiya ro'yxati UI</span></div>
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-133b</span><span class="st">Filtr va davr tanlash</span></div>
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-133c</span><span class="st">PDF eksport</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1347,6 +1388,12 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <div class="bcard-foot"><span class="prio md">O'rta</span>
               <span class="sub-count"><span class="material-icons-outlined">account_tree</span>4/4</span>
               <span class="ava" style="background:#b56bb0">SN</span></div>
+            <div class="bcard-subs">
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-125a</span><span class="st">i18n kutubxona integratsiyasi</span></div>
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-125b</span><span class="st">O'zbek va rus tarjimalari</span></div>
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-125c</span><span class="st">Til tanlash ekrani</span></div>
+              <div class="sub-row sdone"><span class="material-icons" style="color:var(--m-pos)">check_circle</span><span class="sk">MOB-125d</span><span class="st">RTL tekshiruvi</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -2575,6 +2622,17 @@ function sendMsg(){
 
 /* ═══ Umumiy delegatsiya: act-btn, tab guruhlar, pagination, chatlar, notif ═══ */
 document.addEventListener('click',function(e){
+  // subtask panelini ochish/yopish
+  var sc=e.target.closest('.sub-count');
+  if(sc && sc.closest('.bcard')){
+    var card=sc.closest('.bcard');
+    var panel=card.querySelector('.bcard-subs');
+    if(panel){
+      panel.classList.toggle('open');
+      sc.classList.toggle('open',panel.classList.contains('open'));
+    }
+    return;
+  }
   // amal tugmalari
   var ab=e.target.closest('.act-btn');
   if(ab){
