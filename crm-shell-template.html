@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Shell shablon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+<style>
+/* ═════════════════════════════════════════════════════════════════
+   CRM DIZAYN TIZIMI — haqiqiy frontend'dan olingan (o'zgartirilmaydi)
+   Bu SHELL: topbar + sidebar + kontent karkasi.
+   Yangi sahifa chizishda FAQAT <main class="page"> ichi almashtiriladi.
+   ═════════════════════════════════════════════════════════════════ */
+:root{
+  --primary:#2563eb; --primary-soft:#e8f0fe;
+  --bg:#f3f4f6; --surface:#ffffff;
+  --ink:#0f172a; --ink-1:#1e293b; --ink-2:#475569; --ink-3:#64748b; --ink-4:#94a3b8;
+  --line:#e5e7eb; --line-2:#eaecf0; --line-table:#e2e8f0;
+  --pos:#22c55e; --neg:#e31e24; --warn:#f59e0b; --info:#3b82f6;
+  --row-actioned:#e3edf7; --row-hover:#f1f5fb;
+  --font-sans:'Sora','Noto Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--ink-1);font-size:14px;overflow:hidden}
+.material-icons,.material-icons-outlined{font-size:20px;vertical-align:middle}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* ═══════════════ TOPBAR (64px, oq) ═══════════════ */
+.topbar{height:64px;background:var(--surface);display:flex;align-items:center;
+  padding:0 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);position:relative;z-index:20}
+.brand-zone{width:284px;flex-shrink:0;display:flex;align-items:center}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 12px 4px 4px;border-radius:12px;cursor:pointer}
+.brand:hover{background:#f3f4f6}
+.brand-logo{width:40px;height:40px;border-radius:11px;background:var(--primary);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:18px;
+  box-shadow:0 4px 10px rgba(37,99,235,.28)}
+.brand-word{display:flex;flex-direction:column;line-height:1.1}
+.brand-main{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.brand-sub{font-size:10px;font-weight:600;color:var(--ink-4);letter-spacing:.12em;
+  text-transform:uppercase;margin-top:3px;white-space:nowrap}
+.tb-icon-btn{width:38px;height:38px;border:none;background:transparent;border-radius:10px;
+  color:#374151;cursor:pointer;display:grid;place-items:center}
+.tb-icon-btn:hover{background:#f3f4f6;color:#1f2937}
+.breadcrumb{display:flex;align-items:center;gap:3px;margin-left:8px;font-size:14px;font-weight:600}
+.crumb{color:var(--ink-4);padding:2px 4px;border-radius:6px}
+.crumb.link{cursor:pointer}
+.crumb.link:hover{color:var(--primary);background:#f3f4f6}
+.crumb.current{color:var(--ink);font-weight:700}
+.crumb-sep{color:#cbd5e1;font-size:16px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:4px}
+.tb-clock{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;
+  color:var(--ink-2);white-space:nowrap;margin-right:6px}
+.tb-clock .material-icons-outlined{font-size:17px;color:var(--primary)}
+.tb-sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;border:none;background:transparent;
+  border-radius:10px;padding:7px 10px;font-family:var(--font-sans);font-size:13px;
+  font-weight:600;color:#374151;cursor:pointer}
+.lang-btn:hover{background:#f3f4f6}
+.flag{width:20px;height:20px;border-radius:50%;background:
+  linear-gradient(180deg,#3b82f6 33%,#fff 33% 66%,#22c55e 66%);border:1px solid var(--line)}
+.user-pill{display:flex;align-items:center;gap:6px;background:#f3f4f6;border:1px solid transparent;
+  border-radius:22px;padding:3px 8px 3px 3px;height:38px;cursor:pointer;margin-left:2px}
+.user-pill:hover{background:#eef0f4;border-color:#d1d5db}
+.user-ava{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
+.user-name{font-size:13px;font-weight:600;color:#1f2937}
+.user-chev{color:#9ca3af;font-size:18px}
+
+/* ═══════════════ APP BODY ═══════════════ */
+.app-body{display:flex;height:calc(100vh - 64px)}
+
+/* ═══════════════ SIDEBAR (300px, oq) ═══════════════ */
+.sidebar{width:300px;flex-shrink:0;background:var(--surface);display:flex;flex-direction:column;
+  border-right:1px solid var(--line-2)}
+.sb-scroll{flex:1;overflow-y:auto;padding:14px 12px 8px;scrollbar-width:thin}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.1);border-radius:4px}
+.sb-section{padding:4px 14px 8px;font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-4)}
+.nav-item{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;
+  border-radius:8px;font-size:15.5px;font-weight:500;color:#4b5563;cursor:pointer;
+  margin-bottom:4px;border:1px solid transparent;position:relative}
+.nav-item .material-icons-outlined{color:#64748b;font-size:21px}
+.nav-item:hover{background:#f3f4f6;color:#1f2937}
+.nav-item.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.nav-item.active .material-icons-outlined{color:var(--primary)}
+.nav-item.active::before{content:'';position:absolute;left:-12px;top:8px;bottom:8px;
+  width:3px;border-radius:0 3px 3px 0;background:var(--primary)}
+.nav-item .chev{margin-left:auto;font-size:18px;color:#cbd5e1;transition:transform .2s}
+.nav-item.open .chev{transform:rotate(90deg);color:#94a3b8}
+.nav-children{padding:2px 0 8px;margin-left:20px;padding-left:10px;border-left:1.5px solid #e8ecf2}
+.nav-child{display:flex;align-items:center;gap:10px;min-height:42px;padding:0 10px;
+  border-radius:7px;font-size:14.5px;font-weight:500;color:#64748b;cursor:pointer;margin-bottom:2px}
+.nav-child .material-icons-outlined{font-size:18px;color:#94a3b8}
+.nav-child:hover{background:#f3f4f6;color:#1f2937}
+.nav-child.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.nav-child.active .material-icons-outlined{color:var(--primary)}
+.menu-badge{margin-left:auto;min-width:22px;height:22px;padding:0 7px;border-radius:11px;
+  font-size:11px;font-weight:700;color:#fff;display:inline-flex;align-items:center;
+  justify-content:center;background:linear-gradient(135deg,#ef4444,#dc2626);
+  box-shadow:0 2px 6px rgba(239,68,68,.35)}
+/* Promo-karta (sidebar pastida) */
+.promo-zone{flex-shrink:0;padding:10px 14px 14px}
+.promo-zone::before{content:'';display:block;height:1px;margin:0 2px 12px;
+  background:linear-gradient(90deg,transparent,rgba(15,23,42,.08),transparent)}
+.promo-card{display:block;width:100%;text-align:left;border:none;cursor:pointer;padding:16px;
+  border-radius:16px;color:#fff;position:relative;overflow:hidden;
+  background:radial-gradient(120% 120% at 100% 0%,rgba(167,139,250,.55) 0%,transparent 55%),
+             linear-gradient(135deg,#2563eb 0%,#4f46e5 52%,#7c3aed 100%);
+  box-shadow:0 10px 24px rgba(79,70,229,.34),0 2px 6px rgba(79,70,229,.22),
+             inset 0 1px 0 rgba(255,255,255,.22);
+  transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+.promo-card:hover{transform:translateY(-3px)}
+.promo-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.promo-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.28);display:grid;place-items:center}
+.promo-icon .material-icons-outlined{color:#fff;font-size:22px}
+.promo-title{font-size:16px;font-weight:700;color:#fff}
+.promo-desc{font-size:12.5px;font-weight:500;line-height:1.45;color:rgba(255,255,255,.85)}
+.promo-cta{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
+  margin-top:14px;padding:9px 14px;border-radius:11px;font-size:13.5px;font-weight:600;
+  color:#4f46e5;background:#fff;border:none;cursor:pointer;font-family:var(--font-sans);
+  box-shadow:0 3px 8px rgba(0,0,0,.14)}
+
+/* ═══════════════ KONTENT MAYDONI ═══════════════ */
+.page{flex:1;overflow-y:auto;padding:16px}
+
+/* ── Jadval kartasi (ro'yxat sahifalari naqshi) ── */
+.table-card{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.table-toolbar{display:flex;align-items:center;gap:10px;padding:14px 16px}
+.table-title{font-size:18px;font-weight:600;color:var(--ink);margin-right:auto}
+.search-box{display:flex;align-items:center;gap:8px;width:220px;height:38px;padding:0 12px;
+  border:1px solid var(--line-table);border-radius:10px;color:var(--ink-4);font-size:13.5px}
+.search-box .material-icons-outlined{font-size:19px}
+.search-box input{border:none;outline:none;width:100%;font-family:var(--font-sans);
+  font-size:13.5px;color:var(--ink-1)}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 16px;
+  background:var(--primary);color:#fff;border:none;border-radius:9px;font-family:var(--font-sans);
+  font-size:13.5px;font-weight:600;letter-spacing:.03em;cursor:pointer;
+  box-shadow:0 4px 12px rgba(37,99,235,.30)}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-primary .material-icons-outlined{font-size:19px}
+
+.table-wrap{overflow-x:auto}
+table.dt{width:100%;min-width:max-content;border-collapse:collapse}
+.dt th{padding:11px 16px;font-size:13.5px;font-weight:600;color:var(--ink-1);text-align:left;
+  border:1px solid var(--line-table);background:var(--surface);white-space:nowrap}
+.dt td{padding:10px 16px;font-size:13.5px;color:var(--ink-1);
+  border:1px solid var(--line-table);white-space:nowrap;background:var(--surface)}
+.dt tbody tr:hover td{background:var(--row-hover)}
+.dt tr.actioned td{background:var(--row-actioned);}
+.dt tr.actioned td:first-child{box-shadow:inset 3px 0 0 var(--primary)}
+.dt td.num{text-align:right}
+.dt .filter-row td{padding:8px 10px;background:#fafbfc}
+.mini-filter{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;
+  border:1px solid var(--line-table);border-radius:8px;font-size:12.5px;color:var(--ink-4);
+  background:var(--surface);cursor:pointer}
+.mini-filter .material-icons-outlined{font-size:16px}
+.chip{display:inline-flex;align-items:center;padding:3px 12px;border-radius:999px;
+  font-size:12px;font-weight:600;letter-spacing:.02em}
+.chip.pos{background:var(--pos);color:#fff}
+.chip.neg{background:#fde8e8;color:#c81e1e}
+.chip.warn{background:#fdf1dc;color:#976a14}
+.chip.neutral{background:#eef1f5;color:#5c6e80}
+.dt .act-btn{width:32px;height:32px;border:none;background:transparent;border-radius:8px;
+  color:var(--primary);cursor:pointer;display:inline-grid;place-items:center}
+.dt .act-btn:hover{background:var(--primary-soft)}
+.dt .act-btn.danger{color:var(--neg)}
+.dt .act-btn.danger:hover{background:#fde8e8}
+.dt th.sticky-r,.dt td.sticky-r{position:sticky;right:0;z-index:2;
+  box-shadow:-6px 0 8px -6px rgba(15,23,42,.12)}
+
+.table-footer{display:flex;align-items:center;justify-content:flex-end;gap:14px;
+  padding:12px 16px;font-size:13px;color:var(--ink-3)}
+.rows-select{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;
+  border:1px solid var(--line-table);border-radius:8px;font-weight:600;color:var(--ink-1);cursor:pointer}
+.pager{display:flex;align-items:center;gap:2px}
+.page-btn{min-width:28px;height:28px;padding:0 8px;border:none;background:transparent;
+  border-radius:7px;font-family:var(--font-sans);font-size:13px;font-weight:600;
+  color:var(--ink-2);cursor:pointer;display:inline-grid;place-items:center}
+.page-btn:hover{background:#f3f4f6}
+.page-btn.active{background:var(--primary);color:#fff}
+.page-btn .material-icons-outlined{font-size:18px}
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<header class="topbar">
+  <div class="brand-zone">
+    <div class="brand">
+      <div class="brand-logo">C</div>
+      <div class="brand-word">
+        <span class="brand-main">CRM</span>
+        <span class="brand-sub">Loyiha boshqaruvi</span>
+      </div>
+    </div>
+  </div>
+  <button class="tb-icon-btn"><span class="material-icons-outlined">menu</span></button>
+  <nav class="breadcrumb">
+    <span class="crumb link">Bosh sahifa</span>
+    <span class="material-icons-outlined crumb-sep">chevron_right</span>
+    <span class="crumb current">Sahifa nomi</span>
+  </nav>
+  <div class="tb-right">
+    <span class="tb-clock"><span class="material-icons-outlined">calendar_today</span>
+      <span class="mono">03.08.2026</span></span>
+    <span class="tb-clock"><span class="material-icons-outlined">schedule</span>
+      <span class="mono">08:52:55</span></span>
+    <span class="tb-sep"></span>
+    <button class="lang-btn"><span class="flag"></span> O'z</button>
+    <button class="tb-icon-btn"><span class="material-icons-outlined">notifications</span></button>
+    <div class="user-pill">
+      <div class="user-ava">U</div>
+      <span class="user-name">User</span>
+      <span class="material-icons-outlined user-chev">expand_more</span>
+    </div>
+  </div>
+</header>
+
+<div class="app-body">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar">
+    <div class="sb-scroll">
+      <div class="sb-section">Asosiy</div>
+      <div class="nav-item"><span class="material-icons-outlined">home</span> Bosh sahifa</div>
+      <div class="nav-item active"><span class="material-icons-outlined">table_view</span> Joriy sahifa</div>
+      <div class="nav-item open"><span class="material-icons-outlined">folder</span> Guruh menyu
+        <span class="material-icons-outlined chev">chevron_right</span></div>
+      <div class="nav-children">
+        <div class="nav-child"><span class="material-icons-outlined">list</span> Ichki sahifa 1</div>
+        <div class="nav-child"><span class="material-icons-outlined">category</span> Ichki sahifa 2</div>
+      </div>
+      <div class="nav-item"><span class="material-icons-outlined">groups</span> Modul A
+        <span class="material-icons-outlined chev">chevron_right</span></div>
+      <div class="nav-item"><span class="material-icons-outlined">security</span> Modul B
+        <span class="material-icons-outlined chev">chevron_right</span></div>
+      <div class="nav-item"><span class="material-icons-outlined">swap_horiz</span> Handover
+        <span class="menu-badge">6</span></div>
+    </div>
+    <div class="promo-zone">
+      <button class="promo-card">
+        <span class="promo-head">
+          <span class="promo-icon"><span class="material-icons-outlined">insights</span></span>
+          <span class="promo-title">Promo blok</span>
+        </span>
+        <span class="promo-desc">Qo'shimcha modul yoki funksiya haqida qisqa tavsif</span>
+        <span class="promo-cta">Ochish <span class="material-icons-outlined" style="font-size:16px">arrow_forward</span></span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════ KONTENT — YANGI SAHIFA SHU YERGA CHIZILADI ══════════ -->
+  <main class="page">
+
+    <!-- NAMUNA: standart ro'yxat sahifasi (jadval naqshi) -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <h1 class="table-title">Sahifa nomi (namuna jadval)</h1>
+        <div class="search-box"><span class="material-icons-outlined">search</span>
+          <input placeholder="Umumiy qidiruv..."></div>
+        <button class="tb-icon-btn"><span class="material-icons-outlined">view_column</span></button>
+        <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
+        <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+      </div>
+      <div class="table-wrap">
+        <table class="dt">
+          <thead>
+            <tr>
+              <th>№</th><th>F.I.O</th><th>Telefon</th><th>Summa</th><th>Holati</th>
+              <th class="sticky-r">Amallar</th>
+            </tr>
+            <tr class="filter-row">
+              <td><span class="mini-filter"><span class="material-icons-outlined">filter_list</span> Filter</td>
+              <td></td><td></td><td></td>
+              <td><span class="mini-filter"><span class="material-icons-outlined">search</span> holati...
+                <span class="material-icons-outlined">arrow_drop_down</span></span></td>
+              <td class="sticky-r"></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono num">146</td><td>Saboat Rasulova</td>
+              <td class="mono">998914610104</td><td class="mono num">100,000</td>
+              <td><span class="chip pos">Bajarildi</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td>
+            </tr>
+            <tr class="actioned">
+              <td class="mono num">145</td><td>Alinur Abdumanapov</td>
+              <td class="mono">998903160735</td><td class="mono num">9,814,000</td>
+              <td><span class="chip pos">Bajarildi</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td>
+            </tr>
+            <tr>
+              <td class="mono num">144</td><td>Asila Nabijanova</td>
+              <td class="mono">998999742834</td><td class="mono num">113,310</td>
+              <td><span class="chip warn">Kutilmoqda</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span>Sahifadagi qatorlar soni:</span>
+        <span class="rows-select">10 <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span>
+        <span class="mono">1-10 dan 103</span>
+        <div class="pager">
+          <button class="page-btn"><span class="material-icons-outlined">first_page</span></button>
+          <button class="page-btn"><span class="material-icons-outlined">chevron_left</span></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">…</button>
+          <button class="page-btn">11</button>
+          <button class="page-btn"><span class="material-icons-outlined">chevron_right</span></button>
+          <button class="page-btn"><span class="material-icons-outlined">last_page</span></button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>
