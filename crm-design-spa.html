@@ -305,20 +305,28 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .mode-chip.scrum{background:var(--primary-soft);color:var(--primary)}
 .mode-chip.kanban{background:var(--m-pos-soft);color:var(--m-pos)}
 .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.proj-card{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);
-  padding:16px;cursor:pointer;border:1px solid transparent;
+.proj-card{background:var(--surface);border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.05);
+  padding:18px 18px 14px;cursor:pointer;border:1px solid var(--line-2);
+  display:flex;flex-direction:column;min-height:168px;
   transition:box-shadow .15s,transform .12s,border-color .15s}
-.proj-card:hover{border-color:#c9d6ea;box-shadow:0 8px 20px rgba(15,23,42,.10);transform:translateY(-2px)}
-.pc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.pc-code{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;
-  font-family:var(--font-mono);font-size:13px;font-weight:700;color:#fff}
-.pc-name{font-size:15px;font-weight:700;color:var(--ink)}
-.pc-client{font-size:12px;color:var(--ink-3);margin-top:1px}
-.pc-meta{display:flex;align-items:center;gap:14px;margin-top:12px;padding-top:12px;
-  border-top:1px solid var(--line-2);font-size:12px;color:var(--ink-3)}
-.pc-meta .m{display:inline-flex;align-items:center;gap:5px}
+.proj-card:hover{border-color:#b9cbe6;box-shadow:0 10px 26px rgba(15,23,42,.11);transform:translateY(-2px)}
+.pc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.pc-code{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;
+  font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:#fff;
+  box-shadow:0 5px 12px rgba(15,23,42,.18)}
+.pc-name{font-size:15.5px;font-weight:700;color:var(--ink);line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc-client{font-size:12px;color:var(--ink-3);margin-top:3px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.pc-meta{display:flex;align-items:center;gap:16px;margin-top:auto;padding-top:12px;
+  border-top:1px solid var(--line-2);font-size:12px;color:var(--ink-3);min-height:37px}
+.pc-meta .m{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .pc-meta .m .material-icons-outlined{font-size:15px;color:var(--ink-4)}
 .pc-meta b{font-family:var(--font-mono);color:var(--ink-1)}
+.pc-avas{margin-left:auto;display:flex;align-items:center}
+.pc-avas .mini-avatar{margin:0 0 0 -8px;border:2px solid var(--surface);width:26px;height:26px}
+.pc-avas .mini-avatar:first-child{margin-left:0}
+.pc-avas .more{font-size:11px;font-weight:600;color:var(--ink-4);margin-left:4px}
 .board-card{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);
   padding:16px;cursor:pointer;border:1px solid transparent;
   transition:box-shadow .15s,transform .12s,border-color .15s}
@@ -947,39 +955,51 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   <!-- CARD ko'rinish -->
   <div class="proj-grid" id="proj-cards" style="display:none;margin-top:14px">
     <div class="proj-card" onclick="show('project')">
-      <div class="pc-top"><span class="pc-code" style="background:#2563eb">MOB</span>
-        <div><div class="pc-name">Mobil ilova</div><div class="pc-client">Ipak Yo'li Bank</div></div>
-        <span class="chip soft-pos" style="margin-left:auto"><span class="st-dot pos"></span>Faol</span></div>
+      <div class="pc-head">
+        <span class="pc-code" style="background:#2563eb;box-shadow:0 5px 12px rgba(37,99,235,.32)">MOB</span>
+        <span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span>
+      </div>
+      <div class="pc-name">Mobil ilova</div>
+      <div class="pc-client">Ipak Yo'li Bank</div>
       <div class="pc-meta">
         <span class="m"><span class="material-icons-outlined">view_kanban</span><b>2</b> board</span>
         <span class="m"><span class="material-icons-outlined">assignment</span><b>17</b> ochiq</span>
-        <span class="m" style="margin-left:auto"><span class="mini-avatar" style="background:#4f7cd1">DS</span><span class="mini-avatar" style="background:#3aa981;margin-left:-13px">BK</span><span style="font-size:11px;color:var(--ink-4)">+5</span></span>
+        <span class="pc-avas"><span class="mini-avatar" style="background:#4f7cd1">DS</span><span class="mini-avatar" style="background:#3aa981">BK</span><span class="more">+5</span></span>
       </div>
     </div>
     <div class="proj-card">
-      <div class="pc-top"><span class="pc-code" style="background:#7c3aed">CRM</span>
-        <div><div class="pc-name">Ichki CRM platforma</div><div class="pc-client">Ichki loyiha</div></div>
-        <span class="chip soft-pos" style="margin-left:auto"><span class="st-dot pos"></span>Faol</span></div>
+      <div class="pc-head">
+        <span class="pc-code" style="background:#7c3aed;box-shadow:0 5px 12px rgba(124,58,237,.32)">CRM</span>
+        <span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span>
+      </div>
+      <div class="pc-name">Ichki CRM platforma</div>
+      <div class="pc-client">Ichki loyiha</div>
       <div class="pc-meta">
         <span class="m"><span class="material-icons-outlined">view_kanban</span><b>1</b> board</span>
         <span class="m"><span class="material-icons-outlined">assignment</span><b>34</b> ochiq</span>
-        <span class="m" style="margin-left:auto"><span class="mini-avatar" style="background:#c98a3d">AA</span><span style="font-size:11px;color:var(--ink-4)">+7</span></span>
+        <span class="pc-avas"><span class="mini-avatar" style="background:#c98a3d">AA</span><span class="more">+7</span></span>
       </div>
     </div>
     <div class="proj-card">
-      <div class="pc-top"><span class="pc-code" style="background:#0ea5e9">LOG</span>
-        <div><div class="pc-name">Logistika platformasi</div><div class="pc-client">Trans Cargo Group</div></div>
-        <span class="chip soft-warn" style="margin-left:auto"><span class="st-dot warn"></span>Boshlanmoqda</span></div>
+      <div class="pc-head">
+        <span class="pc-code" style="background:#0ea5e9;box-shadow:0 5px 12px rgba(14,165,233,.32)">LOG</span>
+        <span class="chip soft-warn"><span class="st-dot warn"></span>Boshlanmoqda</span>
+      </div>
+      <div class="pc-name">Logistika platformasi</div>
+      <div class="pc-client">Trans Cargo Group</div>
       <div class="pc-meta">
         <span class="m"><span class="material-icons-outlined">view_kanban</span><b>1</b> board</span>
         <span class="m"><span class="material-icons-outlined">assignment</span><b>8</b> ochiq</span>
-        <span class="m" style="margin-left:auto"><span class="mini-avatar" style="background:#3aa981">BK</span><span style="font-size:11px;color:var(--ink-4)">+2</span></span>
+        <span class="pc-avas"><span class="mini-avatar" style="background:#3aa981">BK</span><span class="more">+2</span></span>
       </div>
     </div>
-    <div class="proj-card" style="opacity:.65">
-      <div class="pc-top"><span class="pc-code" style="background:#64748b">HRM</span>
-        <div><div class="pc-name">HR tizimi</div><div class="pc-client">Samarqand Textile</div></div>
-        <span class="chip neutral" style="margin-left:auto"><span class="st-dot neutral"></span>Yakunlangan</span></div>
+    <div class="proj-card" style="opacity:.62">
+      <div class="pc-head">
+        <span class="pc-code" style="background:#64748b;box-shadow:0 5px 12px rgba(100,116,139,.28)">HRM</span>
+        <span class="chip neutral"><span class="st-dot neutral"></span>Yakunlangan</span>
+      </div>
+      <div class="pc-name">HR tizimi</div>
+      <div class="pc-client">Samarqand Textile</div>
       <div class="pc-meta">
         <span class="m"><span class="material-icons-outlined">view_kanban</span><b>1</b> board</span>
         <span class="m"><span class="material-icons-outlined">assignment</span><b>0</b> ochiq</span>
@@ -988,7 +1008,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   </div>
 </section>
 
-<!-- ════════════ LOYIHA ICHI (Jira-uslub tablar) ════════════ -->
+<!-- ════════════ LOYIHA ICHI<!-- ════════════ LOYIHA ICHI (Jira-uslub tablar) ════════════ -->
 <section class="page-view" id="pv-project">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
     <button class="back-link" onclick="show('projects')"><span class="material-icons-outlined">arrow_back</span> Loyihalar</button>
