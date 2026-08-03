@@ -488,6 +488,43 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .score-pill.hit{background:var(--m-acc-soft);color:var(--m-acc)}
 .score-pill.neg{background:var(--m-neg-soft);color:var(--m-neg)}
 
+/* ═══════ TOAST, CHART, USER POPUP ═══════ */
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+  background:#182634;color:#fff;font-size:13px;font-weight:500;padding:11px 20px;
+  border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:200;opacity:0;
+  transition:all .28s ease;display:flex;align-items:center;gap:9px;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast .material-icons-outlined{font-size:18px;color:#5bd49a}
+.bar-row{display:flex;align-items:center;gap:10px;padding:7px 0}
+.bar-label{width:110px;font-size:12px;color:#5c6e80;flex-shrink:0}
+.bar-track{flex:1;height:18px;background:#eff3f8;border-radius:5px;overflow:hidden}
+.bar-track i{display:block;height:100%;border-radius:5px;background:var(--primary)}
+.bar-val{width:44px;text-align:right;font-family:var(--font-mono);font-size:12px;
+  font-weight:600;color:#182634}
+.user-popup{position:absolute;top:56px;right:12px;width:230px;background:var(--surface);
+  border-radius:12px;border:1px solid var(--line-2);z-index:60;overflow:hidden;display:none;
+  box-shadow:0 12px 40px rgba(0,0,0,.12)}
+.user-popup.open{display:block}
+.up-id{padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.up-name{font-size:13.5px;font-weight:700;color:var(--ink)}
+.up-role{font-size:11px;color:var(--ink-3);margin-top:2px}
+.up-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;
+  font-weight:500;color:var(--ink-2);cursor:pointer}
+.up-item:hover{background:#f7f8fa}
+.up-item .material-icons-outlined{font-size:18px;color:var(--ink-4)}
+.up-item.danger{color:var(--m-neg)}
+.up-item.danger .material-icons-outlined{color:var(--m-neg)}
+/* Form modal inputlari */
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12.5px;font-weight:600;color:#5c6e80;margin-bottom:6px}
+.fld label b{color:#d23f31}
+.fld input,.fld select,.fld textarea{width:100%;height:46px;border:1px solid var(--mline);
+  border-radius:10px;padding:0 14px;font-family:var(--font-sans);font-size:13.5px;
+  color:#182634;outline:none;background:var(--surface)}
+.fld textarea{height:88px;padding:12px 14px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+
 /* ═══════ HOME dashboard ═══════ */
 .cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:14px}
 .dash-grid{display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start}
@@ -531,18 +568,26 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <span class="tb-clock"><span class="material-icons-outlined">schedule</span>
       <span class="mono" id="clock">08:52:55</span></span>
     <span class="tb-sep"></span>
-    <button class="lang-btn"><span class="flag"></span> O'z</button>
+    <button class="lang-btn" onclick="cycleLang(this)"><span class="flag"></span> <span id="lang-txt">O'z</span></button>
     <button class="tb-icon-btn" onclick="toggleNotif(event)">
       <span class="material-icons-outlined">notifications</span><span class="tb-badge">3</span></button>
-    <div class="user-pill">
+    <div class="user-pill" onclick="toggleUser(event)">
       <div class="user-ava">DS</div>
       <span class="user-name">D. Salimov</span>
       <span class="material-icons-outlined user-chev">expand_more</span>
     </div>
   </div>
+  <!-- User popup -->
+  <div class="user-popup" id="user-popup">
+    <div class="up-id"><div class="up-name">Davron Salimov</div>
+      <div class="up-role">Senior dasturchi · EMP-0042</div></div>
+    <div class="up-item" onclick="toast('Profil sahifasi (prototip)')"><span class="material-icons-outlined">person</span> Profil</div>
+    <div class="up-item" onclick="toast('Sozlamalar (prototip)')"><span class="material-icons-outlined">settings</span> Sozlamalar</div>
+    <div class="up-item danger" onclick="toast('Tizimdan chiqish (prototip)')"><span class="material-icons-outlined">logout</span> Chiqish</div>
+  </div>
   <!-- Bildirishnoma dropdown -->
   <div class="notif-panel" id="notif">
-    <div class="np-head"><h3>Bildirishnomalar</h3><a href="#">Hammasini o'qilgan qilish</a></div>
+    <div class="np-head"><h3>Bildirishnomalar</h3><a href="#" onclick="readAllNotif(event)">Hammasini o'qilgan qilish</a></div>
     <div class="np-item unread">
       <span class="np-ic" style="background:#3b82f6"><span class="material-icons-outlined">assignment</span></span>
       <div><div class="np-title">MOB-142 sizga biriktirildi</div>
@@ -603,7 +648,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span class="promo-title">Analitika markazi</span>
       </span>
       <span class="promo-desc">Loyihalar bo'yicha hisobotlar, velocity va KPI tahlillari</span>
-      <span class="promo-cta">Ochish <span class="material-icons-outlined" style="font-size:16px">arrow_forward</span></span>
+      <span class="promo-cta" onclick="toast('Analitika markazi (prototip)')">Ochish <span class="material-icons-outlined" style="font-size:16px">arrow_forward</span></span>
     </button>
   </div>
 </aside>
@@ -1010,7 +1055,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <span class="m"><span class="material-icons-outlined">bolt</span>WIP nazorati</span>
         </div>
       </div>
-      <div class="board-card" style="border:1.5px dashed var(--line-table);box-shadow:none;
+      <div class="board-card" onclick="openForm('Yangi board — Mobil ilova')" style="border:1.5px dashed var(--line-table);box-shadow:none;
         display:grid;place-items:center;min-height:120px;color:var(--ink-4)">
         <div style="text-align:center"><span class="material-icons-outlined" style="font-size:26px">add_circle</span>
           <div style="font-size:13px;font-weight:600;margin-top:4px">Yangi board</div></div>
@@ -1100,11 +1145,14 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="mode-chip scrum" id="board-mode">SCRUM</span>
     </div>
     <div class="ptabs" style="margin-bottom:12px">
-      <button class="ptab active"><span class="material-icons-outlined">view_kanban</span> Board</button>
-      <button class="ptab" id="stab-backlog"><span class="material-icons-outlined">list</span> Backlog</button>
-      <button class="ptab" id="stab-sprint" onclick="show('sprint')"><span class="material-icons-outlined">timer</span> Sprint rejalashtirish</button>
-      <button class="ptab" id="stab-reports"><span class="material-icons-outlined">insights</span> Hisobotlar</button>
+      <button class="ptab active" data-btab="board" onclick="boardTab('board')"><span class="material-icons-outlined">view_kanban</span> Board</button>
+      <button class="ptab" data-btab="backlog" id="stab-backlog" onclick="boardTab('backlog')"><span class="material-icons-outlined">list</span> Backlog</button>
+      <button class="ptab" data-btab="sprint" id="stab-sprint" onclick="boardTab('sprint')"><span class="material-icons-outlined">timer</span> Sprint rejalashtirish</button>
+      <button class="ptab" data-btab="reports" onclick="boardTab('reports')"><span class="material-icons-outlined">insights</span> Hisobotlar</button>
     </div>
+
+    <!-- BOARD tab -->
+    <div class="ptab-view active" id="bd-board">
     <div class="board-head">
       <span class="sprint-chip" id="board-sprint-chip"><span class="material-icons-outlined">timer</span>
         Sprint 14 · <span class="mono">5 kun qoldi</span></span>
@@ -1116,7 +1164,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span class="ava-more">+3</span>
       </div>
       <button class="tb-icon-btn"><span class="material-icons-outlined">settings</span></button>
-      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
+      <button class="btn-primary" onclick="openForm('Yangi vazifa — Development board')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
     </div>
 
     <div class="board" id="board-scrum">
@@ -1358,14 +1406,54 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         </div>
       </div>
     </div>
-</section>
+    </div><!-- /bd-board -->
 
-<!-- ════════════ SPRINT REJALASHTIRISH ════════════ -->
-<section class="page-view" id="pv-sprint">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-    <button class="back-link" onclick="show('board')"><span class="material-icons-outlined">arrow_back</span> Development board</button>
-    <span class="mode-chip scrum">SCRUM</span>
-  </div>
+    <!-- BACKLOG tab -->
+    <div class="ptab-view" id="bd-backlog">
+      <div class="table-card">
+        <div class="table-toolbar">
+          <h1 class="table-title" style="font-size:15px">Backlog — Development</h1>
+          <div class="search-box"><span class="material-icons-outlined">search</span>
+            <input placeholder="Backlog qidirish..."></div>
+          <button class="btn-primary" onclick="openForm('Yangi vazifa — Backlog')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
+        </div>
+        <div class="table-wrap">
+          <table class="dt">
+            <thead><tr><th>Kod</th><th>Vazifa</th><th>Turi</th><th>Priority</th><th>Baholash</th><th>Sprint</th><th class="sticky-r">Amallar</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">MOB-153</td><td>Referal dasturi — taklif havolalari</td>
+                <td><span class="material-icons t-ic story">bookmark</span> Story</td>
+                <td><span class="prio md">O'rta</span></td><td class="mono num">5 pt</td>
+                <td><span class="chip neutral">—</span></td>
+                <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                  <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+              <tr><td class="mono">MOB-155</td><td>Biometrik kirish (FaceID / barmoq izi)</td>
+                <td><span class="material-icons t-ic story">bookmark</span> Story</td>
+                <td><span class="prio hi">Yuqori</span></td><td class="mono num">8 pt</td>
+                <td><span class="chip soft-info">Sprint 15</span></td>
+                <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                  <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+              <tr><td class="mono">MOB-156</td><td>Analytics eventlarini qo'shish</td>
+                <td><span class="material-icons t-ic task">check_box</span> Task</td>
+                <td><span class="prio lo">Past</span></td><td class="mono num">2 pt</td>
+                <td><span class="chip neutral">—</span></td>
+                <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                  <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+              <tr><td class="mono">MOB-158</td><td>Kredit kalkulyatori <span class="chip soft-warn" style="font-size:10px;margin-left:6px">point yo'q</span></td>
+                <td><span class="material-icons t-ic story">bookmark</span> Story</td>
+                <td><span class="prio md">O'rta</span></td>
+                <td class="mono num" style="color:var(--ink-4)">—</td>
+                <td><span class="chip neutral">—</span></td>
+                <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                  <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPRINT tab -->
+    <div class="ptab-view" id="bd-sprint">
   <div class="stat-strip">
     <div class="stat"><div class="stat-top"><span class="material-icons-outlined">list</span>Backlog</div>
       <div class="stat-value">46</div><div class="stat-sub">182 pt jami</div></div>
@@ -1421,11 +1509,57 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-151</span>
           Push sozlamalari ekrani<span style="margin-left:auto" class="bcard-est">3 pt</span></div>
       </div>
-      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:14px">
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:14px"
+        onclick="toast('Sprint 15 boshlandi — 34 pt, 4 vazifa')">
         <span class="material-icons-outlined">play_arrow</span> SPRINTNI BOSHLASH</button>
     </div>
   </div>
+    </div>
+
+    <!-- HISOBOTLAR tab -->
+    <div class="ptab-view" id="bd-reports">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:980px">
+        <div class="desc-card" style="margin:0">
+          <div class="dc-head"><h3>Velocity — oxirgi sprintlar</h3><span class="dc-note">pt</span></div>
+          <div class="dc-body" style="padding:12px 16px">
+            <div class="bar-row"><span class="bar-label">Sprint 11</span>
+              <div class="bar-track"><i style="width:64%"></i></div><span class="bar-val">32</span></div>
+            <div class="bar-row"><span class="bar-label">Sprint 12</span>
+              <div class="bar-track"><i style="width:70%"></i></div><span class="bar-val">35</span></div>
+            <div class="bar-row"><span class="bar-label">Sprint 13</span>
+              <div class="bar-track"><i style="width:76%"></i></div><span class="bar-val">38</span></div>
+            <div class="bar-row"><span class="bar-label">Sprint 14 (joriy)</span>
+              <div class="bar-track"><i style="width:68%;background:#8fb4f5"></i></div><span class="bar-val">34</span></div>
+          </div>
+        </div>
+        <div class="desc-card" style="margin:0">
+          <div class="dc-head"><h3>Bajarilganlar — a'zolar bo'yicha</h3><span class="dc-note">bu oy</span></div>
+          <div class="dc-body" style="padding:12px 16px">
+            <div class="bar-row"><span class="bar-label">D. Salimov</span>
+              <div class="bar-track"><i style="width:90%;background:var(--m-pos)"></i></div><span class="bar-val">9</span></div>
+            <div class="bar-row"><span class="bar-label">B. Karimov</span>
+              <div class="bar-track"><i style="width:70%;background:var(--m-pos)"></i></div><span class="bar-val">7</span></div>
+            <div class="bar-row"><span class="bar-label">S. Nazarova</span>
+              <div class="bar-track"><i style="width:50%;background:var(--m-pos)"></i></div><span class="bar-val">5</span></div>
+            <div class="bar-row"><span class="bar-label">R. Tohirov</span>
+              <div class="bar-track"><i style="width:30%;background:var(--m-pos)"></i></div><span class="bar-val">3</span></div>
+          </div>
+        </div>
+        <div class="desc-card" style="margin:0;grid-column:1/-1">
+          <div class="dc-head"><h3>Blok tahlili</h3><span class="dc-note">issue_blockers</span></div>
+          <div class="dc-body">
+            <div class="kv"><span class="kv-label">O'rtacha blokda turish</span><span class="kv-dots"></span>
+              <span class="kv-value mono">1.8 kun</span></div>
+            <div class="kv"><span class="kv-label">Eng ko'p sabab</span><span class="kv-dots"></span>
+              <span class="kv-value">Tashqi hamkor javobini kutish (4 marta)</span></div>
+            <div class="kv"><span class="kv-label">Hozir blokda</span><span class="kv-dots"></span>
+              <span class="kv-value mono">1 vazifa</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
 </section>
+
 
 <!-- ════════════ HANDOVER ════════════ -->
 <section class="page-view" id="pv-handover">
@@ -1445,8 +1579,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   <div class="table-card">
     <div class="table-toolbar">
       <h1 class="table-title">Topshirish — Mobil ilova loyihasi</h1>
-      <button class="btn-flat"><span class="material-icons-outlined">group_add</span> Hammasini vorisga</button>
-      <button class="btn-primary"><span class="material-icons-outlined">check_circle</span> TASDIQLASH</button>
+      <button class="btn-flat" onclick="toast('Barcha vazifalar vorisga belgilandi')"><span class="material-icons-outlined">group_add</span> Hammasini vorisga</button>
+      <button class="btn-primary" onclick="toast('Handover tasdiqlandi — 6 vazifa qayta biriktirildi')"><span class="material-icons-outlined">check_circle</span> TASDIQLASH</button>
     </div>
     <div class="table-wrap">
       <table class="dt">
@@ -1596,7 +1730,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <div><div class="ib-head-name">Ipak Yo'li · MOB support</div>
           <div class="ib-head-sub">Guruh · 14 a'zo · Mobil ilova loyihasi</div></div>
         <span class="chip soft-info" style="margin-left:auto">MOB</span>
-        <button class="btn-flat" style="color:var(--primary)">
+        <button class="btn-flat" style="color:var(--primary)" onclick="openForm('Yangi ticket — Ipak Yo\'li chatidan')">
           <span class="material-icons-outlined">confirmation_number</span> Ticket ochish</button>
       </div>
       <div class="ib-msgs">
@@ -1615,8 +1749,9 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       </div>
       <div class="ib-compose">
         <button class="tb-icon-btn"><span class="material-icons-outlined">attach_file</span></button>
-        <input class="ib-input" placeholder="Javob yozing...">
-        <button class="ib-send"><span class="material-icons-outlined">send</span></button>
+        <input class="ib-input" id="ib-msg-input" placeholder="Javob yozing..."
+          onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="ib-send" onclick="sendMsg()"><span class="material-icons-outlined">send</span></button>
       </div>
     </div>
     <div class="ib-right">
@@ -1789,14 +1924,15 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="table-toolbar">
       <h1 class="table-title">Inventar</h1>
       <div class="board-tabs" style="margin-right:auto">
-        <button class="board-tab active">Jihozlar</button>
-        <button class="board-tab">Ombor harakati</button>
+        <button class="board-tab active" id="invtab-a" onclick="invTab('a')">Jihozlar</button>
+        <button class="board-tab" id="invtab-b" onclick="invTab('b')">Ombor harakati</button>
       </div>
       <div class="search-box"><span class="material-icons-outlined">search</span>
         <input placeholder="Inventar № yoki nom..."></div>
       <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
       <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
     </div>
+    <div id="inv-a">
     <div class="table-wrap">
       <table class="dt">
         <thead><tr>
@@ -1834,6 +1970,35 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="pager"><button class="page-btn active">1</button><button class="page-btn">2</button>
         <button class="page-btn">…</button><button class="page-btn">22</button></div>
     </div>
+    </div><!-- /inv-a -->
+    <div id="inv-b" style="display:none">
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>Sana</th><th>Turi</th><th>Jihoz</th><th>Kimdan</th><th>Kimga</th><th>Izoh</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">01.08.2026 14:20</td>
+            <td><span class="chip soft-pos">Biriktirish</span></td>
+            <td><span class="mono">INV-00214</span> MacBook Pro 14</td>
+            <td>Ombor</td><td><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</td>
+            <td>Yangi ish o'rni</td></tr>
+          <tr><td class="mono">28.07.2026 10:05</td>
+            <td><span class="chip soft-warn">Ta'mirga</span></td>
+            <td><span class="mono">INV-00175</span> iPhone 15</td>
+            <td><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</td>
+            <td>Servis markaz</td><td>Ekran almashtirish</td></tr>
+          <tr><td class="mono">21.07.2026 17:40</td>
+            <td><span class="chip soft-info">Qaytarish</span></td>
+            <td><span class="mono">INV-00198</span> Dell UltraSharp 27</td>
+            <td><span class="mini-avatar" style="background:#c98a3d">AK</span>A. Karimov</td>
+            <td>Ombor</td><td>Tayinlov tugadi (handover)</td></tr>
+          <tr><td class="mono">15.07.2026 09:15</td>
+            <td><span class="chip soft-neg">Hisobdan chiqarish</span></td>
+            <td><span class="mono">INV-00142</span> Logitech MX Keys</td>
+            <td>Ombor</td><td>—</td><td>Jismoniy eskirish</td></tr>
+        </tbody>
+      </table>
+    </div>
+    </div><!-- /inv-b -->
   </div>
 </section>
 
@@ -1846,7 +2011,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <button class="board-tab"><span class="material-icons-outlined">chevron_right</span></button>
     </div>
     <span class="chip soft-pos"><span class="st-dot pos"></span>Yakunlangan (muhrlangan)</span>
-    <button class="btn-flat" style="margin-left:auto"><span class="material-icons-outlined">refresh</span> Qayta hisoblash</button>
+    <button class="btn-flat" style="margin-left:auto" onclick="toast('Davr muhrlangan — qayta hisoblanmaydi')"><span class="material-icons-outlined">refresh</span> Qayta hisoblash</button>
   </div>
   <div class="stat-strip">
     <div class="stat"><div class="stat-top"><span class="material-icons-outlined">groups</span>Xodimlar</div>
@@ -1943,8 +2108,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <input type="range" class="ce-slider" value="20" disabled><input class="ce-w" value="20%" readonly>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
-        <button class="btn-flat">Bekor qilish</button>
-        <button class="btn-primary"><span class="material-icons-outlined">check_circle</span> SAQLASH</button>
+        <button class="btn-flat" onclick="toast('Bekor qilindi')">Bekor qilish</button>
+        <button class="btn-primary" onclick="toast('KPI profili saqlandi')"><span class="material-icons-outlined">check_circle</span> SAQLASH</button>
       </div>
     </div>
   </div>
@@ -2061,6 +2226,100 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   </div>
 </div>
 
+
+<!-- ════════════ GENERIK FORM MODALI ════════════ -->
+<div class="overlay" id="form-overlay" onclick="if(event.target===this)closeOv('form-overlay')">
+  <div class="modal" style="width:min(680px,94vw)">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">edit_note</span></span>
+        <div class="mh-t"><h1 id="form-title">Yaratish</h1>
+          <div class="mh-id">Prototip forma — maydonlar modul bo'yicha moslanadi</div></div>
+      </div>
+      <button class="close-x" onclick="closeOv('form-overlay')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body" style="background:var(--surface)">
+      <div class="fld"><label>Nomi <b>*</b></label><input placeholder="Nomini kiriting"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="fld"><label>Holat <b>*</b></label>
+          <select><option>Faol</option><option>Nofaol</option></select></div>
+        <div class="fld"><label>Mas'ul</label>
+          <select><option>D. Salimov</option><option>B. Karimov</option><option>S. Nazarova</option></select></div>
+      </div>
+      <div class="fld"><label>Tavsif</label><textarea placeholder="Qisqacha tavsif..."></textarea></div>
+    </div>
+    <div class="fm-foot">
+      <span style="font-size:12px;color:#8b9aa9;margin-right:auto"><b style="color:#d23f31">*</b> majburiy maydonlar</span>
+      <button class="btn-flat" onclick="closeOv('form-overlay')">Bekor qilish</button>
+      <button class="btn-edit" onclick="closeOv('form-overlay');toast('Saqlandi (prototip)')">
+        <span class="material-icons-outlined" style="font-size:18px">check_circle</span> Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ GENERIK DETAIL MODALI ════════════ -->
+<div class="overlay" id="detail-overlay" onclick="if(event.target===this)closeOv('detail-overlay')">
+  <div class="modal" style="width:min(720px,94vw)">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">description</span></span>
+        <div class="mh-t"><h1 id="detail-title">Tafsilotlar</h1>
+          <div class="mh-id mono">#00218 <span class="material-icons-outlined" style="font-size:13px;cursor:pointer">content_copy</span></div></div>
+      </div>
+      <button class="close-x" onclick="closeOv('detail-overlay')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body">
+      <div class="desc-card">
+        <div class="dc-head"><h3>Asosiy ma'lumotlar</h3></div>
+        <div class="dc-body">
+          <div class="kv"><span class="kv-label">Nomi</span><span class="kv-dots"></span>
+            <span class="kv-value">Namunaviy yozuv</span></div>
+          <div class="kv"><span class="kv-label">Holat</span><span class="kv-dots"></span>
+            <span class="kv-value"><span class="chip soft-pos" style="font-size:11px"><span class="st-dot pos"></span>Faol</span></span></div>
+          <div class="kv"><span class="kv-label">Mas'ul</span><span class="kv-dots"></span>
+            <span class="kv-value"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span></div>
+          <div class="kv"><span class="kv-label">Yaratilgan</span><span class="kv-dots"></span>
+            <span class="kv-value mono">14.03.2026 11:24</span></div>
+          <div class="kv"><span class="kv-label">O'zgartirilgan</span><span class="kv-dots"></span>
+            <span class="kv-value mono">02.08.2026 16:08</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="fm-foot">
+      <button class="btn-flat" style="margin-right:auto" onclick="closeOv('detail-overlay')">Yopish</button>
+      <button class="btn-del-text" onclick="closeOv('detail-overlay');openDelete()">O'chirish</button>
+      <button class="btn-edit" onclick="closeOv('detail-overlay');openForm('Tahrirlash')">
+        <span class="material-icons-outlined" style="font-size:18px">edit</span> Tahrirlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ DELETE MODALI ════════════ -->
+<div class="overlay" id="delete-overlay" onclick="if(event.target===this)closeOv('delete-overlay')">
+  <div class="modal" style="width:min(480px,94vw)">
+    <div class="fm-head" style="background:var(--m-neg)">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">delete</span></span>
+        <div class="mh-t"><h1>O'chirishni tasdiqlang</h1>
+          <div class="mh-id">Yozuv soft-delete qilinadi (tiklash mumkin)</div></div>
+      </div>
+      <button class="close-x" onclick="closeOv('delete-overlay')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body" style="font-size:13.5px;line-height:1.6;color:#182634">
+      Ushbu yozuvni o'chirmoqchimisiz? Yozuv ro'yxatlardan yashiriladi,
+      audit va tarix yozuvlari to'liq saqlanib qoladi.
+    </div>
+    <div class="fm-foot">
+      <button class="btn-flat" style="margin-right:auto" onclick="closeOv('delete-overlay')">Bekor qilish</button>
+      <button class="btn-edit" style="background:var(--m-neg)" onclick="closeOv('delete-overlay');toast('Yozuv o\'chirildi (soft delete)')">
+        <span class="material-icons-outlined" style="font-size:18px">delete</span> O'chirish</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="material-icons-outlined">check_circle</span><span>OK</span></div>
+
 <!-- ════════════ CALL AI DRAWER ════════════ -->
 <div class="drawer" id="call-drawer">
   <div class="dr-head"><h3>Qo'ng'iroq tahlili — AI</h3>
@@ -2102,11 +2361,10 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 <script>
 /* ═══════ SPA router ═══════ */
 var TITLES={home:'Bosh sahifa',leads:'Leadlar',customers:'Mijozlar',contracts:'Shartnomalar',
-  projects:'Loyihalar',project:'Mobil ilova',board:'Mobil ilova · Board',
-  sprint:'Sprint rejalashtirish',handover:'Handover',
+  projects:'Loyihalar',project:'Mobil ilova',board:'Mobil ilova · Board',handover:'Handover',
   tickets:'Ticketlar',inbox:'Telegram inbox',calls:'Call center',inventory:'Inventar',
   kpi:'KPI natijalar',kpiprofiles:'KPI profillari'};
-var NAVKEY={project:'projects',board:'projects',sprint:'projects'};
+var NAVKEY={project:'projects',board:'projects'};
 function show(page){
   var views=document.querySelectorAll('.page-view');
   for(var i=0;i<views.length;i++)views[i].classList.remove('active');
@@ -2147,8 +2405,178 @@ function openBoard(mode){
   document.getElementById('stab-backlog').style.display = scrum?'':'none';
   document.getElementById('stab-sprint').style.display = scrum?'':'none';
   document.getElementById('board-sprint-chip').style.display = scrum?'':'none';
+  boardTab('board');
   show('board');
 }
+
+/* Board ichki tablari */
+function boardTab(name){
+  var tabs=document.querySelectorAll('#pv-board .ptab');
+  for(var i=0;i<tabs.length;i++)
+    tabs[i].classList.toggle('active',tabs[i].getAttribute('data-btab')===name);
+  var ids=['board','backlog','sprint','reports'];
+  for(var j=0;j<ids.length;j++){
+    var v=document.getElementById('bd-'+ids[j]);
+    if(v)v.classList.toggle('active',ids[j]===name);
+  }
+}
+
+/* Inventar tablari */
+function invTab(v){
+  document.getElementById('inv-a').style.display = v==='a'?'block':'none';
+  document.getElementById('inv-b').style.display = v==='b'?'block':'none';
+  document.getElementById('invtab-a').classList.toggle('active',v==='a');
+  document.getElementById('invtab-b').classList.toggle('active',v==='b');
+}
+
+/* Toast */
+var toastTimer=null;
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.querySelector('span:last-child').textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show')},2600);
+}
+
+/* Generik modallar */
+function openForm(title){
+  document.getElementById('form-title').textContent=title;
+  document.getElementById('form-overlay').classList.add('open');
+}
+function openDetail(title){
+  document.getElementById('detail-title').textContent=title;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+function openDelete(){document.getElementById('delete-overlay').classList.add('open')}
+function closeOv(id){document.getElementById(id).classList.remove('open')}
+
+/* User popup, til */
+function toggleUser(e){
+  e.stopPropagation();
+  document.getElementById('user-popup').classList.toggle('open');
+  document.getElementById('notif').classList.remove('open');
+}
+var LANGS=['O\'z','Ru','En'],langI=0;
+function cycleLang(btn){
+  langI=(langI+1)%3;
+  document.getElementById('lang-txt').textContent=LANGS[langI];
+  toast('Til: '+LANGS[langI]+' (prototip)');
+}
+
+/* Bildirishnomalar */
+function updateNotifBadge(){
+  var n=document.querySelectorAll('.np-item.unread').length;
+  var b=document.querySelector('.tb-icon-btn .tb-badge');
+  if(b){ if(n>0){b.textContent=n;b.style.display='grid'} else b.style.display='none'; }
+}
+function readAllNotif(e){
+  e.preventDefault();e.stopPropagation();
+  var u=document.querySelectorAll('.np-item.unread');
+  for(var i=0;i<u.length;i++)u[i].classList.remove('unread');
+  updateNotifBadge();
+}
+
+/* Inbox: xabar yuborish */
+function sendMsg(){
+  var inp=document.getElementById('ib-msg-input');
+  var txt=inp.value.trim();
+  if(!txt)return;
+  var wrap=document.querySelector('.ib-msgs');
+  var d=document.createElement('div');
+  d.className='msg out';
+  var now=new Date();
+  function p(x){return x<10?'0'+x:x}
+  d.innerHTML=txt+'<div class="m-meta">'+p(now.getHours())+':'+p(now.getMinutes())+' · D. Salimov</div>';
+  wrap.appendChild(d);
+  wrap.scrollTop=wrap.scrollHeight;
+  inp.value='';
+}
+
+/* ═══ Umumiy delegatsiya: act-btn, tab guruhlar, pagination, chatlar, notif ═══ */
+document.addEventListener('click',function(e){
+  // amal tugmalari
+  var ab=e.target.closest('.act-btn');
+  if(ab){
+    var ic=ab.querySelector('.material-icons-outlined');
+    var name=ic?ic.textContent.trim():'';
+    if(name==='visibility'){
+      if(ab.closest('#pv-board')||ab.closest('#pv-home'))openIssue();
+      else openDetail('Yozuv tafsilotlari');
+    }
+    else if(name==='edit')openForm('Tahrirlash');
+    else if(name==='delete'){openDelete()}
+    else if(name==='swap_horiz')openForm('Jihozni topshirish / qaytarish');
+    else if(name==='play_circle')toast('Audio ijro (prototip)');
+    else if(name==='phone_callback')toast('Qayta qo\'ng\'iroq navbatga qo\'yildi');
+    return;
+  }
+  // YARATISH tugmalari (onclick'siz qolganlari)
+  var bp=e.target.closest('.btn-primary');
+  if(bp && !bp.getAttribute('onclick') && bp.textContent.indexOf('YARATISH')>-1){
+    var pv=bp.closest('.page-view');
+    var t={'pv-customers':'Yangi mijoz','pv-leads':'Yangi lead','pv-contracts':'Yangi shartnoma',
+      'pv-projects':'Yangi loyiha','pv-tickets':'Yangi ticket','pv-inventory':'Yangi jihoz'}[pv?pv.id:'']||'Yaratish';
+    openForm(t);return;
+  }
+  if(bp && !bp.getAttribute('onclick') && bp.textContent.indexOf("A'ZO")>-1){openForm("Yangi a'zo qo'shish");return;}
+  // tab guruhlari (board-tab / ib-tab) — onclick'sizlar uchun umumiy active
+  var bt=e.target.closest('.board-tab');
+  if(bt && !bt.classList.contains('add') && !bt.getAttribute('onclick')){
+    var sibs=bt.parentElement.querySelectorAll('.board-tab');
+    for(var i=0;i<sibs.length;i++)sibs[i].classList.remove('active');
+    bt.classList.add('active');return;
+  }
+  var it=e.target.closest('.ib-tab');
+  if(it){
+    var s2=it.parentElement.querySelectorAll('.ib-tab');
+    for(var k=0;k<s2.length;k++)s2[k].classList.remove('active');
+    it.classList.add('active');return;
+  }
+  // chat tanlash
+  var ch=e.target.closest('.ib-chat');
+  if(ch){
+    var cs=document.querySelectorAll('.ib-chat');
+    for(var m=0;m<cs.length;m++)cs[m].classList.remove('active');
+    ch.classList.add('active');
+    var un=ch.querySelector('.ib-unread');if(un)un.remove();
+    return;
+  }
+  // pagination raqamlari
+  var pb=e.target.closest('.page-btn');
+  if(pb && !pb.querySelector('.material-icons-outlined')){
+    var ps=pb.parentElement.querySelectorAll('.page-btn');
+    for(var q=0;q<ps.length;q++)ps[q].classList.remove('active');
+    pb.classList.add('active');return;
+  }
+  // qatorlar soni
+  var rs=e.target.closest('.rows-select');
+  if(rs && rs.textContent.match(/^\s*(10|25|50)/)){
+    var cur=parseInt(rs.textContent);
+    var next=cur===10?25:cur===25?50:10;
+    rs.childNodes[0].textContent=next+' ';return;
+  }
+  // notif element — o'qildi
+  var np=e.target.closest('.np-item');
+  if(np){np.classList.remove('unread');updateNotifBadge();return;}
+  // KPI profil ro'yxati
+  var pl=e.target.closest('.pl-item');
+  if(pl){
+    var pls=document.querySelectorAll('.pl-item');
+    for(var w=0;w<pls.length;w++)pls[w].classList.remove('active');
+    pl.classList.add('active');
+    var nm=pl.querySelector('.pl-name').textContent;
+    document.querySelector('#pv-kpiprofiles .pane-main h3').textContent=nm+' — kriteriyalar va vaznlar';
+    return;
+  }
+});
+document.addEventListener('click',function(e){
+  var up=document.getElementById('user-popup');
+  if(up.classList.contains('open')&&!up.contains(e.target)&&!e.target.closest('.user-pill'))
+    up.classList.remove('open');
+});
+
+/* Modal */
 
 /* Loyiha ichi tablari */
 function projTab(name){
@@ -2168,6 +2596,7 @@ function closeIssue(){document.getElementById('issue-overlay').classList.remove(
 function toggleNotif(e){
   e.stopPropagation();
   document.getElementById('notif').classList.toggle('open');
+  document.getElementById('user-popup').classList.remove('open');
 }
 document.addEventListener('click',function(e){
   var n=document.getElementById('notif');
