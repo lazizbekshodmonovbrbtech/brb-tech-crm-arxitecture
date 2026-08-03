@@ -945,7 +945,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     </div>
   </div>
   <!-- CARD ko'rinish -->
-  <div class="proj-grid" id="proj-cards" style="display:none;margin-top:2px">
+  <div class="proj-grid" id="proj-cards" style="display:none;margin-top:14px">
     <div class="proj-card" onclick="show('project')">
       <div class="pc-top"><span class="pc-code" style="background:#2563eb">MOB</span>
         <div><div class="pc-name">Mobil ilova</div><div class="pc-client">Ipak Yo'li Bank</div></div>
@@ -2387,10 +2387,14 @@ show('home');
 
 /* Loyihalar: card/table toggle */
 function projView(v){
-  document.getElementById('proj-cards').style.display = v==='card'?'grid':'none';
-  document.querySelector('#pv-projects .table-card').style.display = v==='card'?'none':'block';
-  document.getElementById('pv-toggle-card').classList.toggle('active',v==='card');
-  document.getElementById('pv-toggle-table').classList.toggle('active',v==='table');
+  var card = v==='card';
+  document.getElementById('proj-cards').style.display = card?'grid':'none';
+  // toolbar QOLADI — faqat jadval va footer yashiriladi
+  document.querySelector('#pv-projects .table-wrap').style.display = card?'none':'block';
+  var tf=document.querySelector('#pv-projects .table-footer');
+  if(tf)tf.style.display = card?'none':'flex';
+  document.getElementById('pv-toggle-card').classList.toggle('active',card);
+  document.getElementById('pv-toggle-table').classList.toggle('active',!card);
 }
 
 /* Board: rejim almashish */
