@@ -1436,7 +1436,7 @@ function render(key){
   const svc=DB[key];
   const VGAP=80,HGAP=72,W=252,PAD=48;
   const availW=wrap.clientWidth-PAD*2;
-  const nCols=Math.max(1,Math.min(4,Math.floor((availW+HGAP)/(W+HGAP))));
+  const nCols=Math.max(1,Math.min(8,Math.floor((availW+HGAP)/(W+HGAP)))); // ekranga sig'gancha, 8 gacha
   const colH=new Array(nCols).fill(PAD);
   const els={};
 
