@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Dizayn prototipi (SPA)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════
+   CRM DIZAYN TIZIMI — haqiqiy frontenddan olingan tokenlar
+   ════════════════════════════════════════════════════════════ */
+:root{
+  --primary:#2563eb; --primary-soft:#e8f0fe;
+  --bg:#f3f4f6; --surface:#ffffff;
+  --ink:#0f172a; --ink-1:#1e293b; --ink-2:#475569; --ink-3:#64748b; --ink-4:#94a3b8;
+  --line:#e5e7eb; --line-2:#eaecf0; --line-table:#e2e8f0;
+  --pos:#22c55e; --neg:#e31e24; --warn:#f59e0b; --info:#3b82f6;
+  --m-pos:#1b7a4d; --m-pos-soft:#e0f0e8; --m-neg:#b83d2e; --m-neg-soft:#f7e3df;
+  --m-acc:#1f66a8; --m-acc-soft:#e3edf7; --m-warn:#976a14; --m-warn-soft:#f8f0dc;
+  --gold:#c9a227; --msurface2:#f4f7fb; --mline:#d5dee8; --mline2:#e9eef4;
+  --row-actioned:#e3edf7; --row-hover:#f1f5fb;
+  --font-sans:'Sora','Noto Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--ink-1);font-size:14px;overflow:hidden}
+.material-icons,.material-icons-outlined{font-size:20px;vertical-align:middle}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+a{color:var(--primary);text-decoration:none}
+
+/* ═══════ TOPBAR ═══════ */
+.topbar{height:64px;background:var(--surface);display:flex;align-items:center;
+  padding:0 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);position:relative;z-index:40}
+.brand-zone{width:284px;flex-shrink:0;display:flex;align-items:center}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 12px 4px 4px;border-radius:12px;cursor:pointer}
+.brand:hover{background:#f3f4f6}
+.brand-logo{width:40px;height:40px;border-radius:11px;background:var(--primary);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:18px;box-shadow:0 4px 10px rgba(37,99,235,.28)}
+.brand-word{display:flex;flex-direction:column;line-height:1.1}
+.brand-main{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.brand-sub{font-size:10px;font-weight:600;color:var(--ink-4);letter-spacing:.12em;
+  text-transform:uppercase;margin-top:3px;white-space:nowrap}
+.tb-icon-btn{width:38px;height:38px;border:none;background:transparent;border-radius:10px;
+  color:#374151;cursor:pointer;display:grid;place-items:center;position:relative}
+.tb-icon-btn:hover{background:#f3f4f6;color:#1f2937}
+.tb-badge{position:absolute;top:4px;right:4px;min-width:16px;height:16px;border-radius:8px;
+  background:#ef4444;color:#fff;font-size:9.5px;font-weight:700;display:grid;place-items:center;
+  padding:0 4px;box-shadow:0 0 0 2px #fff}
+.breadcrumb{display:flex;align-items:center;gap:3px;margin-left:8px;font-size:14px;font-weight:600}
+.crumb{color:var(--ink-4);padding:2px 4px;border-radius:6px}
+.crumb.current{color:var(--ink);font-weight:700}
+.crumb-sep{color:#cbd5e1;font-size:16px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:4px}
+.tb-clock{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;
+  color:var(--ink-2);white-space:nowrap;margin-right:6px}
+.tb-clock .material-icons-outlined{font-size:17px;color:var(--primary)}
+.tb-sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;border:none;background:transparent;
+  border-radius:10px;padding:7px 10px;font-family:var(--font-sans);font-size:13px;
+  font-weight:600;color:#374151;cursor:pointer}
+.lang-btn:hover{background:#f3f4f6}
+.flag{width:20px;height:20px;border-radius:50%;background:
+  linear-gradient(180deg,#3b82f6 33%,#fff 33% 66%,#22c55e 66%);border:1px solid var(--line)}
+.user-pill{display:flex;align-items:center;gap:6px;background:#f3f4f6;border:1px solid transparent;
+  border-radius:22px;padding:3px 8px 3px 3px;height:38px;cursor:pointer;margin-left:2px}
+.user-pill:hover{background:#eef0f4;border-color:#d1d5db}
+.user-ava{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
+.user-name{font-size:13px;font-weight:600;color:#1f2937}
+.user-chev{color:#9ca3af;font-size:18px}
+
+/* Bildirishnoma dropdown */
+.notif-panel{position:absolute;top:56px;right:120px;width:360px;background:var(--surface);
+  border-radius:12px;border:1px solid var(--line-2);z-index:60;overflow:hidden;display:none;
+  box-shadow:0 12px 40px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06)}
+.notif-panel.open{display:block}
+.np-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;
+  border-bottom:1px solid var(--line-2)}
+.np-head h3{font-size:14px;font-weight:700;color:var(--ink)}
+.np-head a{font-size:12px;font-weight:600}
+.np-item{display:flex;gap:11px;padding:11px 16px;border-bottom:1px solid var(--line-2);cursor:pointer}
+.np-item:hover{background:#f9fafb}
+.np-item.unread{background:#f0f6ff;box-shadow:inset 3px 0 0 var(--primary)}
+.np-ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.np-ic .material-icons-outlined{font-size:17px;color:#fff}
+.np-title{font-size:13px;font-weight:600;color:var(--ink-1)}
+.np-text{font-size:12px;color:var(--ink-3);margin-top:1px}
+.np-time{font-size:10.5px;color:var(--ink-4);margin-top:3px}
+.np-foot{padding:10px;text-align:center;font-size:12.5px;font-weight:600}
+
+/* ═══════ LAYOUT ═══════ */
+.app-body{display:flex;height:calc(100vh - 64px)}
+.sidebar{width:300px;flex-shrink:0;background:var(--surface);display:flex;flex-direction:column;
+  border-right:1px solid var(--line-2)}
+.sb-scroll{flex:1;overflow-y:auto;padding:14px 12px 8px;scrollbar-width:thin}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.1);border-radius:4px}
+.sb-section{padding:10px 14px 8px;font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-4)}
+.nav-item{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;
+  border-radius:8px;font-size:14.5px;font-weight:500;color:#4b5563;cursor:pointer;
+  margin-bottom:3px;border:1px solid transparent}
+.nav-item .material-icons-outlined{color:#64748b;font-size:20px}
+.nav-item:hover{background:#f3f4f6;color:#1f2937}
+.nav-item.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.nav-item.active .material-icons-outlined{color:var(--primary)}
+.menu-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;
+  font-size:10.5px;font-weight:700;color:#fff;display:inline-flex;align-items:center;
+  justify-content:center;background:linear-gradient(135deg,#ef4444,#dc2626);
+  box-shadow:0 2px 6px rgba(239,68,68,.35)}
+.promo-zone{flex-shrink:0;padding:10px 14px 14px}
+.promo-zone::before{content:'';display:block;height:1px;margin:0 2px 12px;
+  background:linear-gradient(90deg,transparent,rgba(15,23,42,.08),transparent)}
+.promo-card{display:block;width:100%;text-align:left;border:none;cursor:pointer;padding:16px;
+  border-radius:16px;color:#fff;
+  background:radial-gradient(120% 120% at 100% 0%,rgba(167,139,250,.55) 0%,transparent 55%),
+             linear-gradient(135deg,#2563eb 0%,#4f46e5 52%,#7c3aed 100%);
+  box-shadow:0 10px 24px rgba(79,70,229,.34),0 2px 6px rgba(79,70,229,.22),
+             inset 0 1px 0 rgba(255,255,255,.22);
+  transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+.promo-card:hover{transform:translateY(-3px)}
+.promo-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.promo-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.28);display:grid;place-items:center}
+.promo-icon .material-icons-outlined{color:#fff;font-size:22px}
+.promo-title{font-size:15px;font-weight:700;color:#fff}
+.promo-desc{font-size:12px;font-weight:500;line-height:1.45;color:rgba(255,255,255,.85)}
+.promo-cta{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
+  margin-top:13px;padding:9px 14px;border-radius:11px;font-size:13px;font-weight:600;
+  color:#4f46e5;background:#fff;border:none;cursor:pointer;font-family:var(--font-sans);
+  box-shadow:0 3px 8px rgba(0,0,0,.14)}
+.page{flex:1;overflow-y:auto;padding:16px}
+.page-view{display:none}
+.page-view.active{display:block}
+
+/* ═══════ JADVAL NAQSHI ═══════ */
+.table-card{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.table-toolbar{display:flex;align-items:center;gap:10px;padding:14px 16px;flex-wrap:wrap}
+.table-title{font-size:18px;font-weight:600;color:var(--ink);margin-right:auto}
+.search-box{display:flex;align-items:center;gap:8px;width:220px;height:38px;padding:0 12px;
+  border:1px solid var(--line-table);border-radius:10px;color:var(--ink-4);font-size:13.5px}
+.search-box .material-icons-outlined{font-size:19px}
+.search-box input{border:none;outline:none;width:100%;font-family:var(--font-sans);
+  font-size:13.5px;color:var(--ink-1)}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 16px;
+  background:var(--primary);color:#fff;border:none;border-radius:9px;font-family:var(--font-sans);
+  font-size:13.5px;font-weight:600;letter-spacing:.03em;cursor:pointer;
+  box-shadow:0 4px 12px rgba(37,99,235,.30)}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-primary .material-icons-outlined{font-size:19px}
+.btn-flat{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;
+  background:transparent;color:var(--ink-2);border:none;border-radius:9px;
+  font-family:var(--font-sans);font-size:13.5px;font-weight:600;cursor:pointer}
+.btn-flat:hover{background:#f3f4f6}
+.table-wrap{overflow-x:auto}
+table.dt{width:100%;min-width:max-content;border-collapse:collapse}
+.dt th{padding:11px 16px;font-size:13.5px;font-weight:600;color:var(--ink-1);text-align:left;
+  border:1px solid var(--line-table);background:var(--surface);white-space:nowrap}
+.dt td{padding:10px 16px;font-size:13.5px;color:var(--ink-1);
+  border:1px solid var(--line-table);white-space:nowrap;background:var(--surface)}
+.dt tbody tr{cursor:default}
+.dt tbody tr:hover td{background:var(--row-hover)}
+.dt tr.actioned td{background:var(--row-actioned)}
+.dt tr.actioned td:first-child{box-shadow:inset 3px 0 0 var(--primary)}
+.dt td.num{text-align:right}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:999px;
+  font-size:12px;font-weight:600;letter-spacing:.02em}
+.chip.pos{background:var(--pos);color:#fff}
+.chip.soft-pos{background:var(--m-pos-soft);color:var(--m-pos)}
+.chip.soft-neg{background:#fde8e8;color:#c81e1e}
+.chip.soft-warn{background:#fdf1dc;color:var(--m-warn)}
+.chip.soft-info{background:var(--m-acc-soft);color:var(--m-acc)}
+.chip.neutral{background:#eef1f5;color:#5c6e80}
+.st-dot{width:8px;height:8px;border-radius:50%}
+.chip .st-dot.pos{background:#5bd49a;box-shadow:0 0 0 3px rgba(91,212,154,.25)}
+.chip .st-dot.neg{background:#ff8a73;box-shadow:0 0 0 3px rgba(255,138,115,.25)}
+.chip .st-dot.warn{background:#f2c14e;box-shadow:0 0 0 3px rgba(242,193,78,.25)}
+.chip .st-dot.neutral{background:#cbd5e1;box-shadow:0 0 0 3px rgba(203,213,225,.25)}
+.dt .act-btn{width:32px;height:32px;border:none;background:transparent;border-radius:8px;
+  color:var(--primary);cursor:pointer;display:inline-grid;place-items:center}
+.dt .act-btn:hover{background:var(--primary-soft)}
+.dt .act-btn.danger{color:var(--neg)}
+.dt .act-btn.danger:hover{background:#fde8e8}
+.dt th.sticky-r,.dt td.sticky-r{position:sticky;right:0;z-index:2;
+  box-shadow:-6px 0 8px -6px rgba(15,23,42,.12)}
+.table-footer{display:flex;align-items:center;justify-content:flex-end;gap:14px;
+  padding:12px 16px;font-size:13px;color:var(--ink-3)}
+.rows-select{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;
+  border:1px solid var(--line-table);border-radius:8px;font-weight:600;color:var(--ink-1);cursor:pointer}
+.pager{display:flex;align-items:center;gap:2px}
+.page-btn{min-width:28px;height:28px;padding:0 8px;border:none;background:transparent;
+  border-radius:7px;font-family:var(--font-sans);font-size:13px;font-weight:600;
+  color:var(--ink-2);cursor:pointer;display:inline-grid;place-items:center}
+.page-btn:hover{background:#f3f4f6}
+.page-btn.active{background:var(--primary);color:#fff}
+.page-btn .material-icons-outlined{font-size:18px}
+.mini-avatar{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:9.5px;font-weight:700;color:#fff;margin-right:7px;vertical-align:middle}
+.mini-bar{display:inline-block;width:64px;height:5px;border-radius:3px;background:#eef1f5;
+  overflow:hidden;vertical-align:middle;margin-right:8px}
+.mini-bar i{display:block;height:100%;background:var(--pos)}
+
+/* ═══════ STAT STRIP ═══════ */
+.stat-strip{display:flex;flex-wrap:wrap;background:var(--surface);border-radius:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);padding:13px 6px;margin-bottom:14px}
+.stat{padding:2px 22px;border-left:1px solid #d8e0e9;display:flex;flex-direction:column;gap:3px;min-width:150px}
+.stat:first-child{border-left:none}
+.stat-top{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:#8b9aa9}
+.stat-top .material-icons-outlined{font-size:14px;color:var(--m-acc)}
+.stat-value{font-size:17px;font-weight:600;color:#182634;font-family:var(--font-mono)}
+.stat-sub{font-size:11px;color:#5c6e80}
+.stat.neg .stat-value{color:var(--m-neg)}
+.stat-bar{height:3px;border-radius:2px;background:#d8e0e9;margin-top:4px;width:120px;overflow:hidden}
+.stat-bar i{display:block;height:100%;background:var(--m-pos)}
+
+/* ═══════ KANBAN (board va pipeline) ═══════ */
+.board-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.board-tabs{display:flex;align-items:center;gap:4px;background:var(--surface);
+  border:1px solid var(--line-2);border-radius:11px;padding:4px}
+.board-tab{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;
+  border:none;background:transparent;border-radius:8px;font-family:var(--font-sans);
+  font-size:13.5px;font-weight:600;color:var(--ink-3);cursor:pointer}
+.board-tab:hover{background:#f3f4f6;color:#1f2937}
+.board-tab.active{background:var(--primary-soft);color:var(--primary)}
+.board-tab .material-icons-outlined{font-size:17px}
+.sprint-chip{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:9px;
+  font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.sprint-chip .material-icons-outlined{font-size:16px;color:var(--primary)}
+.ava-stack{display:flex;align-items:center;margin-left:auto}
+.ava-stack .ava{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface);
+  margin-left:-7px;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff}
+.ava-stack .ava:first-child{margin-left:0}
+.ava-more{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface);
+  margin-left:-7px;background:#eef1f5;color:var(--ink-3);display:grid;place-items:center;
+  font-size:10.5px;font-weight:700}
+.board{display:flex;gap:12px;align-items:flex-start;overflow-x:auto;padding-bottom:8px}
+.bcol{flex:0 0 268px;background:#eef1f5;border-radius:12px;display:flex;flex-direction:column;
+  max-height:calc(100vh - 230px)}
+.bcol.block{background:#fdf3e3}
+.bcol-h{display:flex;align-items:center;gap:8px;padding:11px 13px 9px}
+.bcol-dot{width:8px;height:8px;border-radius:3px}
+.bcol-name{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}
+.bcol.block .bcol-name{color:var(--m-warn)}
+.bcol-count{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-4);margin-left:auto}
+.wip-chip{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--m-warn);
+  border:1px dashed #e0b45a;border-radius:6px;padding:1px 6px}
+.bcol-body{padding:0 8px 10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:thin}
+.bcard{background:var(--surface);border:1px solid var(--line-2);border-radius:10px;
+  padding:10px 12px;cursor:pointer;box-shadow:0 1px 3px rgba(15,23,42,.05);
+  transition:box-shadow .15s,transform .12s,border-color .15s}
+.bcard:hover{border-color:#c9d6ea;box-shadow:0 6px 16px rgba(15,23,42,.10);transform:translateY(-1px)}
+.bcard-top{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.bcard-key{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--ink-4)}
+.t-ic{font-size:15px !important}
+.t-ic.story{color:#22c55e}.t-ic.bug{color:#e0564a}.t-ic.task{color:#3b82f6}
+.bcard-est{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;font-weight:600;
+  color:var(--ink-3);background:#eef1f5;border-radius:6px;padding:1px 7px}
+.bcard-title{font-size:13px;line-height:1.45;color:var(--ink-1)}
+.bcard-foot{display:flex;align-items:center;gap:7px;margin-top:9px}
+.prio{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;
+  padding:1px 8px;border-radius:999px}
+.prio.hi{background:#fde8e8;color:#c81e1e}
+.prio.md{background:#fdf1dc;color:var(--m-warn)}
+.prio.lo{background:#eef1f5;color:#5c6e80}
+.sub-count{display:inline-flex;align-items:center;gap:3px;font-family:var(--font-mono);
+  font-size:10.5px;color:var(--ink-4)}
+.sub-count .material-icons-outlined{font-size:13px}
+.bcard-foot .ava{width:22px;height:22px;border-radius:50%;margin-left:auto;
+  display:grid;place-items:center;font-size:9px;font-weight:700;color:#fff}
+.blocked-note{display:flex;align-items:flex-start;gap:6px;margin-top:8px;background:#fdf3e3;
+  border:1px solid #f0d9a8;border-radius:8px;padding:6px 9px;font-size:11px;
+  line-height:1.4;color:var(--m-warn)}
+.blocked-note .material-icons-outlined{font-size:14px;flex-shrink:0;margin-top:1px}
+.bcol.done .bcard{opacity:.72}
+/* Lead pipeline kartasi */
+.lcard-sum{font-family:var(--font-mono);font-size:13.5px;font-weight:700;color:#182634;margin-top:5px}
+.lcard-src{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;
+  padding:1px 8px;border-radius:999px;background:var(--m-acc-soft);color:var(--m-acc)}
+.bcol-sum{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)}
+.bcol.won{background:#e4f3ea}
+.bcol.won .bcol-name{color:var(--m-pos)}
+.bcol.lost .bcard{opacity:.6}
+
+/* ═══════ STATUS BANNER ═══════ */
+.banner{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:12px;
+  font-size:13.5px;margin-bottom:14px}
+.banner .b-icon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
+.banner .b-icon .material-icons-outlined{font-size:17px;color:#fff}
+.banner.warn{background:var(--m-warn-soft);color:var(--m-warn)}
+.banner.warn .b-icon{background:var(--m-warn)}
+.banner b{font-weight:600}
+
+/* ═══════ MODAL (detail shell + ledger) ═══════ */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:80;display:none;
+  align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{width:min(1040px,94vw);max-height:92vh;background:var(--surface);border-radius:16px;
+  overflow:hidden;display:flex;flex-direction:column;font-size:14px;
+  box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.fm-head{background:var(--primary);color:#fff;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;padding:12px 18px;flex-shrink:0}
+.mh-left{display:flex;align-items:center;gap:14px;min-width:0}
+.mark{width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;color:var(--gold)}
+.mark .material-icons-outlined{font-size:21px}
+.mh-t h1{font-size:16px;font-weight:600;color:#fff;line-height:1.2}
+.mh-id{display:flex;align-items:center;gap:6px;font-size:11.5px;color:rgba(255,255,255,.62);margin-top:2px}
+.close-x{border:none;background:transparent;color:rgba(255,255,255,.8);cursor:pointer;
+  width:32px;height:32px;border-radius:8px;display:grid;place-items:center}
+.close-x:hover{background:rgba(255,255,255,.12);color:#fff}
+.head-chip{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border-radius:999px;
+  font-size:12px;font-weight:600;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.18);color:#fff}
+.fm-body{flex:1;min-height:0;overflow-y:auto;padding:18px;background:var(--msurface2);scrollbar-width:thin}
+.fm-foot{display:flex;align-items:center;gap:12px;padding:13px 20px;background:var(--surface);
+  border-top:1px solid var(--mline);flex-shrink:0}
+.fm-foot .left{margin-right:auto}
+.btn-edit{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 18px;
+  background:var(--primary);color:#fff;border:none;border-radius:9px;font-family:var(--font-sans);
+  font-size:13.5px;font-weight:600;cursor:pointer}
+.btn-del-text{border:none;background:transparent;color:var(--m-neg);font-family:var(--font-sans);
+  font-size:13.5px;font-weight:600;cursor:pointer;height:38px;padding:0 14px;border-radius:9px}
+.btn-del-text:hover{background:var(--m-neg-soft)}
+/* DescriptionCard (ledger) */
+.desc-card{background:var(--surface);border:1px solid var(--mline);border-radius:10px;
+  overflow:hidden;margin-bottom:14px}
+.desc-card:last-child{margin-bottom:0}
+.dc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 16px 9px;border-bottom:1px solid var(--mline2)}
+.dc-head h3{font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#8b9aa9}
+.dc-note{font-size:12px;color:#8b9aa9;font-family:var(--font-mono)}
+.dc-body{padding:5px 16px 9px}
+.kv{display:flex;align-items:baseline;padding:8px 0}
+.kv+.kv{border-top:1px solid var(--mline2)}
+.kv-label{color:#5c6e80;font-size:13px;flex:0 1 auto}
+.kv-dots{flex:1 0 24px;border-bottom:1px dotted #d8e0e9;margin:0 12px;transform:translateY(-3px);opacity:.8}
+.kv-value{font-weight:500;font-size:13.5px;color:#182634;text-align:right;display:inline-flex;
+  align-items:center;gap:6px;max-width:62%}
+.kv-value .mini-avatar{margin-right:0}
+
+/* ═══════ TELEGRAM INBOX (3 panel) ═══════ */
+.inbox{display:flex;height:calc(100vh - 96px);background:var(--surface);border-radius:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);overflow:hidden}
+.ib-left{width:280px;flex-shrink:0;border-right:1px solid var(--line-2);display:flex;flex-direction:column}
+.ib-search{padding:12px 12px 8px}
+.ib-tabs{display:flex;gap:4px;padding:0 12px 10px;border-bottom:1px solid var(--line-2)}
+.ib-tab{border:none;background:transparent;font-family:var(--font-sans);font-size:12px;
+  font-weight:600;color:var(--ink-3);padding:5px 10px;border-radius:999px;cursor:pointer}
+.ib-tab.active{background:var(--primary-soft);color:var(--primary)}
+.ib-chats{flex:1;overflow-y:auto;scrollbar-width:thin}
+.ib-chat{display:flex;gap:10px;padding:11px 12px;cursor:pointer;border-bottom:1px solid #f1f3f7}
+.ib-chat:hover{background:#f9fafb}
+.ib-chat.active{background:var(--primary-soft)}
+.ib-ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.ib-name{font-size:13.5px;font-weight:600;color:var(--ink-1);display:flex;justify-content:space-between}
+.ib-name .t{font-size:10.5px;font-weight:500;color:var(--ink-4);font-family:var(--font-mono)}
+.ib-last{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;max-width:170px;margin-top:2px}
+.ib-chat-info{flex:1;min-width:0}
+.ib-unread{min-width:19px;height:19px;border-radius:10px;background:var(--primary);color:#fff;
+  font-size:10px;font-weight:700;display:inline-grid;place-items:center;padding:0 5px;margin-top:3px}
+.ib-mid{flex:1;display:flex;flex-direction:column;min-width:0;background:#f7f9fc}
+.ib-head{display:flex;align-items:center;gap:11px;padding:11px 16px;background:var(--surface);
+  border-bottom:1px solid var(--line-2)}
+.ib-head-name{font-size:14.5px;font-weight:600;color:var(--ink)}
+.ib-head-sub{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.ib-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
+.msg{max-width:64%;padding:9px 13px;border-radius:12px;font-size:13.5px;line-height:1.5}
+.msg .m-meta{font-size:10px;color:var(--ink-4);font-family:var(--font-mono);margin-top:4px;text-align:right}
+.msg.in{align-self:flex-start;background:var(--surface);border:1px solid var(--line-2);
+  border-bottom-left-radius:4px}
+.msg.out{align-self:flex-end;background:var(--m-acc-soft);border-bottom-right-radius:4px}
+.msg .m-who{font-size:11px;font-weight:700;color:var(--m-acc);margin-bottom:3px}
+.ib-compose{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--surface);
+  border-top:1px solid var(--line-2)}
+.ib-input{flex:1;height:42px;border:1px solid var(--mline);border-radius:10px;padding:0 14px;
+  font-family:var(--font-sans);font-size:13.5px;outline:none;color:var(--ink-1)}
+.ib-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+.ib-send{width:42px;height:42px;border:none;border-radius:10px;background:var(--primary);
+  color:#fff;cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.ib-right{width:300px;flex-shrink:0;border-left:1px solid var(--line-2);overflow-y:auto;
+  padding:14px;scrollbar-width:thin;background:var(--msurface2)}
+
+/* ═══════ CALL DRAWER ═══════ */
+.drawer{position:fixed;top:64px;right:0;bottom:0;width:400px;background:var(--surface);
+  box-shadow:-12px 0 40px rgba(15,23,42,.15);z-index:50;transform:translateX(105%);
+  transition:transform .25s ease;display:flex;flex-direction:column}
+.drawer.open{transform:translateX(0)}
+.dr-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
+  border-bottom:1px solid var(--line-2)}
+.dr-head h3{font-size:14.5px;font-weight:700;color:var(--ink)}
+.dr-body{flex:1;overflow-y:auto;padding:16px;background:var(--msurface2);scrollbar-width:thin}
+.ai-score-big{text-align:center;padding:14px 0 6px}
+.ai-score-big .v{font-family:var(--font-mono);font-size:42px;font-weight:700;color:var(--m-pos)}
+.ai-score-big .l{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:#8b9aa9;margin-top:2px}
+.crit{padding:9px 0}
+.crit+.crit{border-top:1px solid var(--mline2)}
+.crit-row{display:flex;justify-content:space-between;font-size:12.5px;color:#5c6e80;margin-bottom:5px}
+.crit-row b{font-family:var(--font-mono);color:#182634}
+.crit-bar{height:5px;border-radius:3px;background:#e3e9f1;overflow:hidden}
+.crit-bar i{display:block;height:100%}
+.player{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--mline);
+  border-radius:10px;padding:10px 13px}
+.play-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--primary);
+  color:#fff;cursor:pointer;display:grid;place-items:center;flex-shrink:0}
+.wave{flex:1;height:24px;background:repeating-linear-gradient(90deg,#c9d6ea 0 2px,transparent 2px 5px);
+  border-radius:4px;position:relative}
+.wave::before{content:'';position:absolute;left:0;top:0;bottom:0;width:35%;
+  background:repeating-linear-gradient(90deg,var(--primary) 0 2px,transparent 2px 5px)}
+
+/* ═══════ KPI PROFIL ═══════ */
+.two-pane{display:flex;gap:14px;align-items:flex-start}
+.pane-list{width:280px;flex-shrink:0;background:var(--surface);border-radius:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);overflow:hidden}
+.pl-item{padding:13px 16px;border-bottom:1px solid var(--line-2);cursor:pointer}
+.pl-item:hover{background:#f9fafb}
+.pl-item.active{background:var(--primary-soft);box-shadow:inset 3px 0 0 var(--primary)}
+.pl-name{font-size:13.5px;font-weight:600;color:var(--ink-1)}
+.pl-sub{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.pane-main{flex:1;background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);
+  padding:16px}
+.crit-edit{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.ce-name{flex:1;font-size:13.5px;font-weight:600;color:var(--ink-1)}
+.ce-src{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:999px;
+  background:var(--m-acc-soft);color:var(--m-acc);text-transform:uppercase}
+.ce-w{width:64px;height:34px;border:1px solid var(--mline);border-radius:8px;text-align:center;
+  font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--ink);outline:none}
+.ce-slider{width:150px;accent-color:var(--primary)}
+.sum-ok{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:999px;
+  background:var(--m-pos-soft);color:var(--m-pos);font-size:12.5px;font-weight:700}
+.score-pill{display:inline-block;min-width:30px;text-align:center;padding:1px 8px;border-radius:6px;
+  font-family:var(--font-mono);font-weight:600;font-size:12px;background:#eff3f8;color:#8b9aa9}
+.score-pill.pos{background:var(--m-pos-soft);color:var(--m-pos)}
+.score-pill.hit{background:var(--m-acc-soft);color:var(--m-acc)}
+.score-pill.neg{background:var(--m-neg-soft);color:var(--m-neg)}
+
+/* ═══════ HOME dashboard ═══════ */
+.cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:14px}
+.dash-grid{display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start}
+.list-plain{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.lp-head{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;
+  border-bottom:1px solid var(--line-2)}
+.lp-head h3{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#8b9aa9}
+.lp-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid #f1f3f7;
+  font-size:13.5px;cursor:pointer}
+.lp-row:hover{background:#f9fafb}
+.lp-row:last-child{border-bottom:none}
+.feed-row{padding:10px 16px;border-bottom:1px solid #f1f3f7;font-size:13px}
+.feed-row .t{font-size:10.5px;color:var(--ink-4);font-family:var(--font-mono);margin-top:2px}
+.sprint-panel{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);padding:16px}
+.cap-bar{height:8px;border-radius:4px;background:#eef1f5;overflow:hidden;margin:8px 0 4px}
+.cap-bar i{display:block;height:100%;background:var(--primary)}
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<header class="topbar">
+  <div class="brand-zone">
+    <div class="brand">
+      <div class="brand-logo">C</div>
+      <div class="brand-word">
+        <span class="brand-main">CRM</span>
+        <span class="brand-sub">Loyiha boshqaruvi</span>
+      </div>
+    </div>
+  </div>
+  <button class="tb-icon-btn"><span class="material-icons-outlined">menu</span></button>
+  <nav class="breadcrumb">
+    <span class="crumb">Bosh sahifa</span>
+    <span class="material-icons-outlined crumb-sep">chevron_right</span>
+    <span class="crumb current" id="crumb-current">Bosh sahifa</span>
+  </nav>
+  <div class="tb-right">
+    <span class="tb-clock"><span class="material-icons-outlined">calendar_today</span>
+      <span class="mono">03.08.2026</span></span>
+    <span class="tb-clock"><span class="material-icons-outlined">schedule</span>
+      <span class="mono" id="clock">08:52:55</span></span>
+    <span class="tb-sep"></span>
+    <button class="lang-btn"><span class="flag"></span> O'z</button>
+    <button class="tb-icon-btn" onclick="toggleNotif(event)">
+      <span class="material-icons-outlined">notifications</span><span class="tb-badge">3</span></button>
+    <div class="user-pill">
+      <div class="user-ava">DS</div>
+      <span class="user-name">D. Salimov</span>
+      <span class="material-icons-outlined user-chev">expand_more</span>
+    </div>
+  </div>
+  <!-- Bildirishnoma dropdown -->
+  <div class="notif-panel" id="notif">
+    <div class="np-head"><h3>Bildirishnomalar</h3><a href="#">Hammasini o'qilgan qilish</a></div>
+    <div class="np-item unread">
+      <span class="np-ic" style="background:#3b82f6"><span class="material-icons-outlined">assignment</span></span>
+      <div><div class="np-title">MOB-142 sizga biriktirildi</div>
+        <div class="np-text">OAuth 2.0 integratsiyasi · Development board</div>
+        <div class="np-time mono">12 daqiqa oldin</div></div>
+    </div>
+    <div class="np-item unread">
+      <span class="np-ic" style="background:#e0564a"><span class="material-icons-outlined">timer_off</span></span>
+      <div><div class="np-title">SLA xavf ostida — #T-2214</div>
+        <div class="np-text">Javob muddatiga 18 daqiqa qoldi</div>
+        <div class="np-time mono">25 daqiqa oldin</div></div>
+    </div>
+    <div class="np-item unread">
+      <span class="np-ic" style="background:#f59e0b"><span class="material-icons-outlined">block</span></span>
+      <div><div class="np-title">MOB-126 bloklandi</div>
+        <div class="np-text">Sabab: hamkor API kaliti kutilmoqda</div>
+        <div class="np-time mono">1 soat oldin</div></div>
+    </div>
+    <div class="np-item">
+      <span class="np-ic" style="background:#22c55e"><span class="material-icons-outlined">trending_up</span></span>
+      <div><div class="np-title">Iyul KPI hisoblandi: 87.5</div>
+        <div class="np-text">2026 Iyul davri yakunlandi</div>
+        <div class="np-time mono">kecha</div></div>
+    </div>
+    <div class="np-foot"><a href="#">Barchasini ko'rish</a></div>
+  </div>
+</header>
+
+<div class="app-body">
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+  <div class="sb-scroll">
+    <div class="sb-section">Asosiy</div>
+    <div class="nav-item" data-page="home"><span class="material-icons-outlined">home</span> Bosh sahifa</div>
+    <div class="sb-section">CRM</div>
+    <div class="nav-item" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
+    <div class="nav-item" data-page="customers"><span class="material-icons-outlined">groups</span> Mijozlar</div>
+    <div class="nav-item" data-page="contracts"><span class="material-icons-outlined">description</span> Shartnomalar</div>
+    <div class="sb-section">Loyiha</div>
+    <div class="nav-item" data-page="projects"><span class="material-icons-outlined">folder</span> Loyihalar</div>
+    <div class="nav-item" data-page="board"><span class="material-icons-outlined">view_kanban</span> Board</div>
+    <div class="nav-item" data-page="sprint"><span class="material-icons-outlined">timer</span> Sprint rejalashtirish</div>
+    <div class="nav-item" data-page="handover"><span class="material-icons-outlined">swap_horiz</span> Handover
+      <span class="menu-badge">6</span></div>
+    <div class="sb-section">Support</div>
+    <div class="nav-item" data-page="tickets"><span class="material-icons-outlined">confirmation_number</span> Ticketlar</div>
+    <div class="nav-item" data-page="inbox"><span class="material-icons-outlined">send</span> Telegram inbox</div>
+    <div class="sb-section">Operatsiyalar</div>
+    <div class="nav-item" data-page="calls"><span class="material-icons-outlined">support_agent</span> Call center</div>
+    <div class="nav-item" data-page="inventory"><span class="material-icons-outlined">inventory_2</span> Inventar</div>
+    <div class="sb-section">KPI</div>
+    <div class="nav-item" data-page="kpi"><span class="material-icons-outlined">insights</span> KPI natijalar</div>
+    <div class="nav-item" data-page="kpiprofiles"><span class="material-icons-outlined">tune</span> KPI profillari</div>
+  </div>
+  <div class="promo-zone">
+    <button class="promo-card">
+      <span class="promo-head">
+        <span class="promo-icon"><span class="material-icons-outlined">insights</span></span>
+        <span class="promo-title">Analitika markazi</span>
+      </span>
+      <span class="promo-desc">Loyihalar bo'yicha hisobotlar, velocity va KPI tahlillari</span>
+      <span class="promo-cta">Ochish <span class="material-icons-outlined" style="font-size:16px">arrow_forward</span></span>
+    </button>
+  </div>
+</aside>
+
+<main class="page">
+
+<!-- ════════════ BOSH SAHIFA ════════════ -->
+<section class="page-view" id="pv-home">
+  <div class="stat-strip" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">assignment</span>Ochiq vazifalar</div>
+      <div class="stat-value">12</div><div class="stat-sub">Barcha boardlarda</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">timer</span>Sprintdagi</div>
+      <div class="stat-value">9</div><div class="stat-sub">Sprint 14 · 5 kun qoldi</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">task_alt</span>Bu oy yopilgan</div>
+      <div class="stat-value">21</div><div class="stat-sub">O'tgan oy: 17</div>
+      <div class="stat-bar"><i style="width:76%"></i></div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>KPI ball</div>
+      <div class="stat-value">87.5</div><div class="stat-sub">2026 Iyul davri</div>
+      <div class="stat-bar"><i style="width:87%"></i></div></div>
+  </div>
+  <div class="dash-grid">
+    <div class="list-plain">
+      <div class="lp-head"><h3>Mening vazifalarim</h3><span class="dc-note">8 ta ochiq</span></div>
+      <div class="lp-row" onclick="openIssue()"><span class="material-icons t-ic story">bookmark</span>
+        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-142</span>
+        OAuth 2.0 integratsiyasi (Google, Apple)
+        <span style="margin-left:auto" class="prio hi">Yuqori</span>
+        <span class="chip soft-info">In Progress</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">08.08.2026</span></div>
+      <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
+        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-145</span>
+        Onboarding animatsiyalari
+        <span style="margin-left:auto" class="prio md">O'rta</span>
+        <span class="chip soft-info">In Progress</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">09.08.2026</span></div>
+      <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-139</span>
+        Chat xabarlarini keshlash
+        <span style="margin-left:auto" class="prio hi">Yuqori</span>
+        <span class="chip soft-info">In Progress</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">10.08.2026</span></div>
+      <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-151</span>
+        Push-bildirishnoma sozlamalari ekrani
+        <span style="margin-left:auto" class="prio md">O'rta</span>
+        <span class="chip neutral">To Do</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">12.08.2026</span></div>
+      <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
+        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-152</span>
+        Profil rasmini kesish (crop) funksiyasi
+        <span style="margin-left:auto" class="prio lo">Past</span>
+        <span class="chip neutral">To Do</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">14.08.2026</span></div>
+    </div>
+    <div class="list-plain">
+      <div class="lp-head"><h3>Faollik lentasi</h3></div>
+      <div class="feed-row">Bekzod <b>MOB-150</b> uchun fix PR ochdi<div class="t">12 daqiqa oldin</div></div>
+      <div class="feed-row">Dilnoza <b>MOB-145</b> subtaskini yakunladi<div class="t">40 daqiqa oldin</div></div>
+      <div class="feed-row">Aziz <b>MOB-142</b> ga izoh qoldirdi<div class="t">1 soat oldin</div></div>
+      <div class="feed-row">Sevara <b>MOB-133</b> QA testlarini boshladi<div class="t">2 soat oldin</div></div>
+      <div class="feed-row"><b>MOB-126</b> bloklandi — hamkor API kaliti kutilmoqda<div class="t">3 soat oldin</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ LEAD PIPELINE ════════════ -->
+<section class="page-view" id="pv-leads">
+  <div class="board-head">
+    <div class="board-tabs">
+      <button class="board-tab active"><span class="material-icons-outlined">filter_alt</span> Asosiy voronka</button>
+      <button class="board-tab">Yuridik mijozlar</button>
+    </div>
+    <div class="search-box" style="margin-left:auto"><span class="material-icons-outlined">search</span>
+      <input placeholder="Umumiy qidiruv..."></div>
+    <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span></button>
+    <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+  </div>
+  <div class="board">
+    <div class="bcol">
+      <div class="bcol-h"><span class="bcol-dot" style="background:#94a3b8"></span>
+        <span class="bcol-name">Yangi</span><span class="bcol-count">5</span></div>
+      <div style="padding:0 13px 8px" class="bcol-sum">Σ 68.2 mln UZS</div>
+      <div class="bcol-body">
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Mobil bank ilovasi</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Ipak Yo'li Bank</div>
+          <div class="lcard-sum">45.0 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Instagram</span>
+            <span class="ava" style="background:#4f7cd1">DS</span></div></div>
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Korporativ sayt + CRM</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Agro Invest MChJ</div>
+          <div class="lcard-sum">18.5 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Telegram bot</span>
+            <span class="ava" style="background:#3aa981">BK</span></div></div>
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Ombor hisobi tizimi</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Toshkent Parfum</div>
+          <div class="lcard-sum">4.7 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Sayt</span>
+            <span class="ava" style="background:#b56bb0">SN</span></div></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-h"><span class="bcol-dot" style="background:#3b82f6"></span>
+        <span class="bcol-name">Aloqa qilindi</span><span class="bcol-count">3</span></div>
+      <div style="padding:0 13px 8px" class="bcol-sum">Σ 92.0 mln UZS</div>
+      <div class="bcol-body">
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Logistika platformasi</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Trans Cargo Group</div>
+          <div class="lcard-sum">72.0 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Tavsiya</span>
+            <span class="ava" style="background:#c98a3d">AA</span></div></div>
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">HR tizimi litsenziyasi</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Samarqand Textile</div>
+          <div class="lcard-sum">20.0 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Instagram</span>
+            <span class="ava" style="background:#4f7cd1">DS</span></div></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-h"><span class="bcol-dot" style="background:#8b5cf6"></span>
+        <span class="bcol-name">Taklif yuborildi</span><span class="bcol-count">2</span></div>
+      <div style="padding:0 13px 8px" class="bcol-sum">Σ 58.4 mln UZS</div>
+      <div class="bcol-body">
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">E-commerce integratsiya</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Uzum hamkori</div>
+          <div class="lcard-sum">38.4 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Sayt</span>
+            <span class="ava" style="background:#3aa981">BK</span></div></div>
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Turniket + HRM ulanishi</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Binokor Holding</div>
+          <div class="lcard-sum">20.0 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Telegram bot</span>
+            <span class="ava" style="background:#b56bb0">SN</span></div></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-h"><span class="bcol-dot" style="background:#0ea5e9"></span>
+        <span class="bcol-name">Muzokara</span><span class="bcol-count">1</span></div>
+      <div style="padding:0 13px 8px" class="bcol-sum">Σ 120.0 mln UZS</div>
+      <div class="bcol-body">
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Bank ichki portali</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Ipoteka Bank</div>
+          <div class="lcard-sum">120.0 mln UZS</div>
+          <div class="bcard-foot"><span class="lcard-src">Tavsiya</span>
+            <span class="ava" style="background:#c98a3d">AA</span></div></div>
+      </div>
+    </div>
+    <div class="bcol won">
+      <div class="bcol-h"><span class="bcol-dot" style="background:#22c55e"></span>
+        <span class="bcol-name">Yutildi</span><span class="bcol-count">2</span></div>
+      <div style="padding:0 13px 8px" class="bcol-sum">Σ 84.5 mln UZS</div>
+      <div class="bcol-body">
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Mobil ilova (MOB)</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Ipak Yo'li Bank</div>
+          <div class="lcard-sum">64.5 mln UZS</div>
+          <div class="bcard-foot"><span class="chip soft-pos" style="font-size:10px">Shartnoma #C-118</span></div></div>
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Support paketi</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Agro Invest MChJ</div>
+          <div class="lcard-sum">20.0 mln UZS</div>
+          <div class="bcard-foot"><span class="chip soft-pos" style="font-size:10px">Shartnoma #C-121</span></div></div>
+      </div>
+    </div>
+    <div class="bcol lost">
+      <div class="bcol-h"><span class="bcol-dot" style="background:#cbd5e1"></span>
+        <span class="bcol-name">Yo'qotildi</span><span class="bcol-count">1</span></div>
+      <div class="bcol-body">
+        <div class="bcard"><div class="bcard-title" style="font-weight:600">Landing sahifa</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Chust Pichoq Art</div>
+          <div class="lcard-sum">2.1 mln UZS</div>
+          <div class="bcard-foot"><span class="chip neutral" style="font-size:10px">Narx kelishmadi</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ MIJOZLAR ════════════ -->
+<section class="page-view" id="pv-customers">
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Mijozlar</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Umumiy qidiruv..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span><span class="tb-badge">2</span></button>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">view_column</span></button>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>№</th><th>Mijoz nomi</th><th>Turi</th><th>Telefon</th><th>Region</th>
+          <th>Mas'ul</th><th>Yaratilgan</th><th class="sticky-r">Amallar</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono num">218</td><td>Ipak Yo'li Bank</td>
+            <td><span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>Yuridik</span></td>
+            <td class="mono">+998 71 200 43 43</td><td>Toshkent sh.</td>
+            <td><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</td>
+            <td class="mono">14.03.2026</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button>
+              <button class="act-btn danger"><span class="material-icons-outlined">delete</span></button></td></tr>
+          <tr class="actioned"><td class="mono num">217</td><td>Trans Cargo Group</td>
+            <td><span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>Yuridik</span></td>
+            <td class="mono">+998 90 123 45 67</td><td>Navoiy vil.</td>
+            <td><span class="mini-avatar" style="background:#c98a3d">AA</span>A. Abdullayev</td>
+            <td class="mono">02.05.2026</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button>
+              <button class="act-btn danger"><span class="material-icons-outlined">delete</span></button></td></tr>
+          <tr><td class="mono num">216</td><td>Karimova Nodira</td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Jismoniy</span></td>
+            <td class="mono">+998 93 555 21 08</td><td>Samarqand vil.</td>
+            <td><span class="mini-avatar" style="background:#3aa981">BK</span>B. Karimov</td>
+            <td class="mono">11.06.2026</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button>
+              <button class="act-btn danger"><span class="material-icons-outlined">delete</span></button></td></tr>
+          <tr><td class="mono num">215</td><td>Agro Invest MChJ</td>
+            <td><span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>Yuridik</span></td>
+            <td class="mono">+998 95 700 88 22</td><td>Farg'ona vil.</td>
+            <td><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</td>
+            <td class="mono">28.06.2026</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button>
+              <button class="act-btn danger"><span class="material-icons-outlined">delete</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <span>Sahifadagi qatorlar soni:</span>
+      <span class="rows-select">10 <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span>
+      <span class="mono">1-10 dan 218</span>
+      <div class="pager">
+        <button class="page-btn"><span class="material-icons-outlined">chevron_left</span></button>
+        <button class="page-btn active">1</button><button class="page-btn">2</button>
+        <button class="page-btn">3</button><button class="page-btn">…</button>
+        <button class="page-btn">22</button>
+        <button class="page-btn"><span class="material-icons-outlined">chevron_right</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ LOYIHALAR ════════════ -->
+<section class="page-view" id="pv-projects">
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Loyihalar</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Umumiy qidiruv..."></div>
+      <button class="btn-flat"><span class="material-icons-outlined">inventory</span> Arxiv</button>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>Kod</th><th>Nomi</th><th>Mijoz</th><th>A'zolar</th><th>Boardlar</th>
+          <th>Ochiq vazifalar</th><th>Status</th><th class="sticky-r">Amallar</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">MOB</td><td style="font-weight:600">Mobil ilova</td><td>Ipak Yo'li Bank</td>
+            <td><span class="mini-avatar" style="background:#4f7cd1">DS</span><span class="mini-avatar" style="background:#3aa981;margin-left:-13px">BK</span><span class="mini-avatar" style="background:#b56bb0;margin-left:-13px">SN</span><span style="font-size:11.5px;color:var(--ink-4)">+4</span></td>
+            <td>Development · Maintenance</td><td class="mono num">17</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">CRM</td><td style="font-weight:600">Ichki CRM platforma</td><td>Ichki loyiha</td>
+            <td><span class="mini-avatar" style="background:#c98a3d">AA</span><span class="mini-avatar" style="background:#4f7cd1;margin-left:-13px">DS</span><span style="font-size:11.5px;color:var(--ink-4)">+6</span></td>
+            <td>Development</td><td class="mono num">34</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">LOG</td><td style="font-weight:600">Logistika platformasi</td><td>Trans Cargo Group</td>
+            <td><span class="mini-avatar" style="background:#3aa981">BK</span><span style="font-size:11.5px;color:var(--ink-4)">+2</span></td>
+            <td>Development</td><td class="mono num">8</td>
+            <td><span class="chip soft-warn"><span class="st-dot warn"></span>Boshlanmoqda</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">HRM</td><td style="font-weight:600">HR tizimi</td><td>Samarqand Textile</td>
+            <td><span class="mini-avatar" style="background:#b56bb0">SN</span></td>
+            <td>Maintenance</td><td class="mono num">0</td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Yakunlangan</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <span class="mono">1-4 dan 4</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ BOARD ════════════ -->
+<section class="page-view" id="pv-board">
+    <div class="board-head">
+      <div class="board-tabs">
+        <button class="board-tab active"><span class="material-icons-outlined">rocket_launch</span> Development</button>
+        <button class="board-tab"><span class="material-icons-outlined">build</span> Maintenance</button>
+        <button class="board-tab add"><span class="material-icons-outlined">add</span> Board</button>
+      </div>
+      <span class="sprint-chip"><span class="material-icons-outlined">timer</span>
+        Sprint 14 · <span class="mono">5 kun qoldi</span></span>
+      <div class="ava-stack">
+        <span class="ava" style="background:#4f7cd1">DS</span>
+        <span class="ava" style="background:#3aa981">BK</span>
+        <span class="ava" style="background:#b56bb0">SN</span>
+        <span class="ava" style="background:#c98a3d">AA</span>
+        <span class="ava-more">+3</span>
+      </div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">settings</span></button>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
+    </div>
+
+    <div class="board">
+
+      <!-- TO DO -->
+      <div class="bcol">
+        <div class="bcol-h"><span class="bcol-dot" style="background:#94a3b8"></span>
+          <span class="bcol-name">To Do</span><span class="bcol-count">4</span></div>
+        <div class="bcol-body">
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
+              <span class="bcard-key">MOB-151</span><span class="bcard-est">3 pt</span></div>
+            <div class="bcard-title">Push-bildirishnoma sozlamalari ekrani</div>
+            <div class="bcard-foot"><span class="prio md">O'rta</span>
+              <span class="sub-count"><span class="material-icons-outlined">account_tree</span>0/3</span>
+              <span class="ava" style="background:#4f7cd1">DS</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic task">check_box</span>
+              <span class="bcard-key">MOB-152</span><span class="bcard-est">2 pt</span></div>
+            <div class="bcard-title">Profil rasmini kesish (crop) funksiyasi</div>
+            <div class="bcard-foot"><span class="prio lo">Past</span>
+              <span class="ava" style="background:#3aa981">BK</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic task">check_box</span>
+              <span class="bcard-key">MOB-148</span><span class="bcard-est">1 pt</span></div>
+            <div class="bcard-title">Dark mode ranglar auditi</div>
+            <div class="bcard-foot"><span class="prio lo">Past</span>
+              <span class="ava" style="background:#b56bb0">SN</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
+              <span class="bcard-key">MOB-153</span><span class="bcard-est">5 pt</span></div>
+            <div class="bcard-title">Referal dasturi — taklif havolalari</div>
+            <div class="bcard-foot"><span class="prio md">O'rta</span>
+              <span class="sub-count"><span class="material-icons-outlined">account_tree</span>0/2</span>
+              <span class="ava" style="background:#c98a3d">AA</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IN PROGRESS -->
+      <div class="bcol">
+        <div class="bcol-h"><span class="bcol-dot" style="background:#3b82f6"></span>
+          <span class="bcol-name">In Progress</span><span class="wip-chip">WIP 3/5</span>
+          <span class="bcol-count">3</span></div>
+        <div class="bcol-body">
+          <div class="bcard drag" onclick="openIssue()">
+            <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
+              <span class="bcard-key">MOB-142</span><span class="bcard-est">8 pt</span></div>
+            <div class="bcard-title">OAuth 2.0 integratsiyasi (Google, Apple)</div>
+            <div class="bcard-foot"><span class="prio hi">Yuqori</span>
+              <span class="sub-count"><span class="material-icons-outlined">account_tree</span>2/4</span>
+              <span class="ava" style="background:#4f7cd1">DS</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic task">check_box</span>
+              <span class="bcard-key">MOB-145</span><span class="bcard-est">3 pt</span></div>
+            <div class="bcard-title">Onboarding animatsiyalari</div>
+            <div class="bcard-foot"><span class="prio md">O'rta</span>
+              <span class="ava" style="background:#b56bb0">SN</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
+              <span class="bcard-key">MOB-139</span><span class="bcard-est">5 pt</span></div>
+            <div class="bcard-title">Chat xabarlarini keshlash</div>
+            <div class="bcard-foot"><span class="prio hi">Yuqori</span>
+              <span class="sub-count"><span class="material-icons-outlined">account_tree</span>1/3</span>
+              <span class="ava" style="background:#3aa981">BK</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CODE REVIEW -->
+      <div class="bcol">
+        <div class="bcol-h"><span class="bcol-dot" style="background:#8b5cf6"></span>
+          <span class="bcol-name">Code Review</span><span class="bcol-count">2</span></div>
+        <div class="bcol-body">
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic task">check_box</span>
+              <span class="bcard-key">MOB-137</span><span class="bcard-est">2 pt</span></div>
+            <div class="bcard-title">API xatolik kodlarini birxillashtirish</div>
+            <div class="bcard-foot"><span class="prio md">O'rta</span>
+              <span class="ava" style="background:#c98a3d">AA</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
+              <span class="bcard-key">MOB-133</span><span class="bcard-est">5 pt</span></div>
+            <div class="bcard-title">Balans sahifasi — tranzaksiyalar tarixi</div>
+            <div class="bcard-foot"><span class="prio hi">Yuqori</span>
+              <span class="sub-count"><span class="material-icons-outlined">account_tree</span>3/3</span>
+              <span class="ava" style="background:#4f7cd1">DS</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QA TESTING -->
+      <div class="bcol">
+        <div class="bcol-h"><span class="bcol-dot" style="background:#0ea5e9"></span>
+          <span class="bcol-name">QA Testing</span><span class="bcol-count">1</span></div>
+        <div class="bcol-body">
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic bug">bug_report</span>
+              <span class="bcard-key">MOB-129</span><span class="bcard-est">1 pt</span></div>
+            <div class="bcard-title">iOS'da klaviatura inputni yopib qo'yishi</div>
+            <div class="bcard-foot"><span class="prio hi">Yuqori</span>
+              <span class="ava" style="background:#b56bb0">SN</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCKED -->
+      <div class="bcol block">
+        <div class="bcol-h"><span class="bcol-dot" style="background:#f59e0b"></span>
+          <span class="bcol-name">Blocked</span><span class="bcol-count">1</span></div>
+        <div class="bcol-body">
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
+              <span class="bcard-key">MOB-126</span><span class="bcard-est">8 pt</span></div>
+            <div class="bcard-title">To'lov shlyuzi integratsiyasi (Payme)</div>
+            <div class="blocked-note"><span class="material-icons-outlined">block</span>
+              <span><b>Sabab:</b> hamkor API kaliti kutilmoqda ·
+              hal qiluvchi: <a class="link" href="#">MOB-154</a></span></div>
+            <div class="bcard-foot"><span class="prio hi">Yuqori</span>
+              <span class="ava" style="background:#3aa981">BK</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DONE -->
+      <div class="bcol done">
+        <div class="bcol-h"><span class="bcol-dot" style="background:#22c55e"></span>
+          <span class="bcol-name">Done</span><span class="bcol-count">6</span></div>
+        <div class="bcol-body">
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic bug">bug_report</span>
+              <span class="bcard-key">MOB-131</span><span class="bcard-est">2 pt</span></div>
+            <div class="bcard-title">Splash screen'da logo siljishi</div>
+            <div class="bcard-foot"><span class="prio md">O'rta</span>
+              <span class="ava" style="background:#c98a3d">AA</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic task">check_box</span>
+              <span class="bcard-key">MOB-128</span><span class="bcard-est">3 pt</span></div>
+            <div class="bcard-title">Sentry xato monitoringini ulash</div>
+            <div class="bcard-foot"><span class="prio lo">Past</span>
+              <span class="ava" style="background:#4f7cd1">DS</span></div>
+          </div>
+          <div class="bcard">
+            <div class="bcard-top"><span class="material-icons t-ic story">bookmark</span>
+              <span class="bcard-key">MOB-125</span><span class="bcard-est">5 pt</span></div>
+            <div class="bcard-title">Til tanlash va i18n infratuzilmasi</div>
+            <div class="bcard-foot"><span class="prio md">O'rta</span>
+              <span class="sub-count"><span class="material-icons-outlined">account_tree</span>4/4</span>
+              <span class="ava" style="background:#b56bb0">SN</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+</section>
+
+<!-- ════════════ SPRINT REJALASHTIRISH ════════════ -->
+<section class="page-view" id="pv-sprint">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">list</span>Backlog</div>
+      <div class="stat-value">46</div><div class="stat-sub">182 pt jami</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">speed</span>O'tgan sprint velocity</div>
+      <div class="stat-value">38 pt</div><div class="stat-sub">Sprint 13</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">timer</span>Yangi sprint</div>
+      <div class="stat-value">Sprint 15</div><div class="stat-sub mono">18.08 — 31.08.2026</div></div>
+  </div>
+  <div class="two-pane">
+    <div class="pane-main" style="flex:1.2">
+      <div class="lp-head" style="padding:0 0 12px"><h3>Backlog</h3>
+        <span class="dc-note">sudrab sprintga qo'shing →</span></div>
+      <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-153</span>
+        Referal dasturi — taklif havolalari
+        <span style="margin-left:auto" class="prio md">O'rta</span><span class="bcard-est">5 pt</span></div>
+      <div class="lp-row" style="background:var(--primary-soft)"><span class="material-icons t-ic story">bookmark</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-155</span>
+        Biometrik kirish (FaceID / barmoq izi)
+        <span style="margin-left:auto" class="prio hi">Yuqori</span><span class="bcard-est">8 pt</span></div>
+      <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-156</span>
+        Analytics eventlarini qo'shish
+        <span style="margin-left:auto" class="prio lo">Past</span><span class="bcard-est">2 pt</span></div>
+      <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-157</span>
+        Valyuta kurslari vidjeti
+        <span style="margin-left:auto" class="prio md">O'rta</span><span class="bcard-est">3 pt</span></div>
+      <div class="lp-row" style="opacity:.55"><span class="material-icons t-ic story">bookmark</span>
+        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-158</span>
+        Kredit kalkulyatori <span class="chip soft-warn" style="margin-left:8px;font-size:10px">point yo'q</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--ink-4)">sprintga kirmaydi</span></div>
+    </div>
+    <div class="sprint-panel" style="flex:1">
+      <div class="lp-head" style="padding:0 0 6px;border:none"><h3>Sprint 15</h3>
+        <span class="dc-note">18.08 — 31.08</span></div>
+      <div style="font-size:12.5px;color:var(--ink-3)">Sig'im (velocity asosida)</div>
+      <div class="cap-bar"><i style="width:85%"></i></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px" class="mono">
+        <span style="color:var(--ink-2);font-weight:600">34 / 40 pt</span>
+        <span style="color:var(--ink-4)">6 pt bo'sh</span></div>
+      <div style="margin-top:14px;border-top:1px solid var(--line-2)">
+        <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-142</span>
+          OAuth 2.0 integratsiyasi<span style="margin-left:auto" class="bcard-est">8 pt</span></div>
+        <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-139</span>
+          Chat xabarlarini keshlash<span style="margin-left:auto" class="bcard-est">5 pt</span></div>
+        <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-145</span>
+          Onboarding animatsiyalari<span style="margin-left:auto" class="bcard-est">3 pt</span></div>
+        <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">MOB-151</span>
+          Push sozlamalari ekrani<span style="margin-left:auto" class="bcard-est">3 pt</span></div>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:14px">
+        <span class="material-icons-outlined">play_arrow</span> SPRINTNI BOSHLASH</button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ HANDOVER ════════════ -->
+<section class="page-view" id="pv-handover">
+  <div class="banner warn">
+    <span class="b-icon"><span class="material-icons-outlined">swap_horiz</span></span>
+    <span><b>A. Karimov</b> tayinlovi tugadi (RELEASED) — <b>6 ta ochiq vazifa</b> qayta taqsimlanishi kerak.
+      Tizim taklifi: vorisi <b>B. Toshev</b>.</span>
+  </div>
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">assignment</span>Ochiq vazifalar</div>
+      <div class="stat-value">6</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">schedule</span>Jami baholash</div>
+      <div class="stat-value">26 pt</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">hourglass_top</span>Kutilmoqda</div>
+      <div class="stat-value">2 kun</div><div class="stat-sub">3 kundan keyin rahbarga eskalatsiya</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Topshirish — Mobil ilova loyihasi</h1>
+      <button class="btn-flat"><span class="material-icons-outlined">group_add</span> Hammasini vorisga</button>
+      <button class="btn-primary"><span class="material-icons-outlined">check_circle</span> TASDIQLASH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>Kod</th><th>Vazifa</th><th>Status</th><th>Baholash</th><th>Yangi mas'ul</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">MOB-139</td><td>Chat xabarlarini keshlash</td>
+            <td><span class="chip soft-info">In Progress</span></td><td class="mono num">5 pt</td>
+            <td><span class="rows-select"><span class="mini-avatar" style="background:#3aa981">BT</span>B. Toshev (voris)
+              <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span></td></tr>
+          <tr><td class="mono">MOB-151</td><td>Push-bildirishnoma sozlamalari</td>
+            <td><span class="chip neutral">To Do</span></td><td class="mono num">3 pt</td>
+            <td><span class="rows-select"><span class="mini-avatar" style="background:#3aa981">BT</span>B. Toshev (voris)
+              <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span></td></tr>
+          <tr class="actioned"><td class="mono">MOB-133</td><td>Balans sahifasi — tranzaksiyalar</td>
+            <td><span class="chip soft-info">Code Review</span></td><td class="mono num">5 pt</td>
+            <td><span class="rows-select"><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova
+              <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span></td></tr>
+          <tr><td class="mono">MOB-126</td><td>To'lov shlyuzi (Payme) <span class="chip soft-warn" style="font-size:10px;margin-left:6px">Blocked</span></td>
+            <td><span class="chip soft-warn">Block</span></td><td class="mono num">8 pt</td>
+            <td><span class="rows-select"><span class="mini-avatar" style="background:#3aa981">BT</span>B. Toshev (voris)
+              <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span></td></tr>
+          <tr><td class="mono">MOB-148</td><td>Dark mode ranglar auditi</td>
+            <td><span class="chip neutral">To Do</span></td><td class="mono num">1 pt</td>
+            <td><span class="rows-select"><span class="mini-avatar" style="background:#3aa981">BT</span>B. Toshev (voris)
+              <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span></td></tr>
+          <tr><td class="mono">MOB-156</td><td>Analytics eventlarini qo'shish</td>
+            <td><span class="chip neutral">To Do</span></td><td class="mono num">2 pt</td>
+            <td><span class="rows-select"><span class="mini-avatar" style="background:#3aa981">BT</span>B. Toshev (voris)
+              <span class="material-icons-outlined" style="font-size:18px">arrow_drop_down</span></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TICKETLAR ════════════ -->
+<section class="page-view" id="pv-tickets">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">confirmation_number</span>Ochiq</div>
+      <div class="stat-value">23</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">task_alt</span>Bugun yopildi</div>
+      <div class="stat-value">17</div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">timer_off</span>SLA xavfda</div>
+      <div class="stat-value">3</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">bolt</span>O'rtacha javob</div>
+      <div class="stat-value">14 min</div><div class="stat-sub">maqsad: 30 min</div>
+      <div class="stat-bar"><i style="width:53%"></i></div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Support so'rovlari</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Umumiy qidiruv..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span></button>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>№</th><th>Mavzu</th><th>Loyiha</th><th>Mijoz</th><th>Priority</th>
+          <th>Status</th><th>SLA</th><th>Operator</th><th class="sticky-r">Amallar</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">T-2214</td><td>To'lov o'tmayapti — xatolik 502</td><td class="mono">MOB</td>
+            <td>Ipak Yo'li Bank</td><td><span class="prio hi">Critical</span></td>
+            <td><span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>In Progress</span></td>
+            <td class="mono" style="color:#c81e1e;font-weight:600">18 min</td>
+            <td><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td class="mono">T-2213</td><td>Hisobotni eksport qilishda kodlash buzilishi</td><td class="mono">CRM</td>
+            <td>Agro Invest MChJ</td><td><span class="prio md">High</span></td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Open</span></td>
+            <td class="mono" style="color:var(--m-warn);font-weight:600">1s 40m</td>
+            <td style="color:var(--ink-4)">—</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr class="actioned"><td class="mono">T-2212</td><td>Yangi filial uchun kirish so'rovi</td><td class="mono">HRM</td>
+            <td>Samarqand Textile</td><td><span class="prio lo">Medium</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Resolved</span></td>
+            <td class="mono" style="color:var(--m-pos)">bajarildi</td>
+            <td><span class="mini-avatar" style="background:#3aa981">BK</span>B. Karimov</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td class="mono">T-2211</td><td>SLA buzildi: kechagi so'rov javobsiz</td><td class="mono">LOG</td>
+            <td>Trans Cargo Group</td><td><span class="prio hi">High</span></td>
+            <td><span class="chip soft-neg"><span class="st-dot neg"></span>Escalated</span></td>
+            <td class="mono" style="color:#c81e1e;font-weight:600">SLA buzildi</td>
+            <td><span class="mini-avatar" style="background:#c98a3d">AA</span>A. Abdullayev</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span class="mono">1-10 dan 96</span>
+      <div class="pager"><button class="page-btn active">1</button><button class="page-btn">2</button>
+        <button class="page-btn">…</button><button class="page-btn">10</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TELEGRAM INBOX ════════════ -->
+<section class="page-view" id="pv-inbox">
+  <div class="inbox">
+    <div class="ib-left">
+      <div class="ib-search"><div class="search-box" style="width:100%">
+        <span class="material-icons-outlined">search</span><input placeholder="Chat qidirish..."></div></div>
+      <div class="ib-tabs">
+        <button class="ib-tab active">Hammasi</button>
+        <button class="ib-tab">Guruhlar</button>
+        <button class="ib-tab">Shaxsiy</button>
+        <button class="ib-tab">Javobsiz</button>
+      </div>
+      <div class="ib-chats">
+        <div class="ib-chat active">
+          <span class="ib-ava" style="background:#4f7cd1">IY</span>
+          <div class="ib-chat-info">
+            <div class="ib-name">Ipak Yo'li · MOB support <span class="t">08:41</span></div>
+            <div class="ib-last">Rasulova: To'lov sahifasida yana 502...</div>
+          </div><span class="ib-unread">2</span>
+        </div>
+        <div class="ib-chat">
+          <span class="ib-ava" style="background:#3aa981">AG</span>
+          <div class="ib-chat-info">
+            <div class="ib-name">Agro Invest guruh <span class="t">08:12</span></div>
+            <div class="ib-last">Eksport funksiyasi qachon tayyor bo'ladi?</div>
+          </div><span class="ib-unread">1</span>
+        </div>
+        <div class="ib-chat">
+          <span class="ib-ava" style="background:#b56bb0">NK</span>
+          <div class="ib-chat-info">
+            <div class="ib-name">Nodira Karimova <span class="t">kecha</span></div>
+            <div class="ib-last">Rahmat, hammasi ishladi!</div>
+          </div>
+        </div>
+        <div class="ib-chat">
+          <span class="ib-ava" style="background:#c98a3d">TC</span>
+          <div class="ib-chat-info">
+            <div class="ib-name">Trans Cargo · LOG <span class="t">kecha</span></div>
+            <div class="ib-last">Siz: Muammo eskalatsiya qilindi, 24 soat...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ib-mid">
+      <div class="ib-head">
+        <span class="ib-ava" style="background:#4f7cd1;width:36px;height:36px;font-size:12px">IY</span>
+        <div><div class="ib-head-name">Ipak Yo'li · MOB support</div>
+          <div class="ib-head-sub">Guruh · 14 a'zo · Mobil ilova loyihasi</div></div>
+        <span class="chip soft-info" style="margin-left:auto">MOB</span>
+        <button class="btn-flat" style="color:var(--primary)">
+          <span class="material-icons-outlined">confirmation_number</span> Ticket ochish</button>
+      </div>
+      <div class="ib-msgs">
+        <div class="msg in"><div class="m-who">Saboat Rasulova</div>
+          To'lov sahifasida yana 502 xatolik chiqyapti. Skrinshot yubordim.
+          <div class="m-meta">08:39</div></div>
+        <div class="msg in"><div class="m-who">Saboat Rasulova</div>
+          Bu ikkinchi marta shu hafta ichida. Mijozlar shikoyat qilishyapti.
+          <div class="m-meta">08:41</div></div>
+        <div class="msg out">Assalomu alaykum! Muammo qabul qilindi — T-2214 ticket ochildi,
+          texnik jamoa hozir ko'rib chiqmoqda. 30 daqiqa ichida qaytamiz.
+          <div class="m-meta">08:44 · S. Nazarova</div></div>
+        <div class="msg in"><div class="m-who">Saboat Rasulova</div>
+          Rahmat, kutamiz.
+          <div class="m-meta">08:45</div></div>
+      </div>
+      <div class="ib-compose">
+        <button class="tb-icon-btn"><span class="material-icons-outlined">attach_file</span></button>
+        <input class="ib-input" placeholder="Javob yozing...">
+        <button class="ib-send"><span class="material-icons-outlined">send</span></button>
+      </div>
+    </div>
+    <div class="ib-right">
+      <div class="desc-card">
+        <div class="dc-head"><h3>Kontekst</h3></div>
+        <div class="dc-body">
+          <div class="kv"><span class="kv-label">Mijoz</span><span class="kv-dots"></span>
+            <span class="kv-value">Ipak Yo'li Bank</span></div>
+          <div class="kv"><span class="kv-label">Loyiha</span><span class="kv-dots"></span>
+            <span class="kv-value mono">MOB</span></div>
+          <div class="kv"><span class="kv-label">Bot</span><span class="kv-dots"></span>
+            <span class="kv-value">@mob_support_bot</span></div>
+          <div class="kv"><span class="kv-label">SLA rejasi</span><span class="kv-dots"></span>
+            <span class="kv-value">Premium · 30 min</span></div>
+        </div>
+      </div>
+      <div class="desc-card">
+        <div class="dc-head"><h3>Bog'langan ticketlar</h3></div>
+        <div class="dc-body">
+          <div class="kv"><span class="kv-value mono" style="max-width:none">T-2214</span>
+            <span class="kv-dots"></span><span class="chip soft-info" style="font-size:10.5px">In Progress</span></div>
+          <div class="kv"><span class="kv-value mono" style="max-width:none">T-2168</span>
+            <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Closed</span></div>
+          <div class="kv"><span class="kv-value mono" style="max-width:none">T-2101</span>
+            <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Closed</span></div>
+        </div>
+      </div>
+      <div class="desc-card">
+        <div class="dc-head"><h3>Oxirgi feedback</h3><span class="dc-note">T-2168</span></div>
+        <div class="dc-body" style="padding:12px 16px">
+          <span style="color:var(--gold);font-size:18px;letter-spacing:2px">★★★★★</span>
+          <div style="font-size:12.5px;color:#5c6e80;margin-top:5px">"Tez va aniq hal qilishdi, rahmat"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ SHARTNOMALAR ════════════ -->
+<section class="page-view" id="pv-contracts">
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Shartnomalar</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Umumiy qidiruv..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span></button>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>№</th><th>Mijoz</th><th>Mavzu</th><th>Summa</th><th>Loyiha</th>
+          <th>Imzolangan</th><th>Status</th><th>To'lov holati</th><th class="sticky-r">Amallar</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">C-118</td><td>Ipak Yo'li Bank</td><td>Mobil ilova ishlab chiqish</td>
+            <td class="mono num" style="font-weight:600">64,500,000 UZS</td><td class="mono">MOB</td>
+            <td class="mono">20.03.2026</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Imzolangan</span></td>
+            <td><span class="mini-bar"><i style="width:50%"></i></span><span class="mono" style="font-size:12px">2/4</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">C-121</td><td>Agro Invest MChJ</td><td>Yillik support paketi</td>
+            <td class="mono num" style="font-weight:600">20,000,000 UZS</td><td class="mono">CRM</td>
+            <td class="mono">01.07.2026</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Imzolangan</span></td>
+            <td><span class="mini-bar"><i style="width:25%"></i></span><span class="mono" style="font-size:12px">1/4</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr class="actioned"><td class="mono">C-124</td><td>Trans Cargo Group</td><td>Logistika platformasi</td>
+            <td class="mono num" style="font-weight:600">72,000,000 UZS</td><td class="mono">LOG</td>
+            <td class="mono" style="color:var(--ink-4)">—</td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Draft</span></td>
+            <td style="color:var(--ink-4)">—</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button>
+              <button class="act-btn danger"><span class="material-icons-outlined">delete</span></button></td></tr>
+          <tr><td class="mono">C-109</td><td>Samarqand Textile</td><td>HR tizimi joriy etish</td>
+            <td class="mono num" style="font-weight:600">35,000,000 UZS</td><td class="mono">HRM</td>
+            <td class="mono">10.01.2026</td>
+            <td><span class="chip soft-warn"><span class="st-dot warn"></span>To'lov kutilmoqda</span></td>
+            <td><span class="mini-bar"><i style="width:75%;background:var(--warn)"></i></span><span class="mono" style="font-size:12px;color:var(--m-warn)">3/4 · muddati o'tgan</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span class="mono">1-10 dan 47</span>
+      <div class="pager"><button class="page-btn active">1</button><button class="page-btn">2</button>
+        <button class="page-btn">…</button><button class="page-btn">5</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ CALL CENTER ════════════ -->
+<section class="page-view" id="pv-calls">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">call</span>Bugun</div>
+      <div class="stat-value">142</div><div class="stat-sub">qo'ng'iroq</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">call_received</span>Javob berilgan</div>
+      <div class="stat-value">96%</div><div class="stat-bar"><i style="width:96%"></i></div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">timer</span>O'rtacha davomiylik</div>
+      <div class="stat-value">4:32</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">psychology</span>AI o'rtacha baho</div>
+      <div class="stat-value">87</div><div class="stat-bar"><i style="width:87%"></i></div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Qo'ng'iroqlar</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Raqam yoki mijoz..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span></button>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>Vaqt</th><th>Yo'nalish</th><th>Raqam</th><th>Mijoz / Lead</th><th>Operator</th>
+          <th>Davomiylik</th><th>Holat</th><th>AI baho</th><th>Yozuv</th><th class="sticky-r">Amallar</th>
+        </tr></thead>
+        <tbody>
+          <tr onclick="document.getElementById('call-drawer').classList.add('open')" style="cursor:pointer">
+            <td class="mono">08:47</td>
+            <td><span class="material-icons-outlined" style="color:#22c55e;font-size:18px">call_received</span> Kiruvchi</td>
+            <td class="mono">+998 91 234 56 78</td><td>Saboat Rasulova · Ipak Yo'li</td>
+            <td><span class="mini-avatar" style="background:#c98a3d">AA</span>A. Abdullayev</td>
+            <td class="mono num">6:12</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Answered</span></td>
+            <td><span class="score-pill pos">92</span></td>
+            <td><button class="act-btn"><span class="material-icons-outlined">play_circle</span></button></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td class="mono">08:31</td>
+            <td><span class="material-icons-outlined" style="color:#3b82f6;font-size:18px">call_made</span> Chiquvchi</td>
+            <td class="mono">+998 90 123 45 67</td><td>Trans Cargo (lead)</td>
+            <td><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</td>
+            <td class="mono num">11:48</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Answered</span></td>
+            <td><span class="score-pill hit">78</span></td>
+            <td><button class="act-btn"><span class="material-icons-outlined">play_circle</span></button></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td class="mono">08:24</td>
+            <td><span class="material-icons-outlined" style="color:#22c55e;font-size:18px">call_received</span> Kiruvchi</td>
+            <td class="mono">+998 99 887 65 43</td><td style="color:var(--ink-4)">Noma'lum</td>
+            <td style="color:var(--ink-4)">—</td>
+            <td class="mono num" style="color:var(--ink-4)">0:00</td>
+            <td><span class="chip soft-neg"><span class="st-dot neg"></span>Missed</span></td>
+            <td><span class="score-pill">—</span></td><td style="color:var(--ink-4)">—</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">phone_callback</span></button></td></tr>
+          <tr><td class="mono">08:02</td>
+            <td><span class="material-icons-outlined" style="color:#22c55e;font-size:18px">call_received</span> Kiruvchi</td>
+            <td class="mono">+998 93 555 21 08</td><td>Nodira Karimova</td>
+            <td><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</td>
+            <td class="mono num">3:05</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Answered</span></td>
+            <td><span class="score-pill neg">54</span></td>
+            <td><button class="act-btn"><span class="material-icons-outlined">play_circle</span></button></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span style="font-size:12px;color:var(--ink-4)">Qatorni bosing — AI tahlil ochiladi</span>
+      <span class="mono" style="margin-left:auto">1-10 dan 142</span></div>
+  </div>
+</section>
+
+<!-- ════════════ INVENTAR ════════════ -->
+<section class="page-view" id="pv-inventory">
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Inventar</h1>
+      <div class="board-tabs" style="margin-right:auto">
+        <button class="board-tab active">Jihozlar</button>
+        <button class="board-tab">Ombor harakati</button>
+      </div>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Inventar № yoki nom..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>Inventar №</th><th>Nomi</th><th>Kategoriya</th><th>Seriya №</th><th>Holat</th>
+          <th>Kimda</th><th>Berilgan</th><th class="sticky-r">Amallar</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">INV-00214</td><td>MacBook Pro 14 M3</td><td>Noutbuk</td>
+            <td class="mono">C02XK1JHV29</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Biriktirilgan</span></td>
+            <td><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</td>
+            <td class="mono">15.01.2026</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">swap_horiz</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td class="mono">INV-00198</td><td>Dell UltraSharp 27"</td><td>Monitor</td>
+            <td class="mono">CN0H2Y4K74</td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Omborda</span></td>
+            <td style="color:var(--ink-4)">—</td><td style="color:var(--ink-4)" class="mono">—</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">swap_horiz</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr class="actioned"><td class="mono">INV-00175</td><td>iPhone 15 (test qurilma)</td><td>Telefon</td>
+            <td class="mono">F2LW48XHPL</td>
+            <td><span class="chip soft-warn"><span class="st-dot warn"></span>Ta'mirda</span></td>
+            <td style="color:var(--ink-4)">Servis markazda</td><td class="mono">03.07.2026</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td class="mono">INV-00142</td><td>Logitech MX Keys</td><td>Aksessuar</td>
+            <td class="mono">2309LZ00815</td>
+            <td><span class="chip soft-neg"><span class="st-dot neg"></span>Hisobdan chiqarilgan</span></td>
+            <td style="color:var(--ink-4)">—</td><td class="mono" style="color:var(--ink-4)">—</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span class="mono">1-10 dan 214</span>
+      <div class="pager"><button class="page-btn active">1</button><button class="page-btn">2</button>
+        <button class="page-btn">…</button><button class="page-btn">22</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ KPI NATIJALAR ════════════ -->
+<section class="page-view" id="pv-kpi">
+  <div class="board-head">
+    <div class="board-tabs">
+      <button class="board-tab"><span class="material-icons-outlined">chevron_left</span></button>
+      <button class="board-tab active">2026 Iyul</button>
+      <button class="board-tab"><span class="material-icons-outlined">chevron_right</span></button>
+    </div>
+    <span class="chip soft-pos"><span class="st-dot pos"></span>Yakunlangan (muhrlangan)</span>
+    <button class="btn-flat" style="margin-left:auto"><span class="material-icons-outlined">refresh</span> Qayta hisoblash</button>
+  </div>
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">groups</span>Xodimlar</div>
+      <div class="stat-value">48</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">insights</span>O'rtacha KPI</div>
+      <div class="stat-value">82.4</div><div class="stat-bar"><i style="width:82%"></i></div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">emoji_events</span>Eng yuqori</div>
+      <div class="stat-value">96.8</div><div class="stat-sub">M. Yusupova</div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">warning</span>80 dan past</div>
+      <div class="stat-value">7</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>Xodim</th><th>Profil</th><th>Vazifalar</th><th>Feedback</th><th>Intizom</th>
+          <th>Yakuniy ball</th><th class="sticky-r">Amallar</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span class="mini-avatar" style="background:#b56bb0">MY</span>
+            <b>M. Yusupova</b> <span style="color:var(--ink-4);font-size:12px">· QA muhandis</span></td>
+            <td>QA muhandis</td>
+            <td><span class="score-pill pos">98</span></td>
+            <td><span class="score-pill pos">95</span></td>
+            <td><span class="score-pill pos">96</span></td>
+            <td class="mono num" style="font-weight:700;color:var(--m-pos);font-size:15px">96.8</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td><span class="mini-avatar" style="background:#4f7cd1">DS</span>
+            <b>D. Salimov</b> <span style="color:var(--ink-4);font-size:12px">· Senior dasturchi</span></td>
+            <td>Dasturchi</td>
+            <td><span class="score-pill pos">100</span></td>
+            <td><span class="score-pill hit">90</span></td>
+            <td><span class="score-pill pos">91</span></td>
+            <td class="mono num" style="font-weight:700;color:var(--m-pos);font-size:15px">87.5</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td><span class="mini-avatar" style="background:#3aa981">BK</span>
+            <b>B. Karimov</b> <span style="color:var(--ink-4);font-size:12px">· Support operatori</span></td>
+            <td>Support operatori</td>
+            <td><span class="score-pill hit">84</span></td>
+            <td><span class="score-pill pos">92</span></td>
+            <td><span class="score-pill hit">78</span></td>
+            <td class="mono num" style="font-weight:700;color:var(--m-acc);font-size:15px">84.1</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td><span class="mini-avatar" style="background:#c98a3d">AA</span>
+            <b>A. Abdullayev</b> <span style="color:var(--ink-4);font-size:12px">· Call operator</span></td>
+            <td>Call operator</td>
+            <td><span class="score-pill hit">76</span></td>
+            <td><span class="score-pill hit">81</span></td>
+            <td><span class="score-pill neg">62</span></td>
+            <td class="mono num" style="font-weight:700;color:var(--m-warn);font-size:15px">73.9</td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ KPI PROFILLARI ════════════ -->
+<section class="page-view" id="pv-kpiprofiles">
+  <div class="two-pane">
+    <div class="pane-list">
+      <div class="lp-head"><h3>Profillar</h3>
+        <button class="tb-icon-btn" style="width:30px;height:30px"><span class="material-icons-outlined" style="font-size:18px">add</span></button></div>
+      <div class="pl-item active"><div class="pl-name">Dasturchi</div>
+        <div class="pl-sub">Senior/Middle/Junior lavozimlari · 5 kriteriya</div></div>
+      <div class="pl-item"><div class="pl-name">Support operatori</div>
+        <div class="pl-sub">Support bo'limi · 5 kriteriya</div></div>
+      <div class="pl-item"><div class="pl-name">Call operator</div>
+        <div class="pl-sub">Call center · 5 kriteriya</div></div>
+      <div class="pl-item"><div class="pl-name">Sotuvchi</div>
+        <div class="pl-sub">Sotuv bo'limi · 5 kriteriya</div></div>
+    </div>
+    <div class="pane-main">
+      <div class="lp-head" style="padding:0 0 10px"><h3>Dasturchi — kriteriyalar va vaznlar</h3>
+        <span class="sum-ok"><span class="material-icons-outlined" style="font-size:16px">check_circle</span>Jami: 100%</span></div>
+      <div class="crit-edit">
+        <span class="ce-name">Vazifalar bajarilishi</span><span class="ce-src">project</span>
+        <input type="range" class="ce-slider" value="50" disabled><input class="ce-w" value="50%" readonly>
+      </div>
+      <div class="crit-edit">
+        <span class="ce-name">Mijoz feedback'i</span><span class="ce-src">support</span>
+        <input type="range" class="ce-slider" value="20" disabled><input class="ce-w" value="20%" readonly>
+      </div>
+      <div class="crit-edit">
+        <span class="ce-name">Ticket hal qilish</span><span class="ce-src">support</span>
+        <input type="range" class="ce-slider" value="10" disabled><input class="ce-w" value="10%" readonly>
+      </div>
+      <div class="crit-edit">
+        <span class="ce-name">Qo'ng'iroq sifati</span><span class="ce-src">callcenter</span>
+        <input type="range" class="ce-slider" value="0" disabled><input class="ce-w" value="0%" readonly>
+      </div>
+      <div class="crit-edit" style="border-bottom:none">
+        <span class="ce-name">Intizom (turniket)</span><span class="ce-src">turniket</span>
+        <input type="range" class="ce-slider" value="20" disabled><input class="ce-w" value="20%" readonly>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+        <button class="btn-flat">Bekor qilish</button>
+        <button class="btn-primary"><span class="material-icons-outlined">check_circle</span> SAQLASH</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- ════════════ VAZIFA DETAIL MODALI ════════════ -->
+<div class="overlay" id="issue-overlay" onclick="if(event.target===this)closeIssue()">
+  <div class="modal">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">assignment</span></span>
+        <div class="mh-t">
+          <h1>OAuth 2.0 integratsiyasi (Google, Apple)</h1>
+          <div class="mh-id mono">MOB-142 <span class="material-icons-outlined" style="font-size:13px;cursor:pointer">content_copy</span></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="head-chip"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.25)"></span>In Progress</span>
+        <button class="close-x" onclick="closeIssue()"><span class="material-icons-outlined">close</span></button>
+      </div>
+    </div>
+    <div class="fm-body">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div style="flex:1.6;min-width:0">
+          <div class="desc-card">
+            <div class="dc-head"><h3>Tavsif</h3></div>
+            <div class="dc-body" style="padding:12px 16px;font-size:13.5px;line-height:1.6;color:#182634">
+              Google va Apple orqali kirish. Token refresh oqimi backend bilan kelishilgan
+              (issue: BE-88). Xatolik holatlari: bekor qilingan ruxsat, muddati o'tgan token,
+              tarmoq uzilishi — har biriga alohida xabar.
+            </div>
+          </div>
+          <div class="desc-card">
+            <div class="dc-head"><h3>Subtasklar</h3><span class="dc-note">2/4</span></div>
+            <div class="dc-body">
+              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons" style="font-size:17px;color:var(--m-pos)">check_circle</span> Google OAuth oqimi</span>
+                <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Done</span></div>
+              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons" style="font-size:17px;color:var(--m-pos)">check_circle</span> Token saqlash (Keychain)</span>
+                <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Done</span></div>
+              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons-outlined" style="font-size:17px;color:var(--ink-4)">radio_button_unchecked</span> Apple Sign-In</span>
+                <span class="kv-dots"></span><span class="chip soft-info" style="font-size:10.5px">In Progress</span></div>
+              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons-outlined" style="font-size:17px;color:var(--ink-4)">radio_button_unchecked</span> Xatolik ekranlari</span>
+                <span class="kv-dots"></span><span class="chip neutral" style="font-size:10.5px">To Do</span></div>
+            </div>
+          </div>
+          <div class="desc-card">
+            <div class="dc-head"><h3>Izohlar</h3><span class="dc-note">3</span></div>
+            <div class="dc-body" style="padding:10px 16px">
+              <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--mline2)">
+                <span class="mini-avatar" style="background:#c98a3d;margin:0">AA</span>
+                <div style="flex:1"><div style="font-size:12.5px"><b>Aziz</b>
+                  <span class="mono" style="font-size:10.5px;color:#8b9aa9;margin-left:6px">1 soat oldin</span></div>
+                  <div style="font-size:13px;color:#182634;margin-top:2px">Apple sertifikati provisioning'da muammo bor edi — hal qilindi</div></div>
+              </div>
+              <div style="display:flex;gap:10px;padding:8px 0">
+                <span class="mini-avatar" style="background:#4f7cd1;margin:0">DS</span>
+                <div style="flex:1"><div style="font-size:12.5px"><b>Davron</b>
+                  <span class="mono" style="font-size:10.5px;color:#8b9aa9;margin-left:6px">30 daqiqa oldin</span></div>
+                  <div style="font-size:13px;color:#182634;margin-top:2px">Rahmat, bugun Apple oqimini tugataman</div></div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <input class="ib-input" placeholder="Izoh yozing..." style="height:38px">
+                <button class="ib-send" style="width:38px;height:38px"><span class="material-icons-outlined" style="font-size:18px">send</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="desc-card">
+            <div class="dc-head"><h3>Ma'lumotlar</h3></div>
+            <div class="dc-body">
+              <div class="kv"><span class="kv-label">Board</span><span class="kv-dots"></span>
+                <span class="kv-value">Development</span></div>
+              <div class="kv"><span class="kv-label">Sprint</span><span class="kv-dots"></span>
+                <span class="kv-value">Sprint 14</span></div>
+              <div class="kv"><span class="kv-label">Turi</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="material-icons t-ic story" style="font-size:15px">bookmark</span> Story</span></div>
+              <div class="kv"><span class="kv-label">Priority</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="prio hi">Yuqori</span></span></div>
+              <div class="kv"><span class="kv-label">Baholash</span><span class="kv-dots"></span>
+                <span class="kv-value mono">8 pt</span></div>
+              <div class="kv"><span class="kv-label">Mas'ul</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span></div>
+              <div class="kv"><span class="kv-label">Watcherlar</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="mini-avatar" style="background:#3aa981">BK</span><span class="mini-avatar" style="background:#b56bb0;margin-left:-10px">SN</span></span></div>
+              <div class="kv"><span class="kv-label">Muddat</span><span class="kv-dots"></span>
+                <span class="kv-value mono">08.08.2026</span></div>
+              <div class="kv"><span class="kv-label">Teglar</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="chip soft-info" style="font-size:10.5px">auth</span>
+                  <span class="chip soft-info" style="font-size:10.5px">mobile</span></span></div>
+              <div class="kv"><span class="kv-label">Bog'lanish</span><span class="kv-dots"></span>
+                <span class="kv-value mono" style="color:var(--primary)">relates_to: BE-88</span></div>
+            </div>
+          </div>
+          <div class="desc-card">
+            <div class="dc-head"><h3>Tarix</h3></div>
+            <div class="dc-body" style="padding:8px 16px;font-size:12px;color:#5c6e80">
+              <div style="padding:5px 0">status: To Do → In Progress <span class="mono" style="color:#8b9aa9">· 01.08</span></div>
+              <div style="padding:5px 0;border-top:1px solid var(--mline2)">point: 5 → 8 (re-estimation) <span class="mono" style="color:#8b9aa9">· 31.07</span></div>
+              <div style="padding:5px 0;border-top:1px solid var(--mline2)">yaratildi <span class="mono" style="color:#8b9aa9">· 28.07</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fm-foot">
+      <button class="btn-flat left" onclick="closeIssue()">Yopish</button>
+      <button class="btn-del-text">O'chirish</button>
+      <button class="btn-edit"><span class="material-icons-outlined" style="font-size:18px">edit</span> Tahrirlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ CALL AI DRAWER ════════════ -->
+<div class="drawer" id="call-drawer">
+  <div class="dr-head"><h3>Qo'ng'iroq tahlili — AI</h3>
+    <button class="close-x" style="color:var(--ink-3)" onclick="this.closest('.drawer').classList.remove('open')">
+      <span class="material-icons-outlined">close</span></button></div>
+  <div class="dr-body">
+    <div class="player">
+      <button class="play-btn"><span class="material-icons-outlined" style="font-size:20px">play_arrow</span></button>
+      <div class="wave"></div>
+      <span class="mono" style="font-size:12px;color:var(--ink-3)">2:10 / 6:12</span>
+    </div>
+    <div class="ai-score-big"><div class="v">92</div><div class="l">Umumiy AI baho</div></div>
+    <div class="desc-card">
+      <div class="dc-head"><h3>Mezonlar</h3><span class="dc-note">gpt-audio-v3</span></div>
+      <div class="dc-body">
+        <div class="crit"><div class="crit-row"><span>Salomlashish va tanishtirish</span><b>95</b></div>
+          <div class="crit-bar"><i style="width:95%;background:var(--m-pos)"></i></div></div>
+        <div class="crit"><div class="crit-row"><span>Muammoni aniqlash</span><b>90</b></div>
+          <div class="crit-bar"><i style="width:90%;background:var(--m-pos)"></i></div></div>
+        <div class="crit"><div class="crit-row"><span>Yechim taklif qilish</span><b>88</b></div>
+          <div class="crit-bar"><i style="width:88%;background:var(--m-pos)"></i></div></div>
+        <div class="crit"><div class="crit-row"><span>Xushmuomalalik</span><b>96</b></div>
+          <div class="crit-bar"><i style="width:96%;background:var(--m-pos)"></i></div></div>
+        <div class="crit"><div class="crit-row"><span>Yakunlash va xayrlashish</span><b>82</b></div>
+          <div class="crit-bar"><i style="width:82%;background:var(--m-acc)"></i></div></div>
+      </div>
+    </div>
+    <div class="desc-card">
+      <div class="dc-head"><h3>Qisqa xulosa</h3></div>
+      <div class="dc-body" style="padding:12px 16px;font-size:13px;line-height:1.6;color:#182634">
+        Mijoz to'lov xatoligi bo'yicha murojaat qildi. Operator muammoni aniq qayd etdi,
+        T-2214 ticket ochilishini tushuntirdi va muddat va'da qildi. Yakunda qo'shimcha
+        yordam taklif qilinmadi — yaxshilash nuqtasi.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════ SPA router ═══════ */
+var TITLES={home:'Bosh sahifa',leads:'Leadlar',customers:'Mijozlar',contracts:'Shartnomalar',
+  projects:'Loyihalar',board:'Board',sprint:'Sprint rejalashtirish',handover:'Handover',
+  tickets:'Ticketlar',inbox:'Telegram inbox',calls:'Call center',inventory:'Inventar',
+  kpi:'KPI natijalar',kpiprofiles:'KPI profillari'};
+function show(page){
+  var views=document.querySelectorAll('.page-view');
+  for(var i=0;i<views.length;i++)views[i].classList.remove('active');
+  var el=document.getElementById('pv-'+page);
+  if(el)el.classList.add('active');
+  var items=document.querySelectorAll('.nav-item');
+  for(var j=0;j<items.length;j++){
+    items[j].classList.toggle('active',items[j].getAttribute('data-page')===page);
+  }
+  document.getElementById('crumb-current').textContent=TITLES[page]||page;
+  document.querySelector('.page').scrollTop=0;
+  document.getElementById('call-drawer').classList.remove('open');
+}
+var navItems=document.querySelectorAll('.nav-item[data-page]');
+for(var k=0;k<navItems.length;k++){
+  navItems[k].addEventListener('click',function(){show(this.getAttribute('data-page'))});
+}
+show('home');
+
+/* Modal */
+function openIssue(){document.getElementById('issue-overlay').classList.add('open')}
+function closeIssue(){document.getElementById('issue-overlay').classList.remove('open')}
+
+/* Bildirishnoma dropdown */
+function toggleNotif(e){
+  e.stopPropagation();
+  document.getElementById('notif').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  var n=document.getElementById('notif');
+  if(n.classList.contains('open')&&!n.contains(e.target))n.classList.remove('open');
+});
+
+/* Jonli soat */
+setInterval(function(){
+  var d=new Date();
+  function p(x){return x<10?'0'+x:x}
+  document.getElementById('clock').textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+},1000);
+</script>
+</body>
+</html>
