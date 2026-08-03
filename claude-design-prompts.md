@@ -1,5 +1,17 @@
 # Claude Design — prompt to'plami (web-platform dizayn tizimi asosida)
 
+> ## MUHIM — SHELL-FIRST ISH TARTIBI (matnli promptdan kuchli)
+> Sinov ko'rsatdiki, matnli tavsif bilan model uy uslubini aniq takrorlay olmaydi.
+> To'g'ri tartib:
+> 1. Sessiyaga **crm-shell-template.html** faylini biriktiring (repo'da bor)
+> 2. Iloji bo'lsa real sahifa **skrinshotini** ham biriktiring
+> 3. Prompt shunday boshlansin: "Biriktirilgan HTML — bizning tayyor dizayn tizimimiz.
+>    Topbar, sidebar, CSS o'zgaruvchilar va mavjud klasslarga TEGMA. Faqat
+>    <main class=\"page\"> ichidagi kontentni almashtir va kerak bo'lsa yangi klasslar
+>    qo'sh (mavjud tokenlardan foydalanib):" + sahifa tavsifi (quyidagi bo'limlardan)
+> 4. 0-bo'limdagi bazaviy prompt endi QO'SHIMCHA kontekst sifatida ishlatiladi
+>    (modelga naqshlarning ma'nosini tushuntiradi)
+>
 > Ishlatish tartibi: har Claude Design sessiyasida **avval 0-bo'limdagi bazaviy promptni** yuboring,
 > keyin kerakli sahifaning promptini. Natija mavjud frontend (Vue 3 + Quasar) bilan bir xil
 > vizual tilda chiqadi — keyin dasturchi uni Quasar komponentlariga o'girishi oson bo'ladi.
