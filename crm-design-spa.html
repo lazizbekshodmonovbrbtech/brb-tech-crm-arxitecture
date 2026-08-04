@@ -589,11 +589,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .rte-foot{display:flex;align-items:center;padding:6px 12px;background:var(--msurface2);
   border-top:1px solid var(--mline2);font-size:11px;color:#8b9aa9}
 
-.f-locked{display:flex;align-items:center;gap:9px;height:46px;padding:0 14px;
-  border:1px solid var(--mline2);border-radius:10px;background:var(--msurface2);
-  font-size:13.5px;font-weight:600;color:var(--ink-1)}
-.f-locked .material-icons-outlined{font-size:18px;color:var(--ink-4)}
-.f-locked .lk{margin-left:auto;font-size:15px;color:#b6c2d1}
 .fld .hint{font-size:11.5px;color:#8b9aa9;margin-top:5px;display:block;line-height:1.45}
 .fld .hint b{color:var(--m-warn);font-weight:600}
 .fgrid{display:grid;gap:14px}
@@ -2524,16 +2519,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       </div>
 
       <div class="f-sec">Joylashuv va baholash</div>
-      <div class="fgrid c3">
-        <div class="fld"><label>Board</label>
-          <div class="f-locked">
-            <span class="material-icons-outlined">view_kanban</span>
-            <span id="if-board-name">Development</span>
-            <span class="mode-chip scrum" id="if-board-mode">SCRUM</span>
-            <span class="material-icons-outlined lk">lock</span>
-          </div>
-          <span class="hint">Kontekstdan olinadi — vazifa ochilgan boardga biriktiriladi.
-            Keyin boshqa boardga ko'chirish vazifa ichidan qilinadi.</span></div>
+      <div class="fgrid c2">
         <div class="fld" id="if-sprint-wrap"><label>Sprint</label>
           <select><option>— (backlog)</option><option>Sprint 14 (joriy)</option><option>Sprint 15</option></select>
           <span class="hint">Faqat SCRUM boardda.</span></div>
@@ -2978,10 +2964,6 @@ function openIssueForm(mode,title){
 }
 function ifBoard(mode){
   var scrum=mode==='scrum';
-  document.getElementById('if-board-name').textContent=scrum?'Development':'Maintenance';
-  var bm=document.getElementById('if-board-mode');
-  bm.textContent=scrum?'SCRUM':'KANBAN';
-  bm.className='mode-chip '+(scrum?'scrum':'kanban');
   document.getElementById('if-sprint-wrap').style.display=scrum?'':'none';
   document.getElementById('if-est-label').textContent=scrum?'Baholash (point)':'Baholash (daqiqa)';
   document.getElementById('if-est').placeholder=scrum?'masalan 5':'masalan 90';
