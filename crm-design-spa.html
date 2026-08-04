@@ -557,6 +557,31 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+.fld .hint{font-size:11.5px;color:#8b9aa9;margin-top:5px;display:block;line-height:1.45}
+.fld .hint b{color:var(--m-warn);font-weight:600}
+.fgrid{display:grid;gap:14px}
+.fgrid.c2{grid-template-columns:1fr 1fr}
+.fgrid.c3{grid-template-columns:1fr 1fr 1fr}
+.f-sec{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:#8b9aa9;margin:4px 0 12px;padding-top:14px;border-top:1px solid var(--mline2)}
+.f-sec:first-child{margin-top:0;padding-top:0;border-top:none}
+.type-pick{display:flex;gap:8px;flex-wrap:wrap}
+.type-opt{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:9px;
+  border:1px solid var(--mline);background:var(--surface);cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--ink-2)}
+.type-opt:hover{border-color:#b9cbe6}
+.type-opt.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.type-opt .material-icons{font-size:16px}
+.chip-pick{display:flex;gap:7px;flex-wrap:wrap}
+.chip-opt{padding:5px 12px;border-radius:999px;border:1px solid var(--mline);cursor:pointer;
+  font-size:12px;font-weight:600;color:var(--ink-3);background:var(--surface)}
+.chip-opt.on{border-color:transparent;background:var(--m-acc-soft);color:var(--m-acc)}
+.people-pick{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.p-opt{display:inline-flex;align-items:center;gap:6px;padding:4px 11px 4px 4px;border-radius:999px;
+  border:1px solid var(--mline);background:var(--surface);cursor:pointer;font-size:12.5px;
+  font-weight:500;color:var(--ink-2)}
+.p-opt .mini-avatar{margin:0;width:22px;height:22px}
+.p-opt.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
 
 /* ═══════ HOME dashboard ═══════ */
 .cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:14px}
@@ -1249,7 +1274,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span class="ava-more">+3</span>
       </div>
       <button class="tb-icon-btn"><span class="material-icons-outlined">settings</span></button>
-      <button class="btn-primary" onclick="openForm('Yangi vazifa — Development board')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
+      <button class="btn-primary" onclick="openIssueForm(document.getElementById('board-kanban').style.display==='none'?'scrum':'kanban','Yangi vazifa')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
     </div>
 
     <div class="board" id="board-scrum">
@@ -1531,7 +1556,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <h1 class="table-title" style="font-size:15px">Backlog — Development</h1>
           <div class="search-box"><span class="material-icons-outlined">search</span>
             <input placeholder="Backlog qidirish..."></div>
-          <button class="btn-primary" onclick="openForm('Yangi vazifa — Backlog')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
+          <button class="btn-primary" onclick="openIssueForm('scrum','Yangi vazifa — Backlog')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
         </div>
         <div class="table-wrap">
           <table class="dt">
@@ -2379,6 +2404,126 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 </div>
 
 
+
+<!-- ════════════ VAZIFA YARATISH / TAHRIRLASH MODALI ════════════ -->
+<div class="overlay" id="issue-form" onclick="if(event.target===this)closeOv('issue-form')">
+  <div class="modal" style="width:min(920px,95vw)">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">add_task</span></span>
+        <div class="mh-t"><h1 id="if-title">Yangi vazifa</h1>
+          <div class="mh-id" id="if-ctx">Mobil ilova · Development board · SCRUM</div></div>
+      </div>
+      <button class="close-x" onclick="closeOv('issue-form')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body" style="background:var(--surface)">
+
+      <div class="f-sec">Asosiy</div>
+      <div class="fld"><label>Vazifa turi <b>*</b></label>
+        <div class="type-pick" id="if-types">
+          <span class="type-opt" data-t="EPIC"><span class="material-icons" style="color:#8b5cf6">bolt</span> Epic</span>
+          <span class="type-opt on" data-t="STORY"><span class="material-icons" style="color:#22c55e">bookmark</span> Story</span>
+          <span class="type-opt" data-t="TASK"><span class="material-icons" style="color:#3b82f6">check_box</span> Task</span>
+          <span class="type-opt" data-t="BUG"><span class="material-icons" style="color:#e0564a">bug_report</span> Bug</span>
+          <span class="type-opt" data-t="SUBTASK"><span class="material-icons" style="color:#64748b">subdirectory_arrow_right</span> Subtask</span>
+        </div>
+      </div>
+      <div class="fld" id="if-parent-wrap" style="display:none">
+        <label>Yuqori vazifa (parent) <b>*</b></label>
+        <select><option>MOB-142 — OAuth 2.0 integratsiyasi</option>
+          <option>MOB-139 — Chat xabarlarini keshlash</option>
+          <option>MOB-151 — Push-bildirishnoma sozlamalari</option></select>
+        <span class="hint">SUBTASK parent'siz bo'lolmaydi (issue_types.level = 2).</span>
+      </div>
+      <div class="fld"><label>Sarlavha <b>*</b></label>
+        <input placeholder="Masalan: Biometrik kirish (FaceID / barmoq izi)"></div>
+      <div class="fld"><label>Tavsif</label>
+        <textarea placeholder="Nima qilinishi kerak, qabul mezonlari..."></textarea></div>
+
+      <div class="f-sec">Joylashuv va baholash</div>
+      <div class="fgrid c3">
+        <div class="fld"><label>Board <b>*</b></label>
+          <select id="if-board" onchange="ifBoard(this.value)">
+            <option value="scrum">Development (SCRUM)</option>
+            <option value="kanban">Maintenance (KANBAN)</option>
+          </select>
+          <span class="hint">Vazifa boardga to'g'ridan-to'g'ri biriktiriladi.</span></div>
+        <div class="fld" id="if-sprint-wrap"><label>Sprint</label>
+          <select><option>— (backlog)</option><option>Sprint 14 (joriy)</option><option>Sprint 15</option></select>
+          <span class="hint">Faqat SCRUM boardda.</span></div>
+        <div class="fld" id="if-est-wrap"><label id="if-est-label">Baholash (point)</label>
+          <input type="number" id="if-est" placeholder="masalan 5">
+          <span class="hint" id="if-est-hint">Sprint planningda majburiy — pointsiz vazifa sprintga kirmaydi.</span></div>
+      </div>
+      <div class="fgrid c3">
+        <div class="fld"><label>Status <b>*</b></label>
+          <select id="if-status" onchange="ifStatus(this.value)">
+            <option value="TO_DO">To Do</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="IN_REVIEW">Code Review</option>
+            <option value="IN_REVIEW">QA Testing</option>
+            <option value="BLOCK">Blocked</option>
+          </select></div>
+        <div class="fld"><label>Priority <b>*</b></label>
+          <select><option>Medium</option><option>Low</option><option>High</option><option>Critical</option></select></div>
+        <div class="fld"><label>Muddat</label><input type="date" value="2026-08-20"></div>
+      </div>
+      <div class="fld" id="if-block-wrap" style="display:none">
+        <label>Bloklash sababi <b>*</b></label>
+        <textarea placeholder="Nima kutilmoqda..."></textarea>
+        <span class="hint"><b>Workflow qoidasi:</b> BLOCK kategoriyasiga sababsiz o'tkazib bo'lmaydi
+          (issue_blockers yozuvi ochiladi).</span>
+      </div>
+
+      <div class="f-sec">Odamlar</div>
+      <div class="fgrid c2">
+        <div class="fld"><label>Mas'ul (assignee)</label>
+          <div class="people-pick" id="if-assignee">
+            <span class="p-opt on"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span>
+            <span class="p-opt"><span class="mini-avatar" style="background:#3aa981">BK</span>B. Karimov</span>
+            <span class="p-opt"><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</span>
+            <span class="p-opt"><span class="mini-avatar" style="background:#c98a3d">RT</span>R. Tohirov
+              <span class="chip soft-warn" style="font-size:9.5px;padding:1px 7px">mehmon</span></span>
+          </div>
+          <span class="hint">KPI fakti faqat ASSIGNEE uchun yoziladi.</span></div>
+        <div class="fld"><label>Kuzatuvchilar (watchers)</label>
+          <div class="people-pick">
+            <span class="p-opt"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span>
+            <span class="p-opt on"><span class="mini-avatar" style="background:#3aa981">BK</span>B. Karimov</span>
+            <span class="p-opt"><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</span>
+          </div></div>
+      </div>
+
+      <div class="f-sec">Qo'shimcha</div>
+      <div class="fgrid c2">
+        <div class="fld"><label>Teglar</label>
+          <div class="chip-pick">
+            <span class="chip-opt on">auth</span><span class="chip-opt on">mobile</span>
+            <span class="chip-opt">backend</span><span class="chip-opt">ui</span>
+            <span class="chip-opt">tech-debt</span></div></div>
+        <div class="fld"><label>Bog'lanish</label>
+          <div class="fgrid c2" style="gap:8px">
+            <select><option>relates_to</option><option>duplicates</option><option>clones</option></select>
+            <select><option>— tanlanmagan</option><option>BE-88</option><option>MOB-126</option></select>
+          </div>
+          <span class="hint">Bloklash bu yerda emas — u alohida oqim (sabab majburiy).</span></div>
+      </div>
+      <div class="fld"><label>Fayllar</label>
+        <div style="border:1.5px dashed var(--mline);border-radius:10px;padding:16px;text-align:center;
+          color:var(--ink-4);font-size:12.5px;cursor:pointer">
+          <span class="material-icons-outlined" style="font-size:22px">cloud_upload</span>
+          <div style="margin-top:3px">Faylni bu yerga tashlang yoki tanlang (MinIO, hash orqali)</div>
+        </div></div>
+
+    </div>
+    <div class="fm-foot">
+      <span style="font-size:12px;color:#8b9aa9;margin-right:auto"><b style="color:#d23f31">*</b> majburiy maydonlar</span>
+      <button class="btn-flat" onclick="closeOv('issue-form')">Bekor qilish</button>
+      <button class="btn-edit" onclick="closeOv('issue-form');toast('MOB-162 yaratildi — Development board, To Do')">
+        <span class="material-icons-outlined" style="font-size:18px">check_circle</span> Yaratish</button>
+    </div>
+  </div>
+</div>
 <!-- ════════════ GENERIK FORM MODALI ════════════ -->
 <div class="overlay" id="form-overlay" onclick="if(event.target===this)closeOv('form-overlay')">
   <div class="modal" style="width:min(680px,94vw)">
@@ -2678,6 +2823,56 @@ function toast(msg){
   toastTimer=setTimeout(function(){t.classList.remove('show')},2600);
 }
 
+/* Vazifa modali */
+function openIssueForm(mode,title){
+  document.getElementById('if-title').textContent=title||'Yangi vazifa';
+  var sel=document.getElementById('if-board');
+  sel.value=mode||'scrum';
+  ifBoard(sel.value);
+  document.getElementById('if-status').value='TO_DO';
+  ifStatus('TO_DO');
+  document.getElementById('issue-form').classList.add('open');
+}
+function ifBoard(mode){
+  var scrum=mode==='scrum';
+  document.getElementById('if-sprint-wrap').style.display=scrum?'':'none';
+  document.getElementById('if-est-label').textContent=scrum?'Baholash (point)':'Baholash (daqiqa)';
+  document.getElementById('if-est').placeholder=scrum?'masalan 5':'masalan 90';
+  document.getElementById('if-est-hint').innerHTML=scrum
+    ? "Sprint planningda majburiy \u2014 pointsiz vazifa sprintga kirmaydi."
+    : "<b>Ochiqda ixtiyoriy</b>, yopishda majburiy \u2014 bug vaqtini oldindan bilib bo'lmaydi.";
+  document.getElementById('if-ctx').textContent='Mobil ilova \u00b7 '+
+    (scrum?'Development board \u00b7 SCRUM':'Maintenance board \u00b7 KANBAN');
+}
+function ifStatus(cat){
+  document.getElementById('if-block-wrap').style.display=cat==='BLOCK'?'':'none';
+}
+document.addEventListener('click',function(e){
+  // vazifa turi tanlash
+  var t=e.target.closest('.type-opt');
+  if(t){
+    var sibs=t.parentElement.querySelectorAll('.type-opt');
+    for(var i=0;i<sibs.length;i++)sibs[i].classList.remove('on');
+    t.classList.add('on');
+    document.getElementById('if-parent-wrap').style.display=
+      t.getAttribute('data-t')==='SUBTASK'?'':'none';
+    return;
+  }
+  // odam tanlash (assignee = bitta, watchers = ko'p)
+  var p=e.target.closest('.p-opt');
+  if(p){
+    if(p.parentElement.id==='if-assignee'){
+      var ps=p.parentElement.querySelectorAll('.p-opt');
+      for(var j=0;j<ps.length;j++)ps[j].classList.remove('on');
+      p.classList.add('on');
+    }else p.classList.toggle('on');
+    return;
+  }
+  // teg tanlash
+  var c=e.target.closest('.chip-opt');
+  if(c){c.classList.toggle('on');return;}
+});
+
 /* Generik modallar */
 function openForm(title){
   document.getElementById('form-title').textContent=title;
@@ -2754,7 +2949,10 @@ document.addEventListener('click',function(e){
       if(ab.closest('#pv-board')||ab.closest('#pv-home'))openIssue();
       else openDetail('Yozuv tafsilotlari');
     }
-    else if(name==='edit')openForm('Tahrirlash');
+    else if(name==='edit'){
+      if(ab.closest('#pv-board'))openIssueForm('scrum','Vazifani tahrirlash');
+      else openForm('Tahrirlash');
+    }
     else if(name==='delete'){openDelete()}
     else if(name==='swap_horiz')openForm('Jihozni topshirish / qaytarish');
     else if(name==='play_circle')toast('Audio ijro (prototip)');
