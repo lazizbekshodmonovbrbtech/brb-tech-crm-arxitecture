@@ -357,11 +357,18 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .bk-ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center}
 .bk-ic .material-icons-outlined{color:#fff;font-size:20px}
 .bk-name{font-size:14.5px;font-weight:700;color:var(--ink)}
-.back-link{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;
-  color:var(--ink-3);cursor:pointer;border:none;background:transparent;font-family:var(--font-sans);
-  padding:5px 10px 5px 6px;border-radius:8px}
-.back-link:hover{background:#eceef2;color:var(--ink-1)}
-.back-link .material-icons-outlined{font-size:17px}
+.back-link{display:inline-grid;place-items:center;width:36px;height:36px;flex-shrink:0;
+  color:var(--ink-3);cursor:pointer;border:1px solid var(--line-2);background:var(--surface);
+  border-radius:10px;font-family:var(--font-sans);padding:0}
+.back-link:hover{background:#eceef2;color:var(--ink-1);border-color:var(--mline)}
+.back-link .material-icons-outlined{font-size:19px}
+/* Sahifa ustidagi mini yo'l (title yuqorisiga chiqarilgan kontekst) */
+.page-path{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+  color:var(--ink-4);margin-bottom:8px}
+.page-path .lnk{cursor:pointer;padding:2px 5px;border-radius:6px}
+.page-path .lnk:hover{color:var(--primary);background:var(--primary-soft)}
+.page-path .material-icons-outlined{font-size:15px;color:#cbd5e1}
+.page-path .cur{color:var(--ink-2)}
 
 /* ═══════ STATUS BANNER ═══════ */
 .banner{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:12px;
@@ -421,7 +428,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .kv-value .mini-avatar{margin-right:0}
 
 /* ═══════ TELEGRAM INBOX (3 panel) ═══════ */
-.inbox{display:flex;height:calc(100vh - 96px);background:var(--surface);border-radius:12px;
+.inbox{display:flex;height:calc(100vh - 142px);background:var(--surface);border-radius:12px;
   box-shadow:0 2px 6px rgba(0,0,0,.05);overflow:hidden}
 .ib-left{width:280px;flex-shrink:0;border-right:1px solid var(--line-2);display:flex;flex-direction:column}
 .ib-search{padding:12px 12px 8px}
@@ -746,6 +753,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ LEAD PIPELINE ════════════ -->
 <section class="page-view" id="pv-leads">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">filter_alt</span>Faol leadlar</div>
+      <div class="stat-value">14</div><div class="stat-sub">6 bosqichda</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Voronka qiymati</div>
+      <div class="stat-value">338.6</div><div class="stat-sub">mln UZS</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>Konversiya</div>
+      <div class="stat-value">31%</div><div class="stat-bar"><i style="width:31%"></i></div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">schedule</span>O'rtacha sikl</div>
+      <div class="stat-value">18 kun</div><div class="stat-sub">yangi \u2192 yutildi</div></div>
+  </div>
   <div class="board-head">
     <div class="board-tabs">
       <button class="board-tab active"><span class="material-icons-outlined">filter_alt</span> Asosiy voronka</button>
@@ -855,6 +872,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ MIJOZLAR ════════════ -->
 <section class="page-view" id="pv-customers">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">groups</span>Jami mijozlar</div>
+      <div class="stat-value">218</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">apartment</span>Yuridik</div>
+      <div class="stat-value">142</div><div class="stat-sub">65%</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">person</span>Jismoniy</div>
+      <div class="stat-value">76</div><div class="stat-sub">35%</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">person_add</span>Bu oy qo'shilgan</div>
+      <div class="stat-value">9</div><div class="stat-sub">O'tgan oy: 12</div></div>
+  </div>
   <div class="table-card">
     <div class="table-toolbar">
       <h1 class="table-title">Mijozlar</h1>
@@ -924,6 +951,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ LOYIHALAR ════════════ -->
 <section class="page-view" id="pv-projects">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">folder</span>Faol loyihalar</div>
+      <div class="stat-value">3</div><div class="stat-sub">1 yakunlangan</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">assignment</span>Ochiq vazifalar</div>
+      <div class="stat-value">59</div><div class="stat-sub">barcha boardlarda</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">group</span>Jalb qilingan xodimlar</div>
+      <div class="stat-value">18</div><div class="stat-sub">1 mehmon a'zo</div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">block</span>Blokdagi vazifalar</div>
+      <div class="stat-value">2</div></div>
+  </div>
   <div class="table-card">
     <div class="table-toolbar">
       <h1 class="table-title">Loyihalar</h1>
@@ -1032,8 +1069,13 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ LOYIHA ICHI<!-- ════════════ LOYIHA ICHI (Jira-uslub tablar) ════════════ -->
 <section class="page-view" id="pv-project">
+  <div class="page-path">
+    <span class="lnk" onclick="show('projects')">Loyihalar</span>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="cur">Mobil ilova</span>
+  </div>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-    <button class="back-link" onclick="show('projects')"><span class="material-icons-outlined">arrow_back</span> Loyihalar</button>
+    <button class="back-link" title="Loyihalar ro'yxatiga" onclick="show('projects')"><span class="material-icons-outlined">arrow_back</span></button>
     <span class="pc-code" style="background:#2563eb;width:38px;height:38px;font-size:12px">MOB</span>
     <div><div class="pc-name" style="font-size:17px">Mobil ilova</div>
       <div class="pc-client">Ipak Yo'li Bank · Shartnoma C-118</div></div>
@@ -1180,10 +1222,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ BOARD ════════════ -->
 <section class="page-view" id="pv-board">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <button class="back-link" onclick="show('project');projTab('boards')"><span class="material-icons-outlined">arrow_back</span> Mobil ilova</button>
-      <span style="color:#cbd5e1">/</span>
-      <span class="bk-name" id="board-title">Development</span>
+    <div class="page-path">
+      <span class="lnk" onclick="show('projects')">Loyihalar</span>
+      <span class="material-icons-outlined">chevron_right</span>
+      <span class="lnk" onclick="show('project');projTab('boards')">Mobil ilova</span>
+      <span class="material-icons-outlined">chevron_right</span>
+      <span class="cur" id="board-path-name">Development</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <button class="back-link" title="Boardlar ro'yxatiga" onclick="show('project');projTab('boards')"><span class="material-icons-outlined">arrow_back</span></button>
+      <span class="bk-name" id="board-title" style="font-size:17px">Development</span>
       <span class="mode-chip scrum" id="board-mode">SCRUM</span>
     </div>
     <div class="ptabs" style="margin-bottom:12px">
@@ -1756,6 +1804,12 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ TELEGRAM INBOX ════════════ -->
 <section class="page-view" id="pv-inbox">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+    <h1 class="table-title" style="margin:0">Telegram inbox</h1>
+    <span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>3 ta javobsiz</span>
+    <button class="btn-flat" style="margin-left:auto" onclick="toast('Botlar sozlamasi (prototip)')">
+      <span class="material-icons-outlined">smart_toy</span> Botlar</button>
+  </div>
   <div class="inbox">
     <div class="ib-left">
       <div class="ib-search"><div class="search-box" style="width:100%">
@@ -1865,6 +1919,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ SHARTNOMALAR ════════════ -->
 <section class="page-view" id="pv-contracts">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">description</span>Faol shartnomalar</div>
+      <div class="stat-value">31</div><div class="stat-sub">jami 47 tadan</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Umumiy summa</div>
+      <div class="stat-value">1.24</div><div class="stat-sub">mlrd UZS</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">account_balance_wallet</span>To'langan</div>
+      <div class="stat-value">68%</div><div class="stat-bar"><i style="width:68%"></i></div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">event_busy</span>Muddati o'tgan</div>
+      <div class="stat-value">3</div><div class="stat-sub">to'lov bosqichi</div></div>
+  </div>
   <div class="table-card">
     <div class="table-toolbar">
       <h1 class="table-title">Shartnomalar</h1>
@@ -1993,6 +2057,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ INVENTAR ════════════ -->
 <section class="page-view" id="pv-inventory">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">inventory_2</span>Jami jihozlar</div>
+      <div class="stat-value">214</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">person</span>Biriktirilgan</div>
+      <div class="stat-value">168</div><div class="stat-bar"><i style="width:78%"></i></div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">warehouse</span>Omborda</div>
+      <div class="stat-value">31</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">build</span>Ta'mirda</div>
+      <div class="stat-value">6</div><div class="stat-sub">9 hisobdan chiqarilgan</div></div>
+  </div>
   <div class="table-card">
     <div class="table-toolbar">
       <h1 class="table-title">Inventar</h1>
@@ -2144,6 +2218,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ KPI PROFILLARI ════════════ -->
 <section class="page-view" id="pv-kpiprofiles">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">tune</span>Profillar</div>
+      <div class="stat-value">4</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">checklist</span>Kriteriyalar</div>
+      <div class="stat-value">5</div><div class="stat-sub">seed, umumiy</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">badge</span>Bog'langan lavozimlar</div>
+      <div class="stat-value">11</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">lock</span>Joriy davr</div>
+      <div class="stat-value">Avgust</div><div class="stat-sub">ochiq \u2014 tahrirlash mumkin</div></div>
+  </div>
   <div class="two-pane">
     <div class="pane-list">
       <div class="lp-head"><h3>Profillar</h3>
@@ -2526,6 +2610,7 @@ function openBoard(mode){
   document.getElementById('board-scrum').style.display = scrum?'flex':'none';
   document.getElementById('board-kanban').style.display = scrum?'none':'flex';
   document.getElementById('board-title').textContent = scrum?'Development':'Maintenance';
+  document.getElementById('board-path-name').textContent = scrum?'Development':'Maintenance';
   var mc=document.getElementById('board-mode');
   mc.textContent = scrum?'SCRUM':'KANBAN';
   mc.className = 'mode-chip '+(scrum?'scrum':'kanban');
