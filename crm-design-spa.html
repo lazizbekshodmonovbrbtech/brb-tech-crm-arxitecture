@@ -242,7 +242,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   font-size:10.5px;font-weight:700}
 .board{display:flex;gap:12px;align-items:flex-start;overflow-x:auto;padding-bottom:8px}
 .bcol{flex:0 0 268px;background:#eef1f5;border-radius:12px;display:flex;flex-direction:column;
-  max-height:calc(100vh - 262px)}
+  max-height:70vh}
 .bcol.block{background:#fdf3e3}
 .bcol-h{display:flex;align-items:center;gap:8px;padding:11px 13px 9px}
 .bcol-dot{width:8px;height:8px;border-radius:3px}
@@ -1094,11 +1094,26 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="stat"><div class="stat-top"><span class="material-icons-outlined">speed</span>Velocity (o'rtacha)</div>
         <div class="stat-value">38 pt</div><div class="stat-sub">oxirgi 3 sprint</div></div>
     </div>
-    <div class="list-plain">
-      <div class="lp-head"><h3>Faollik lentasi</h3></div>
-      <div class="feed-row">Bekzod <b>MOB-150</b> uchun fix PR ochdi<div class="t">12 daqiqa oldin</div></div>
-      <div class="feed-row">Dilnoza <b>MOB-145</b> subtaskini yakunladi<div class="t">40 daqiqa oldin</div></div>
-      <div class="feed-row"><b>MOB-126</b> bloklandi — hamkor API kaliti kutilmoqda<div class="t">3 soat oldin</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="list-plain">
+        <div class="lp-head"><h3>Faollik lentasi</h3></div>
+        <div class="feed-row">Bekzod <b>MOB-150</b> uchun fix PR ochdi<div class="t">12 daqiqa oldin</div></div>
+        <div class="feed-row">Dilnoza <b>MOB-145</b> subtaskini yakunladi<div class="t">40 daqiqa oldin</div></div>
+        <div class="feed-row"><b>MOB-126</b> bloklandi — hamkor API kaliti kutilmoqda<div class="t">3 soat oldin</div></div>
+      </div>
+      <div class="desc-card" style="margin:0">
+        <div class="dc-head"><h3>Loyiha ma'lumotlari</h3></div>
+        <div class="dc-body">
+          <div class="kv"><span class="kv-label">Mijoz</span><span class="kv-dots"></span>
+            <span class="kv-value">Ipak Yo'li Bank</span></div>
+          <div class="kv"><span class="kv-label">Shartnoma</span><span class="kv-dots"></span>
+            <span class="kv-value mono">C-118</span></div>
+          <div class="kv"><span class="kv-label">Boshlangan</span><span class="kv-dots"></span>
+            <span class="kv-value mono">20.03.2026</span></div>
+          <div class="kv"><span class="kv-label">PM</span><span class="kv-dots"></span>
+            <span class="kv-value"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2595,6 +2610,7 @@ function show(page){
   renderCrumbs(page);
   document.querySelector('.page').scrollTop=0;
   document.getElementById('call-drawer').classList.remove('open');
+  requestAnimationFrame(fitBoards);
 }
 var navItems=document.querySelectorAll('.nav-item[data-page]');
 for(var k=0;k<navItems.length;k++){
@@ -2640,6 +2656,7 @@ function boardTab(name){
     var v=document.getElementById('bd-'+ids[j]);
     if(v)v.classList.toggle('active',ids[j]===name);
   }
+  requestAnimationFrame(fitBoards);
 }
 
 /* Inventar tablari */
@@ -2818,6 +2835,7 @@ function projTab(name){
   var views=document.querySelectorAll('#pv-project .ptab-view');
   for(var j=0;j<views.length;j++)
     views[j].classList.toggle('active',views[j].id==='pt-'+name);
+  document.querySelector('.page').scrollTop=0;
 }
 
 /* Modal */
@@ -2965,6 +2983,21 @@ function ddBlockConfirm(){
   ddCancel('dd-block');
 }
 initDnD();
+
+/* Board/pipeline ustunlarini ekranga aniq moslash (scroll qolmasin) */
+function fitBoards(){
+  var boards=document.querySelectorAll('.board');
+  for(var i=0;i<boards.length;i++){
+    var b=boards[i];
+    if(!b.offsetParent)continue;              // ko'rinmayotgan tab
+    var top=b.getBoundingClientRect().top;
+    var avail=window.innerHeight-top-18;      // pastki nafas
+    if(avail<240)avail=240;
+    var cols=b.querySelectorAll('.bcol');
+    for(var j=0;j<cols.length;j++)cols[j].style.maxHeight=avail+'px';
+  }
+}
+addEventListener('resize',fitBoards);
 
 /* Jonli soat */
 setInterval(function(){
