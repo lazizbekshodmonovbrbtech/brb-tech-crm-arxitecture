@@ -557,6 +557,38 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+/* Rich text muharrir */
+.rte{border:1px solid var(--mline);border-radius:10px;overflow:hidden;background:var(--surface)}
+.rte:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+.rte-bar{display:flex;align-items:center;gap:2px;flex-wrap:wrap;padding:6px 8px;
+  background:var(--msurface2);border-bottom:1px solid var(--mline2)}
+.rte-btn{width:30px;height:30px;border:none;background:transparent;border-radius:7px;
+  color:var(--ink-2);cursor:pointer;display:grid;place-items:center;font-family:var(--font-sans)}
+.rte-btn:hover{background:#e6ecf4;color:var(--ink)}
+.rte-btn.on{background:var(--primary-soft);color:var(--primary)}
+.rte-btn .material-icons-outlined{font-size:17px}
+.rte-sep{width:1px;height:18px;background:var(--mline);margin:0 4px}
+.rte-sel{height:30px;border:1px solid var(--mline);border-radius:7px;background:var(--surface);
+  font-family:var(--font-sans);font-size:12px;font-weight:600;color:var(--ink-2);
+  padding:0 6px;cursor:pointer;outline:none}
+.rte-body{min-height:150px;max-height:280px;overflow-y:auto;padding:12px 14px;
+  font-size:13.5px;line-height:1.65;color:#182634;outline:none}
+.rte-body:empty:before{content:attr(data-ph);color:var(--ink-4)}
+.rte-body h2{font-size:16px;font-weight:700;margin:10px 0 6px;color:var(--ink)}
+.rte-body h3{font-size:14.5px;font-weight:700;margin:9px 0 5px;color:var(--ink)}
+.rte-body p{margin:0 0 7px}
+.rte-body ul,.rte-body ol{margin:6px 0 8px;padding-left:22px}
+.rte-body li{margin:2px 0}
+.rte-body blockquote{margin:8px 0;padding:6px 12px;border-left:3px solid var(--primary);
+  background:var(--msurface2);color:var(--ink-2);border-radius:0 6px 6px 0}
+.rte-body code{font-family:var(--font-mono);font-size:12px;background:#eef1f5;
+  padding:1px 5px;border-radius:4px;color:#b83d2e}
+.rte-body pre{font-family:var(--font-mono);font-size:12px;background:#182634;color:#e6edf5;
+  padding:10px 13px;border-radius:8px;overflow-x:auto;margin:8px 0}
+.rte-body a{color:var(--primary);text-decoration:underline}
+.rte-foot{display:flex;align-items:center;padding:6px 12px;background:var(--msurface2);
+  border-top:1px solid var(--mline2);font-size:11px;color:#8b9aa9}
+
 .f-locked{display:flex;align-items:center;gap:9px;height:46px;padding:0 14px;
   border:1px solid var(--mline2);border-radius:10px;background:var(--msurface2);
   font-size:13.5px;font-weight:600;color:var(--ink-1)}
@@ -2355,9 +2387,21 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
                   <span class="mono" style="font-size:10.5px;color:#8b9aa9;margin-left:6px">30 daqiqa oldin</span></div>
                   <div style="font-size:13px;color:#182634;margin-top:2px">Rahmat, bugun Apple oqimini tugataman</div></div>
               </div>
-              <div style="display:flex;gap:8px;margin-top:8px">
-                <input class="ib-input" placeholder="Izoh yozing..." style="height:38px">
-                <button class="ib-send" style="width:38px;height:38px"><span class="material-icons-outlined" style="font-size:18px">send</span></button>
+              <div class="rte" style="margin-top:10px">
+                <div class="rte-bar">
+                  <button class="rte-btn" title="Qalin" onclick="rte('bold')"><b>B</b></button>
+                  <button class="rte-btn" title="Kursiv" onclick="rte('italic')"><i>I</i></button>
+                  <button class="rte-btn" title="Ro'yxat" onclick="rte('insertUnorderedList')">
+                    <span class="material-icons-outlined">format_list_bulleted</span></button>
+                  <button class="rte-btn" title="Kod" onclick="rteCode()">
+                    <span class="material-icons-outlined">code</span></button>
+                  <button class="rte-btn" title="Havola" onclick="rteLink()">
+                    <span class="material-icons-outlined">link</span></button>
+                  <button class="btn-primary" style="height:30px;padding:0 14px;margin-left:auto;font-size:12.5px"
+                    onclick="toast('Izoh qo\'shildi')">Yuborish</button>
+                </div>
+                <div class="rte-body" contenteditable="true" style="min-height:70px"
+                  data-ph="Izoh yozing... (@ bilan hamkasbni belgilash)"></div>
               </div>
             </div>
           </div>
@@ -2443,7 +2487,41 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="fld"><label>Sarlavha <b>*</b></label>
         <input placeholder="Masalan: Biometrik kirish (FaceID / barmoq izi)"></div>
       <div class="fld"><label>Tavsif</label>
-        <textarea placeholder="Nima qilinishi kerak, qabul mezonlari..."></textarea></div>
+        <div class="rte">
+          <div class="rte-bar">
+            <select class="rte-sel" onchange="rte('formatBlock',this.value);this.selectedIndex=0">
+              <option value="">Matn</option>
+              <option value="p">Oddiy matn</option>
+              <option value="h2">Sarlavha 1</option>
+              <option value="h3">Sarlavha 2</option>
+              <option value="pre">Kod bloki</option>
+            </select>
+            <span class="rte-sep"></span>
+            <button class="rte-btn" title="Qalin (Ctrl+B)" onclick="rte('bold')"><b>B</b></button>
+            <button class="rte-btn" title="Kursiv (Ctrl+I)" onclick="rte('italic')"><i>I</i></button>
+            <button class="rte-btn" title="Tagiga chizilgan" onclick="rte('underline')"><u>U</u></button>
+            <button class="rte-btn" title="Chizib tashlangan" onclick="rte('strikeThrough')"><s>S</s></button>
+            <span class="rte-sep"></span>
+            <button class="rte-btn" title="Belgili ro'yxat" onclick="rte('insertUnorderedList')">
+              <span class="material-icons-outlined">format_list_bulleted</span></button>
+            <button class="rte-btn" title="Raqamli ro'yxat" onclick="rte('insertOrderedList')">
+              <span class="material-icons-outlined">format_list_numbered</span></button>
+            <button class="rte-btn" title="Iqtibos" onclick="rte('formatBlock','blockquote')">
+              <span class="material-icons-outlined">format_quote</span></button>
+            <span class="rte-sep"></span>
+            <button class="rte-btn" title="Havola" onclick="rteLink()">
+              <span class="material-icons-outlined">link</span></button>
+            <button class="rte-btn" title="Kod" onclick="rteCode()">
+              <span class="material-icons-outlined">code</span></button>
+            <span class="rte-sep"></span>
+            <button class="rte-btn" title="Formatni tozalash" onclick="rte('removeFormat')">
+              <span class="material-icons-outlined">format_clear</span></button>
+          </div>
+          <div class="rte-body" id="if-desc" contenteditable="true"
+            data-ph="Nima qilinishi kerak, qabul mezonlari, texnik izohlar..."></div>
+          <div class="rte-foot">Markdown emas — HTML saqlanadi (issues.description). Ctrl+B / Ctrl+I ishlaydi.</div>
+        </div>
+      </div>
 
       <div class="f-sec">Joylashuv va baholash</div>
       <div class="fgrid c3">
@@ -2831,6 +2909,57 @@ function toast(msg){
   toastTimer=setTimeout(function(){t.classList.remove('show')},2600);
 }
 
+/* ═══════ RICH TEXT MUHARRIR ═══════ */
+var rteLast=null;
+document.addEventListener('focusin',function(e){
+  if(e.target.classList&&e.target.classList.contains('rte-body'))rteLast=e.target;
+});
+function rteFocus(){
+  if(rteLast&&document.body.contains(rteLast))rteLast.focus();
+}
+function rte(cmd,val){
+  rteFocus();
+  try{document.execCommand(cmd,false,val||null);}catch(err){}
+  rteSync();
+}
+function rteLink(){
+  rteFocus();
+  var sel=document.getSelection();
+  if(!sel||!sel.toString()){toast('Avval havola qilinadigan matnni belgilang');return;}
+  var u=prompt('Havola manzili:','https://');
+  if(u)rte('createLink',u);
+}
+function rteCode(){
+  rteFocus();
+  var sel=document.getSelection();
+  var t=sel?sel.toString():'';
+  if(!t){toast('Avval kod matnini belgilang');return;}
+  document.execCommand('insertHTML',false,'<code>'+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</code>&nbsp;');
+  rteSync();
+}
+/* Panel tugmalari joriy holatni ko'rsatadi */
+function rteSync(){
+  if(!rteLast)return;
+  var bar=rteLast.parentElement.querySelector('.rte-bar');
+  if(!bar)return;
+  var map={'B':'bold','I':'italic','U':'underline','S':'strikeThrough'};
+  var btns=bar.querySelectorAll('.rte-btn');
+  for(var i=0;i<btns.length;i++){
+    var lbl=btns[i].textContent.trim();
+    var cmd=map[lbl];
+    if(cmd){
+      try{btns[i].classList.toggle('on',document.queryCommandState(cmd));}catch(e){}
+    }
+  }
+}
+document.addEventListener('selectionchange',function(){
+  if(rteLast&&document.activeElement===rteLast)rteSync();
+});
+/* Panel tugmasi bosilganda matn belgisi yo'qolmasin */
+document.addEventListener('mousedown',function(e){
+  if(e.target.closest&&e.target.closest('.rte-bar')&&!e.target.closest('.rte-sel'))e.preventDefault();
+});
+
 /* Joriy board rejimi */
 function currentBoardMode(){
   var k=document.getElementById('board-kanban');
@@ -2843,6 +2972,8 @@ function openIssueForm(mode,title){
   ifBoard(mode||'scrum');
   document.getElementById('if-status').value='TO_DO';
   ifStatus('TO_DO');
+  var d=document.getElementById('if-desc');
+  if(d&&(title||'').indexOf('tahrir')===-1)d.innerHTML='';
   document.getElementById('issue-form').classList.add('open');
 }
 function ifBoard(mode){
