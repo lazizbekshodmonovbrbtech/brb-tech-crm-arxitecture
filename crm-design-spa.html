@@ -609,6 +609,36 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   font-size:12px;font-weight:600;color:var(--ink-3);background:var(--surface)}
 .chip-opt.on{border-color:transparent;background:var(--m-acc-soft);color:var(--m-acc)}
 .people-pick{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+/* Qidiruvli odam tanlagich */
+.pick{position:relative}
+.pick-field{display:flex;align-items:center;gap:8px;min-height:46px;padding:6px 12px;
+  border:1px solid var(--mline);border-radius:10px;background:var(--surface);cursor:pointer;
+  font-size:13.5px;color:var(--ink-1);flex-wrap:wrap}
+.pick-field:hover{border-color:#b9cbe6}
+.pick.open .pick-field{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+.pick-field .ph{color:var(--ink-4)}
+.pick-field .chev{margin-left:auto;color:var(--ink-4);font-size:19px}
+.pick-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 8px 3px 3px;border-radius:999px;
+  background:var(--m-acc-soft);color:var(--m-acc);font-size:12.5px;font-weight:600}
+.pick-tag .mini-avatar{margin:0;width:22px;height:22px}
+.pick-tag .x{font-size:15px;cursor:pointer;opacity:.7}
+.pick-tag .x:hover{opacity:1}
+.pick-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:30;
+  background:var(--surface);border:1px solid var(--mline);border-radius:11px;overflow:hidden;
+  box-shadow:0 14px 36px rgba(15,23,42,.16)}
+.pick.open .pick-menu{display:block}
+.pick-search{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--mline2)}
+.pick-search .material-icons-outlined{font-size:18px;color:var(--ink-4)}
+.pick-search input{flex:1;border:none;outline:none;font-family:var(--font-sans);font-size:13.5px;
+  color:var(--ink-1);background:transparent}
+.pick-list{max-height:210px;overflow-y:auto;scrollbar-width:thin}
+.pick-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:13.5px}
+.pick-opt:hover{background:#f4f7fb}
+.pick-opt.sel{background:var(--primary-soft)}
+.pick-opt .mini-avatar{margin:0}
+.pick-opt .role{margin-left:auto;font-size:11px;color:var(--ink-4);font-weight:500}
+.pick-opt .material-icons{font-size:17px;color:var(--primary)}
+.pick-empty{padding:14px;text-align:center;font-size:12.5px;color:var(--ink-4)}
 .p-opt{display:inline-flex;align-items:center;gap:6px;padding:4px 11px 4px 4px;border-radius:999px;
   border:1px solid var(--mline);background:var(--surface);cursor:pointer;font-size:12.5px;
   font-weight:500;color:var(--ink-2)}
@@ -2550,22 +2580,32 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="f-sec">Odamlar</div>
       <div class="fgrid c2">
         <div class="fld"><label>Mas'ul (assignee)</label>
-          <div class="people-pick" id="if-assignee">
-            <span class="p-opt on"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span>
-            <span class="p-opt"><span class="mini-avatar" style="background:#3aa981">BK</span>B. Karimov</span>
-            <span class="p-opt"><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</span>
-            <span class="p-opt"><span class="mini-avatar" style="background:#c98a3d">RT</span>R. Tohirov
-              <span class="chip soft-warn" style="font-size:9.5px;padding:1px 7px">mehmon</span></span>
+          <div class="pick" id="pick-assignee" data-multi="0">
+            <div class="pick-field" onclick="pickToggle('pick-assignee')">
+              <span class="pick-val"><span class="ph">Xodim tanlang...</span></span>
+              <span class="material-icons-outlined chev">expand_more</span>
+            </div>
+            <div class="pick-menu">
+              <div class="pick-search"><span class="material-icons-outlined">search</span>
+                <input placeholder="Ism yoki rol bo'yicha qidiring..." oninput="pickFilter(this)"></div>
+              <div class="pick-list"></div>
+            </div>
           </div>
           <span class="hint">KPI fakti faqat ASSIGNEE uchun yoziladi.</span></div>
         <div class="fld"><label>Kuzatuvchilar (watchers)</label>
-          <div class="people-pick">
-            <span class="p-opt"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span>
-            <span class="p-opt on"><span class="mini-avatar" style="background:#3aa981">BK</span>B. Karimov</span>
-            <span class="p-opt"><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</span>
-          </div></div>
+          <div class="pick" id="pick-watchers" data-multi="1">
+            <div class="pick-field" onclick="pickToggle('pick-watchers')">
+              <span class="pick-val"><span class="ph">Kuzatuvchi qo'shing...</span></span>
+              <span class="material-icons-outlined chev">expand_more</span>
+            </div>
+            <div class="pick-menu">
+              <div class="pick-search"><span class="material-icons-outlined">search</span>
+                <input placeholder="Ism yoki rol bo'yicha qidiring..." oninput="pickFilter(this)"></div>
+              <div class="pick-list"></div>
+            </div>
+          </div>
+          <span class="hint">Status o'zgarishi va izohlar haqida xabar oladi.</span></div>
       </div>
-
       <div class="f-sec">Qo'shimcha</div>
       <div class="fgrid c2">
         <div class="fld"><label>Teglar</label>
@@ -2946,6 +2986,93 @@ document.addEventListener('mousedown',function(e){
   if(e.target.closest&&e.target.closest('.rte-bar')&&!e.target.closest('.rte-sel'))e.preventDefault();
 });
 
+/* ═══════ QIDIRUVLI ODAM TANLAGICH ═══════ */
+var TEAM=[
+  {id:1,ini:'DS',c:'#4f7cd1',name:'Davron Salimov',role:'PM'},
+  {id:2,ini:'BK',c:'#3aa981',name:'Bekzod Karimov',role:'Developer'},
+  {id:3,ini:'SN',c:'#b56bb0',name:'Sevara Nazarova',role:'QA'},
+  {id:4,ini:'RT',c:'#c98a3d',name:'Rustam Tohirov',role:'Developer · mehmon'},
+  {id:5,ini:'DA',c:'#7c6bd1',name:'Dilnoza Abdullayeva',role:'Developer'},
+  {id:6,ini:'AZ',c:'#d1706b',name:'Aziz Zokirov',role:'Tech Lead'},
+  {id:7,ini:'MY',c:'#3a9aa9',name:'Malika Yusupova',role:'QA'},
+  {id:8,ini:'JT',c:'#8a9a3a',name:'Jasur Toshev',role:'Developer'},
+  {id:9,ini:'NX',c:'#c9683d',name:'Nigora Xolmatova',role:'Designer'},
+  {id:10,ini:'SR',c:'#5b7cc9',name:'Sardor Raxmonov',role:'Developer'},
+  {id:11,ini:'GK',c:'#a95f8f',name:'Gulnora Kamolova',role:'Analyst'},
+  {id:12,ini:'ON',c:'#4f9a6b',name:'Otabek Normatov',role:'Viewer'}
+];
+var pickSel={'pick-assignee':[], 'pick-watchers':[]};
+function pickRender(id){
+  var box=document.getElementById(id);
+  var multi=box.getAttribute('data-multi')==='1';
+  var sel=pickSel[id];
+  // maydon
+  var val=box.querySelector('.pick-val');
+  if(!sel.length){
+    val.innerHTML='<span class="ph">'+(multi?"Kuzatuvchi qo'shing...":'Xodim tanlang...')+'</span>';
+  }else{
+    var html='';
+    for(var i=0;i<sel.length;i++){
+      var p=TEAM.filter(function(x){return x.id===sel[i]})[0];
+      html+='<span class="pick-tag"><span class="mini-avatar" style="background:'+p.c+'">'+p.ini+'</span>'
+        +p.name+'<span class="material-icons-outlined x" onclick="event.stopPropagation();pickRemove(\''+id+'\','+p.id+')">close</span></span>';
+    }
+    val.innerHTML=html;
+  }
+  // ro'yxat
+  var list=box.querySelector('.pick-list');
+  var q=(box.querySelector('.pick-search input').value||'').toLowerCase();
+  var out='';
+  for(var j=0;j<TEAM.length;j++){
+    var t=TEAM[j];
+    if(q && (t.name+' '+t.role).toLowerCase().indexOf(q)===-1)continue;
+    var on=sel.indexOf(t.id)>-1;
+    out+='<div class="pick-opt'+(on?' sel':'')+'" onclick="pickChoose(\''+id+'\','+t.id+')">'
+      +'<span class="mini-avatar" style="background:'+t.c+'">'+t.ini+'</span>'
+      +'<span>'+t.name+'</span><span class="role">'+t.role+'</span>'
+      +(on?'<span class="material-icons">check</span>':'')+'</div>';
+  }
+  list.innerHTML=out||'<div class="pick-empty">Topilmadi</div>';
+}
+function pickToggle(id){
+  var box=document.getElementById(id);
+  var wasOpen=box.classList.contains('open');
+  var all=document.querySelectorAll('.pick');
+  for(var i=0;i<all.length;i++)all[i].classList.remove('open');
+  if(!wasOpen){
+    box.classList.add('open');
+    pickRender(id);
+    setTimeout(function(){box.querySelector('.pick-search input').focus()},30);
+  }
+}
+function pickChoose(id,pid){
+  var multi=document.getElementById(id).getAttribute('data-multi')==='1';
+  var sel=pickSel[id];
+  var i=sel.indexOf(pid);
+  if(multi){ if(i>-1)sel.splice(i,1); else sel.push(pid); }
+  else{ pickSel[id]=(i>-1)?[]:[pid]; }
+  pickRender(id);
+  if(!multi)document.getElementById(id).classList.remove('open');
+}
+function pickRemove(id,pid){
+  var sel=pickSel[id], i=sel.indexOf(pid);
+  if(i>-1)sel.splice(i,1);
+  pickRender(id);
+}
+function pickFilter(inp){
+  pickRender(inp.closest('.pick').id);
+}
+function pickReset(){
+  pickSel['pick-assignee']=[];pickSel['pick-watchers']=[];
+  if(document.getElementById('pick-assignee')){pickRender('pick-assignee');pickRender('pick-watchers');}
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.pick')){
+    var all=document.querySelectorAll('.pick.open');
+    for(var i=0;i<all.length;i++)all[i].classList.remove('open');
+  }
+});
+
 /* Joriy board rejimi */
 function currentBoardMode(){
   var k=document.getElementById('board-kanban');
@@ -2959,7 +3086,11 @@ function openIssueForm(mode,title){
   document.getElementById('if-status').value='TO_DO';
   ifStatus('TO_DO');
   var d=document.getElementById('if-desc');
-  if(d&&(title||'').indexOf('tahrir')===-1)d.innerHTML='';
+  var isEdit=(title||'').indexOf('tahrir')>-1;
+  if(d&&!isEdit)d.innerHTML='';
+  if(isEdit){pickSel['pick-assignee']=[1];pickSel['pick-watchers']=[2,3];}
+  else{pickSel['pick-assignee']=[];pickSel['pick-watchers']=[];}
+  pickRender('pick-assignee');pickRender('pick-watchers');
   document.getElementById('issue-form').classList.add('open');
 }
 function ifBoard(mode){
