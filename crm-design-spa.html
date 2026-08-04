@@ -568,9 +568,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .rte-btn.on{background:var(--primary-soft);color:var(--primary)}
 .rte-btn .material-icons-outlined{font-size:17px}
 .rte-sep{width:1px;height:18px;background:var(--mline);margin:0 4px}
-.rte-sel{height:30px;border:1px solid var(--mline);border-radius:7px;background:var(--surface);
-  font-family:var(--font-sans);font-size:12px;font-weight:600;color:var(--ink-2);
-  padding:0 6px;cursor:pointer;outline:none}
 .rte-body{min-height:150px;max-height:280px;overflow-y:auto;padding:12px 14px;
   font-size:13.5px;line-height:1.65;color:#182634;outline:none}
 .rte-body:empty:before{content:attr(data-ph);color:var(--ink-4)}
@@ -2514,13 +2511,12 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="fld"><label>Tavsif</label>
         <div class="rte">
           <div class="rte-bar">
-            <select class="rte-sel" onchange="rte('formatBlock',this.value);this.selectedIndex=0">
-              <option value="">Matn</option>
-              <option value="p">Oddiy matn</option>
-              <option value="h2">Sarlavha 1</option>
-              <option value="h3">Sarlavha 2</option>
-              <option value="pre">Kod bloki</option>
-            </select>
+            <button class="rte-btn" title="Sarlavha 1" onclick="rte('formatBlock','h2')"
+              style="font-weight:700;font-size:13px">H1</button>
+            <button class="rte-btn" title="Sarlavha 2" onclick="rte('formatBlock','h3')"
+              style="font-weight:700;font-size:12px">H2</button>
+            <button class="rte-btn" title="Oddiy matn" onclick="rte('formatBlock','p')">
+              <span class="material-icons-outlined">notes</span></button>
             <span class="rte-sep"></span>
             <button class="rte-btn" title="Qalin (Ctrl+B)" onclick="rte('bold')"><b>B</b></button>
             <button class="rte-btn" title="Kursiv (Ctrl+I)" onclick="rte('italic')"><i>I</i></button>
@@ -2536,8 +2532,10 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <span class="rte-sep"></span>
             <button class="rte-btn" title="Havola" onclick="rteLink()">
               <span class="material-icons-outlined">link</span></button>
-            <button class="rte-btn" title="Kod" onclick="rteCode()">
+            <button class="rte-btn" title="Kod (satr ichida)" onclick="rteCode()">
               <span class="material-icons-outlined">code</span></button>
+            <button class="rte-btn" title="Kod bloki" onclick="rte('formatBlock','pre')">
+              <span class="material-icons-outlined">data_object</span></button>
             <span class="rte-sep"></span>
             <button class="rte-btn" title="Formatni tozalash" onclick="rte('removeFormat')">
               <span class="material-icons-outlined">format_clear</span></button>
@@ -2983,7 +2981,7 @@ document.addEventListener('selectionchange',function(){
 });
 /* Panel tugmasi bosilganda matn belgisi yo'qolmasin */
 document.addEventListener('mousedown',function(e){
-  if(e.target.closest&&e.target.closest('.rte-bar')&&!e.target.closest('.rte-sel'))e.preventDefault();
+  if(e.target.closest&&e.target.closest('.rte-bar'))e.preventDefault();
 });
 
 /* ═══════ QIDIRUVLI ODAM TANLAGICH ═══════ */
