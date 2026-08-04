@@ -557,6 +557,57 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+/* Vazifa detali */
+.id-grid{display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start}
+.id-status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;
+  font-size:12.5px;font-weight:600;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);color:#fff;cursor:pointer}
+.id-status .material-icons-outlined{font-size:16px}
+.sub-prog{height:6px;border-radius:3px;background:#e3e9f1;overflow:hidden;margin:2px 0 10px}
+.sub-prog i{display:block;height:100%;background:var(--m-pos)}
+.sub-item{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:13px;color:#182634}
+.sub-item+.sub-item{border-top:1px solid var(--mline2)}
+.sub-item .material-icons,.sub-item .material-icons-outlined{font-size:17px}
+.sub-item .k{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9}
+.sub-item.done span.t{text-decoration:line-through;color:#8b9aa9}
+.sub-item .mini-avatar{margin:0 0 0 auto;width:22px;height:22px}
+.id-tabs{display:flex;gap:2px;border-bottom:1px solid var(--mline2);margin-bottom:10px}
+.id-tab{padding:8px 13px;border:none;background:transparent;font-family:var(--font-sans);
+  font-size:12.5px;font-weight:600;color:#8b9aa9;cursor:pointer;border-bottom:2px solid transparent;
+  margin-bottom:-1px}
+.id-tab:hover{color:var(--ink-1)}
+.id-tab.on{color:var(--primary);border-bottom-color:var(--primary)}
+.id-tab .cnt{font-family:var(--font-mono);font-size:10.5px;opacity:.75;margin-left:4px}
+.id-pane{display:none}
+.id-pane.on{display:block}
+.cmt{display:flex;gap:10px;padding:10px 0}
+.cmt+.cmt{border-top:1px solid var(--mline2)}
+.cmt .mini-avatar{margin:0;flex-shrink:0}
+.cmt-b{flex:1;min-width:0}
+.cmt-h{display:flex;align-items:center;gap:7px;font-size:12.5px}
+.cmt-h b{color:#182634}
+.cmt-h .tm{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9}
+.cmt-h .act{margin-left:auto;font-size:11px;color:var(--primary);cursor:pointer}
+.cmt-t{font-size:13px;color:#182634;line-height:1.6;margin-top:3px}
+.hist{display:flex;gap:10px;padding:9px 0;font-size:12.5px;color:#5c6e80}
+.hist+.hist{border-top:1px solid var(--mline2)}
+.hist .material-icons-outlined{font-size:16px;color:#b6c2d1;flex-shrink:0}
+.hist b{color:#182634;font-weight:600}
+.hist .tm{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9;white-space:nowrap}
+.att{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:13px}
+.att+.att{border-top:1px solid var(--mline2)}
+.att .ic{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;
+  background:var(--m-acc-soft);color:var(--m-acc)}
+.att .sz{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:#8b9aa9}
+.lnk-row{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:13px}
+.lnk-row+.lnk-row{border-top:1px solid var(--mline2)}
+.lnk-row .rel{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9;
+  background:#eef1f5;padding:2px 7px;border-radius:5px}
+.blk-banner{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:10px;
+  background:var(--m-warn-soft);border:1px solid #f0d9a8;color:var(--m-warn);
+  font-size:12.5px;line-height:1.5;margin-bottom:14px}
+.blk-banner .material-icons-outlined{font-size:18px;flex-shrink:0}
+
 /* Rich text muharrir */
 .rte{border:1px solid var(--mline);border-radius:10px;overflow:hidden;background:var(--surface)}
 .rte:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
@@ -2356,125 +2407,230 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ VAZIFA DETAIL MODALI ════════════ -->
 <div class="overlay" id="issue-overlay" onclick="if(event.target===this)closeIssue()">
-  <div class="modal">
+  <div class="modal" style="width:min(1080px,95vw)">
     <div class="fm-head">
       <div class="mh-left">
-        <span class="mark"><span class="material-icons-outlined">assignment</span></span>
+        <span class="mark"><span class="material-icons" style="color:#5bd49a;font-size:20px">bookmark</span></span>
         <div class="mh-t">
           <h1>OAuth 2.0 integratsiyasi (Google, Apple)</h1>
-          <div class="mh-id mono">MOB-142 <span class="material-icons-outlined" style="font-size:13px;cursor:pointer">content_copy</span></div>
+          <div class="mh-id mono">MOB-142 · Mobil ilova · Development
+            <span class="material-icons-outlined" style="font-size:13px;cursor:pointer"
+              onclick="toast('MOB-142 nusxalandi')">content_copy</span></div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span class="head-chip"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.25)"></span>In Progress</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="id-status" onclick="toast('Status oqimi: In Progress → Code Review')">
+          <span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.25)"></span>
+          In Progress <span class="material-icons-outlined">expand_more</span></span>
+        <button class="close-x" onclick="toast('Kuzatuvga qo\'shildingiz')" title="Kuzatish">
+          <span class="material-icons-outlined">visibility</span></button>
         <button class="close-x" onclick="closeIssue()"><span class="material-icons-outlined">close</span></button>
       </div>
     </div>
+
     <div class="fm-body">
-      <div style="display:flex;gap:14px;align-items:flex-start">
-        <div style="flex:1.6;min-width:0">
+      <div class="id-grid">
+        <!-- CHAP USTUN -->
+        <div style="min-width:0">
           <div class="desc-card">
-            <div class="dc-head"><h3>Tavsif</h3></div>
-            <div class="dc-body" style="padding:12px 16px;font-size:13.5px;line-height:1.6;color:#182634">
-              Google va Apple orqali kirish. Token refresh oqimi backend bilan kelishilgan
-              (issue: BE-88). Xatolik holatlari: bekor qilingan ruxsat, muddati o'tgan token,
-              tarmoq uzilishi — har biriga alohida xabar.
+            <div class="dc-head"><h3>Tavsif</h3>
+              <span class="dc-note" style="cursor:pointer;color:var(--primary)"
+                onclick="closeIssue();openIssueForm('scrum','MOB-142 — tahrirlash')">tahrirlash</span></div>
+            <div class="dc-body" style="padding:12px 16px;font-size:13.5px;line-height:1.65;color:#182634">
+              <p style="margin:0 0 8px">Google va Apple orqali kirish. Token refresh oqimi backend bilan
+                kelishilgan (<a href="#">BE-88</a>).</p>
+              <p style="margin:0 0 5px"><b>Qabul mezonlari:</b></p>
+              <ul style="margin:0;padding-left:20px">
+                <li>Ikkala provayder orqali kirish va chiqish ishlaydi</li>
+                <li>Token muddati tugasa avtomatik yangilanadi</li>
+                <li>Xatolik holatlari: bekor qilingan ruxsat, muddati o'tgan token, tarmoq uzilishi —
+                  har biriga alohida xabar</li>
+              </ul>
             </div>
           </div>
+
           <div class="desc-card">
-            <div class="dc-head"><h3>Subtasklar</h3><span class="dc-note">2/4</span></div>
-            <div class="dc-body">
-              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons" style="font-size:17px;color:var(--m-pos)">check_circle</span> Google OAuth oqimi</span>
-                <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Done</span></div>
-              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons" style="font-size:17px;color:var(--m-pos)">check_circle</span> Token saqlash (Keychain)</span>
-                <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Done</span></div>
-              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons-outlined" style="font-size:17px;color:var(--ink-4)">radio_button_unchecked</span> Apple Sign-In</span>
-                <span class="kv-dots"></span><span class="chip soft-info" style="font-size:10.5px">In Progress</span></div>
-              <div class="kv"><span class="kv-value" style="max-width:none"><span class="material-icons-outlined" style="font-size:17px;color:var(--ink-4)">radio_button_unchecked</span> Xatolik ekranlari</span>
-                <span class="kv-dots"></span><span class="chip neutral" style="font-size:10.5px">To Do</span></div>
+            <div class="dc-head"><h3>Subtasklar</h3><span class="dc-note">2/4 · 50%</span></div>
+            <div class="dc-body" style="padding:10px 16px 12px">
+              <div class="sub-prog"><i style="width:50%"></i></div>
+              <div class="sub-item done"><span class="material-icons" style="color:var(--m-pos)">check_circle</span>
+                <span class="k">MOB-142a</span><span class="t">Google OAuth oqimi</span>
+                <span class="mini-avatar" style="background:#4f7cd1">DS</span></div>
+              <div class="sub-item done"><span class="material-icons" style="color:var(--m-pos)">check_circle</span>
+                <span class="k">MOB-142b</span><span class="t">Token saqlash (Keychain)</span>
+                <span class="mini-avatar" style="background:#4f7cd1">DS</span></div>
+              <div class="sub-item"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span>
+                <span class="k">MOB-142c</span><span class="t">Apple Sign-In</span>
+                <span class="chip soft-info" style="font-size:10px">In Progress</span>
+                <span class="mini-avatar" style="background:#3aa981">BK</span></div>
+              <div class="sub-item"><span class="material-icons-outlined" style="color:#b6c2d1">radio_button_unchecked</span>
+                <span class="k">MOB-142d</span><span class="t">Xatolik ekranlari</span>
+                <span class="chip neutral" style="font-size:10px">To Do</span>
+                <span class="mini-avatar" style="background:#b56bb0">SN</span></div>
+              <div style="margin-top:10px"><button class="btn-flat" style="height:32px;padding:0 10px;font-size:12.5px"
+                onclick="openIssueForm('scrum','Yangi subtask — MOB-142')">
+                <span class="material-icons-outlined" style="font-size:17px">add</span> Subtask qo'shish</button></div>
             </div>
           </div>
+
           <div class="desc-card">
-            <div class="dc-head"><h3>Izohlar</h3><span class="dc-note">3</span></div>
-            <div class="dc-body" style="padding:10px 16px">
-              <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--mline2)">
-                <span class="mini-avatar" style="background:#c98a3d;margin:0">AA</span>
-                <div style="flex:1"><div style="font-size:12.5px"><b>Aziz</b>
-                  <span class="mono" style="font-size:10.5px;color:#8b9aa9;margin-left:6px">1 soat oldin</span></div>
-                  <div style="font-size:13px;color:#182634;margin-top:2px">Apple sertifikati provisioning'da muammo bor edi — hal qilindi</div></div>
+            <div class="dc-body" style="padding:12px 16px">
+              <div class="id-tabs">
+                <button class="id-tab on" onclick="idTab(this,'id-cmt')">Izohlar<span class="cnt">3</span></button>
+                <button class="id-tab" onclick="idTab(this,'id-hist')">Tarix<span class="cnt">6</span></button>
+                <button class="id-tab" onclick="idTab(this,'id-att')">Fayllar<span class="cnt">2</span></button>
+                <button class="id-tab" onclick="idTab(this,'id-lnk')">Bog'lanishlar<span class="cnt">2</span></button>
               </div>
-              <div style="display:flex;gap:10px;padding:8px 0">
-                <span class="mini-avatar" style="background:#4f7cd1;margin:0">DS</span>
-                <div style="flex:1"><div style="font-size:12.5px"><b>Davron</b>
-                  <span class="mono" style="font-size:10.5px;color:#8b9aa9;margin-left:6px">30 daqiqa oldin</span></div>
-                  <div style="font-size:13px;color:#182634;margin-top:2px">Rahmat, bugun Apple oqimini tugataman</div></div>
-              </div>
-              <div class="rte" style="margin-top:10px">
-                <div class="rte-bar">
-                  <button class="rte-btn" title="Qalin" onclick="rte('bold')"><b>B</b></button>
-                  <button class="rte-btn" title="Kursiv" onclick="rte('italic')"><i>I</i></button>
-                  <button class="rte-btn" title="Ro'yxat" onclick="rte('insertUnorderedList')">
-                    <span class="material-icons-outlined">format_list_bulleted</span></button>
-                  <button class="rte-btn" title="Kod" onclick="rteCode()">
-                    <span class="material-icons-outlined">code</span></button>
-                  <button class="rte-btn" title="Havola" onclick="rteLink()">
-                    <span class="material-icons-outlined">link</span></button>
-                  <button class="btn-primary" style="height:30px;padding:0 14px;margin-left:auto;font-size:12.5px"
-                    onclick="toast('Izoh qo\'shildi')">Yuborish</button>
+
+              <div class="id-pane on" id="id-cmt">
+                <div class="cmt"><span class="mini-avatar" style="background:#c98a3d">AZ</span>
+                  <div class="cmt-b"><div class="cmt-h"><b>Aziz Zokirov</b><span class="tm">1 soat oldin</span>
+                    <span class="act" onclick="toast('Javob yozish')">javob</span></div>
+                    <div class="cmt-t">Apple sertifikati provisioning'da muammo bor edi — hal qilindi,
+                      yangi profil TestFlight'ga yuklandi.</div></div></div>
+                <div class="cmt"><span class="mini-avatar" style="background:#4f7cd1">DS</span>
+                  <div class="cmt-b"><div class="cmt-h"><b>Davron Salimov</b><span class="tm">30 daqiqa oldin</span>
+                    <span class="act" onclick="toast('Javob yozish')">javob</span></div>
+                    <div class="cmt-t">Rahmat, bugun Apple oqimini tugataman. <b>@Bekzod</b> — xatolik
+                      ekranlarini ertaga birga ko'rib chiqamiz.</div></div></div>
+                <div class="cmt"><span class="mini-avatar" style="background:#3aa981">BK</span>
+                  <div class="cmt-b"><div class="cmt-h"><b>Bekzod Karimov</b><span class="tm">12 daqiqa oldin</span>
+                    <span class="act" onclick="toast('Javob yozish')">javob</span></div>
+                    <div class="cmt-t">Kelishdik 👍</div></div></div>
+                <div class="rte" style="margin-top:10px">
+                  <div class="rte-bar">
+                    <button class="rte-btn" title="Qalin" onclick="rte('bold')"><b>B</b></button>
+                    <button class="rte-btn" title="Kursiv" onclick="rte('italic')"><i>I</i></button>
+                    <button class="rte-btn" title="Ro'yxat" onclick="rte('insertUnorderedList')">
+                      <span class="material-icons-outlined">format_list_bulleted</span></button>
+                    <button class="rte-btn" title="Kod" onclick="rteCode()">
+                      <span class="material-icons-outlined">code</span></button>
+                    <button class="rte-btn" title="Havola" onclick="rteLink()">
+                      <span class="material-icons-outlined">link</span></button>
+                    <button class="btn-primary" style="height:30px;padding:0 14px;margin-left:auto;font-size:12.5px"
+                      onclick="toast('Izoh qo\'shildi')">Yuborish</button>
+                  </div>
+                  <div class="rte-body" contenteditable="true" style="min-height:70px"
+                    data-ph="Izoh yozing... (@ bilan hamkasbni belgilash)"></div>
                 </div>
-                <div class="rte-body" contenteditable="true" style="min-height:70px"
-                  data-ph="Izoh yozing... (@ bilan hamkasbni belgilash)"></div>
+              </div>
+
+              <div class="id-pane" id="id-hist">
+                <div class="hist"><span class="material-icons-outlined">swap_horiz</span>
+                  <span><b>Davron Salimov</b> statusni o'zgartirdi: To Do → <b>In Progress</b></span>
+                  <span class="tm">01.08 09:14</span></div>
+                <div class="hist"><span class="material-icons-outlined">straighten</span>
+                  <span><b>Davron Salimov</b> baholashni o'zgartirdi: 5 → <b>8 pt</b> (re-estimation)</span>
+                  <span class="tm">31.07 16:40</span></div>
+                <div class="hist"><span class="material-icons-outlined">person</span>
+                  <span><b>Aziz Zokirov</b> mas'ulni belgiladi: <b>D. Salimov</b></span>
+                  <span class="tm">31.07 11:02</span></div>
+                <div class="hist"><span class="material-icons-outlined">timer</span>
+                  <span><b>Aziz Zokirov</b> sprintga qo'shdi: <b>Sprint 14</b></span>
+                  <span class="tm">30.07 15:20</span></div>
+                <div class="hist"><span class="material-icons-outlined">label</span>
+                  <span><b>Aziz Zokirov</b> teg qo'shdi: <b>auth</b>, <b>mobile</b></span>
+                  <span class="tm">28.07 10:35</span></div>
+                <div class="hist"><span class="material-icons-outlined">add_circle</span>
+                  <span><b>Aziz Zokirov</b> vazifani yaratdi</span>
+                  <span class="tm">28.07 10:30</span></div>
+              </div>
+
+              <div class="id-pane" id="id-att">
+                <div class="att"><span class="ic"><span class="material-icons-outlined">image</span></span>
+                  <div><div>oauth-flow-diagram.png</div>
+                    <div style="font-size:11px;color:#8b9aa9">D. Salimov · 29.07.2026</div></div>
+                  <span class="sz">412 KB</span></div>
+                <div class="att"><span class="ic"><span class="material-icons-outlined">description</span></span>
+                  <div><div>apple-signin-checklist.pdf</div>
+                    <div style="font-size:11px;color:#8b9aa9">A. Zokirov · 30.07.2026</div></div>
+                  <span class="sz">88 KB</span></div>
+                <div style="border:1.5px dashed var(--mline);border-radius:10px;padding:14px;text-align:center;
+                  color:var(--ink-4);font-size:12.5px;cursor:pointer;margin-top:10px"
+                  onclick="toast('Fayl yuklash (MinIO)')">
+                  <span class="material-icons-outlined" style="font-size:20px">cloud_upload</span>
+                  <div style="margin-top:2px">Fayl qo'shish</div></div>
+              </div>
+
+              <div class="id-pane" id="id-lnk">
+                <div class="lnk-row"><span class="rel">relates_to</span>
+                  <span class="mono" style="color:var(--primary)">BE-88</span>
+                  <span>Token refresh endpointi</span>
+                  <span class="chip soft-pos" style="margin-left:auto;font-size:10.5px">Done</span></div>
+                <div class="lnk-row"><span class="rel">clones</span>
+                  <span class="mono" style="color:var(--primary)">MOB-098</span>
+                  <span>Ijtimoiy tarmoq orqali kirish (v1)</span>
+                  <span class="chip neutral" style="margin-left:auto;font-size:10.5px">Arxiv</span></div>
+                <div style="margin-top:10px"><button class="btn-flat" style="height:32px;padding:0 10px;font-size:12.5px"
+                  onclick="toast('Bog\'lanish qo\'shish')">
+                  <span class="material-icons-outlined" style="font-size:17px">add_link</span> Bog'lanish qo'shish</button></div>
               </div>
             </div>
           </div>
         </div>
-        <div style="flex:1;min-width:0">
+
+        <!-- O'NG USTUN -->
+        <div style="min-width:0">
           <div class="desc-card">
             <div class="dc-head"><h3>Ma'lumotlar</h3></div>
             <div class="dc-body">
-              <div class="kv"><span class="kv-label">Board</span><span class="kv-dots"></span>
-                <span class="kv-value">Development</span></div>
-              <div class="kv"><span class="kv-label">Sprint</span><span class="kv-dots"></span>
-                <span class="kv-value">Sprint 14</span></div>
               <div class="kv"><span class="kv-label">Turi</span><span class="kv-dots"></span>
                 <span class="kv-value"><span class="material-icons t-ic story" style="font-size:15px">bookmark</span> Story</span></div>
               <div class="kv"><span class="kv-label">Priority</span><span class="kv-dots"></span>
                 <span class="kv-value"><span class="prio hi">Yuqori</span></span></div>
               <div class="kv"><span class="kv-label">Baholash</span><span class="kv-dots"></span>
-                <span class="kv-value mono">8 pt</span></div>
+                <span class="kv-value mono">8 pt <span style="color:#8b9aa9;font-family:var(--font-sans);font-size:11.5px">≈ 3840 daqiqa</span></span></div>
+              <div class="kv"><span class="kv-label">Sprint</span><span class="kv-dots"></span>
+                <span class="kv-value">Sprint 14</span></div>
               <div class="kv"><span class="kv-label">Mas'ul</span><span class="kv-dots"></span>
                 <span class="kv-value"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span></div>
-              <div class="kv"><span class="kv-label">Watcherlar</span><span class="kv-dots"></span>
-                <span class="kv-value"><span class="mini-avatar" style="background:#3aa981">BK</span><span class="mini-avatar" style="background:#b56bb0;margin-left:-10px">SN</span></span></div>
               <div class="kv"><span class="kv-label">Muddat</span><span class="kv-dots"></span>
                 <span class="kv-value mono">08.08.2026</span></div>
               <div class="kv"><span class="kv-label">Teglar</span><span class="kv-dots"></span>
                 <span class="kv-value"><span class="chip soft-info" style="font-size:10.5px">auth</span>
                   <span class="chip soft-info" style="font-size:10.5px">mobile</span></span></div>
-              <div class="kv"><span class="kv-label">Bog'lanish</span><span class="kv-dots"></span>
-                <span class="kv-value mono" style="color:var(--primary)">relates_to: BE-88</span></div>
             </div>
           </div>
           <div class="desc-card">
-            <div class="dc-head"><h3>Tarix</h3></div>
-            <div class="dc-body" style="padding:8px 16px;font-size:12px;color:#5c6e80">
-              <div style="padding:5px 0">status: To Do → In Progress <span class="mono" style="color:#8b9aa9">· 01.08</span></div>
-              <div style="padding:5px 0;border-top:1px solid var(--mline2)">point: 5 → 8 (re-estimation) <span class="mono" style="color:#8b9aa9">· 31.07</span></div>
-              <div style="padding:5px 0;border-top:1px solid var(--mline2)">yaratildi <span class="mono" style="color:#8b9aa9">· 28.07</span></div>
+            <div class="dc-head"><h3>Kuzatuvchilar</h3><span class="dc-note">2</span></div>
+            <div class="dc-body" style="padding:11px 16px">
+              <div class="people-pick">
+                <span class="pick-tag"><span class="mini-avatar" style="background:#3aa981">BK</span>B. Karimov</span>
+                <span class="pick-tag"><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</span>
+                <span class="p-opt" onclick="toast('Kuzatuvchi qo\'shish')">
+                  <span class="material-icons-outlined" style="font-size:17px">add</span> qo'shish</span>
+              </div>
+            </div>
+          </div>
+          <div class="desc-card">
+            <div class="dc-head"><h3>Vaqt belgilari</h3></div>
+            <div class="dc-body">
+              <div class="kv"><span class="kv-label">Yaratilgan</span><span class="kv-dots"></span>
+                <span class="kv-value mono">28.07.2026 10:30</span></div>
+              <div class="kv"><span class="kv-label">Muallif</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="mini-avatar" style="background:#c98a3d">AZ</span>A. Zokirov</span></div>
+              <div class="kv"><span class="kv-label">O'zgartirilgan</span><span class="kv-dots"></span>
+                <span class="kv-value mono">01.08.2026 09:14</span></div>
+              <div class="kv"><span class="kv-label">Statusda</span><span class="kv-dots"></span>
+                <span class="kv-value mono">3 kun</span></div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="fm-foot">
       <button class="btn-flat left" onclick="closeIssue()">Yopish</button>
-      <button class="btn-del-text">O'chirish</button>
-      <button class="btn-edit"><span class="material-icons-outlined" style="font-size:18px">edit</span> Tahrirlash</button>
+      <button class="btn-flat" onclick="toast('Subtask qo\'shish')">
+        <span class="material-icons-outlined" style="font-size:17px">account_tree</span> Subtask</button>
+      <button class="btn-flat" style="color:var(--m-warn)" onclick="closeIssue();document.getElementById('dd-block').classList.add('open')">
+        <span class="material-icons-outlined" style="font-size:17px">block</span> Bloklash</button>
+      <button class="btn-del-text" onclick="closeIssue();openDelete()">O'chirish</button>
+      <button class="btn-edit" onclick="closeIssue();openIssueForm('scrum','MOB-142 — tahrirlash')">
+        <span class="material-icons-outlined" style="font-size:18px">edit</span> Tahrirlash</button>
     </div>
   </div>
 </div>
-
-
 
 <!-- ════════════ VAZIFA YARATISH / TAHRIRLASH MODALI ════════════ -->
 <div class="overlay" id="issue-form" onclick="if(event.target===this)closeOv('issue-form')">
@@ -3293,6 +3449,15 @@ function projTab(name){
   for(var j=0;j<views.length;j++)
     views[j].classList.toggle('active',views[j].id==='pt-'+name);
   document.querySelector('.page').scrollTop=0;
+}
+
+/* Vazifa detali tablari */
+function idTab(btn,pane){
+  var tabs=btn.parentElement.querySelectorAll('.id-tab');
+  for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('on');
+  btn.classList.add('on');
+  var panes=document.querySelectorAll('#issue-overlay .id-pane');
+  for(var j=0;j<panes.length;j++)panes[j].classList.toggle('on',panes[j].id===pane);
 }
 
 /* Modal */
