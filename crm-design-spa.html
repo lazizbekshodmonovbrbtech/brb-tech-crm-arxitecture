@@ -52,6 +52,8 @@ a{color:var(--primary);text-decoration:none}
 .breadcrumb{display:flex;align-items:center;gap:3px;margin-left:8px;font-size:14px;font-weight:600}
 .crumb{color:var(--ink-4);padding:2px 4px;border-radius:6px}
 .crumb.current{color:var(--ink);font-weight:700}
+.crumb.lnk{cursor:pointer}
+.crumb.lnk:hover{color:var(--primary);background:#f3f4f6}
 .crumb-sep{color:#cbd5e1;font-size:16px}
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:4px}
 .tb-clock{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;
@@ -362,13 +364,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   border-radius:10px;font-family:var(--font-sans);padding:0}
 .back-link:hover{background:#eceef2;color:var(--ink-1);border-color:var(--mline)}
 .back-link .material-icons-outlined{font-size:19px}
-/* Sahifa ustidagi mini yo'l (title yuqorisiga chiqarilgan kontekst) */
-.page-path{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
-  color:var(--ink-4);margin-bottom:8px}
-.page-path .lnk{cursor:pointer;padding:2px 5px;border-radius:6px}
-.page-path .lnk:hover{color:var(--primary);background:var(--primary-soft)}
-.page-path .material-icons-outlined{font-size:15px;color:#cbd5e1}
-.page-path .cur{color:var(--ink-2)}
 
 /* ═══════ STATUS BANNER ═══════ */
 .banner{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:12px;
@@ -594,11 +589,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     </div>
   </div>
   <button class="tb-icon-btn"><span class="material-icons-outlined">menu</span></button>
-  <nav class="breadcrumb">
-    <span class="crumb">Bosh sahifa</span>
-    <span class="material-icons-outlined crumb-sep">chevron_right</span>
-    <span class="crumb current" id="crumb-current">Bosh sahifa</span>
-  </nav>
+  <nav class="breadcrumb" id="breadcrumb"></nav>
   <div class="tb-right">
     <span class="tb-clock"><span class="material-icons-outlined">calendar_today</span>
       <span class="mono">03.08.2026</span></span>
@@ -1069,11 +1060,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ LOYIHA ICHI<!-- ════════════ LOYIHA ICHI (Jira-uslub tablar) ════════════ -->
 <section class="page-view" id="pv-project">
-  <div class="page-path">
-    <span class="lnk" onclick="show('projects')">Loyihalar</span>
-    <span class="material-icons-outlined">chevron_right</span>
-    <span class="cur">Mobil ilova</span>
-  </div>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
     <button class="back-link" title="Loyihalar ro'yxatiga" onclick="show('projects')"><span class="material-icons-outlined">arrow_back</span></button>
     <span class="pc-code" style="background:#2563eb;width:38px;height:38px;font-size:12px">MOB</span>
@@ -1222,13 +1208,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ BOARD ════════════ -->
 <section class="page-view" id="pv-board">
-    <div class="page-path">
-      <span class="lnk" onclick="show('projects')">Loyihalar</span>
-      <span class="material-icons-outlined">chevron_right</span>
-      <span class="lnk" onclick="show('project');projTab('boards')">Mobil ilova</span>
-      <span class="material-icons-outlined">chevron_right</span>
-      <span class="cur" id="board-path-name">Development</span>
-    </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
       <button class="back-link" title="Boardlar ro'yxatiga" onclick="show('project');projTab('boards')"><span class="material-icons-outlined">arrow_back</span></button>
       <span class="bk-name" id="board-title" style="font-size:17px">Development</span>
@@ -2572,6 +2551,37 @@ var TITLES={home:'Bosh sahifa',leads:'Leadlar',customers:'Mijozlar',contracts:'S
   tickets:'Ticketlar',inbox:'Telegram inbox',calls:'Call center',inventory:'Inventar',
   kpi:'KPI natijalar',kpiprofiles:'KPI profillari'};
 var NAVKEY={project:'projects',board:'projects'};
+/* Breadcrumb yo'llari: [nom, o'tish sahifasi yoki null] */
+var TRAIL={
+  home:[['Bosh sahifa',null]],
+  leads:[['Leadlar',null]],
+  customers:[['Mijozlar',null]],
+  contracts:[['Shartnomalar',null]],
+  projects:[['Loyihalar',null]],
+  project:[['Loyihalar','projects'],['Mobil ilova',null]],
+  board:[['Loyihalar','projects'],['Mobil ilova','project'],['BOARD',null]],
+  handover:[['Handover',null]],
+  tickets:[['Ticketlar',null]],
+  inbox:[['Telegram inbox',null]],
+  calls:[['Call center',null]],
+  inventory:[['Inventar',null]],
+  kpi:[['KPI natijalar',null]],
+  kpiprofiles:[['KPI profillari',null]]
+};
+function renderCrumbs(page){
+  var bc=document.getElementById('breadcrumb');
+  var items=TRAIL[page]||[[TITLES[page]||page,null]];
+  var html='<span class="crumb lnk" onclick="show(\'home\')">Bosh sahifa</span>';
+  for(var i=0;i<items.length;i++){
+    var nm=items[i][0], go=items[i][1];
+    if(page==='board'&&nm==='BOARD')
+      nm=document.getElementById('board-title').textContent;
+    html+='<span class="material-icons-outlined crumb-sep">chevron_right</span>';
+    if(go)html+='<span class="crumb lnk" onclick="show(\''+go+'\')'+(go==='project'?';projTab(\'boards\')':'')+'">'+nm+'</span>';
+    else html+='<span class="crumb current">'+nm+'</span>';
+  }
+  bc.innerHTML=html;
+}
 function show(page){
   var views=document.querySelectorAll('.page-view');
   for(var i=0;i<views.length;i++)views[i].classList.remove('active');
@@ -2582,7 +2592,7 @@ function show(page){
   for(var j=0;j<items.length;j++){
     items[j].classList.toggle('active',items[j].getAttribute('data-page')===navKey);
   }
-  document.getElementById('crumb-current').textContent=TITLES[page]||page;
+  renderCrumbs(page);
   document.querySelector('.page').scrollTop=0;
   document.getElementById('call-drawer').classList.remove('open');
 }
@@ -2610,7 +2620,6 @@ function openBoard(mode){
   document.getElementById('board-scrum').style.display = scrum?'flex':'none';
   document.getElementById('board-kanban').style.display = scrum?'none':'flex';
   document.getElementById('board-title').textContent = scrum?'Development':'Maintenance';
-  document.getElementById('board-path-name').textContent = scrum?'Development':'Maintenance';
   var mc=document.getElementById('board-mode');
   mc.textContent = scrum?'SCRUM':'KANBAN';
   mc.className = 'mode-chip '+(scrum?'scrum':'kanban');
