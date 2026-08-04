@@ -557,6 +557,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+.f-locked{display:flex;align-items:center;gap:9px;height:46px;padding:0 14px;
+  border:1px solid var(--mline2);border-radius:10px;background:var(--msurface2);
+  font-size:13.5px;font-weight:600;color:var(--ink-1)}
+.f-locked .material-icons-outlined{font-size:18px;color:var(--ink-4)}
+.f-locked .lk{margin-left:auto;font-size:15px;color:#b6c2d1}
 .fld .hint{font-size:11.5px;color:#8b9aa9;margin-top:5px;display:block;line-height:1.45}
 .fld .hint b{color:var(--m-warn);font-weight:600}
 .fgrid{display:grid;gap:14px}
@@ -1274,7 +1279,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span class="ava-more">+3</span>
       </div>
       <button class="tb-icon-btn"><span class="material-icons-outlined">settings</span></button>
-      <button class="btn-primary" onclick="openIssueForm(document.getElementById('board-kanban').style.display==='none'?'scrum':'kanban','Yangi vazifa')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
+      <button class="btn-primary" onclick="openIssueForm(currentBoardMode(),'Yangi vazifa')"><span class="material-icons-outlined">add_circle</span> VAZIFA</button>
     </div>
 
     <div class="board" id="board-scrum">
@@ -2442,12 +2447,15 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
       <div class="f-sec">Joylashuv va baholash</div>
       <div class="fgrid c3">
-        <div class="fld"><label>Board <b>*</b></label>
-          <select id="if-board" onchange="ifBoard(this.value)">
-            <option value="scrum">Development (SCRUM)</option>
-            <option value="kanban">Maintenance (KANBAN)</option>
-          </select>
-          <span class="hint">Vazifa boardga to'g'ridan-to'g'ri biriktiriladi.</span></div>
+        <div class="fld"><label>Board</label>
+          <div class="f-locked">
+            <span class="material-icons-outlined">view_kanban</span>
+            <span id="if-board-name">Development</span>
+            <span class="mode-chip scrum" id="if-board-mode">SCRUM</span>
+            <span class="material-icons-outlined lk">lock</span>
+          </div>
+          <span class="hint">Kontekstdan olinadi — vazifa ochilgan boardga biriktiriladi.
+            Keyin boshqa boardga ko'chirish vazifa ichidan qilinadi.</span></div>
         <div class="fld" id="if-sprint-wrap"><label>Sprint</label>
           <select><option>— (backlog)</option><option>Sprint 14 (joriy)</option><option>Sprint 15</option></select>
           <span class="hint">Faqat SCRUM boardda.</span></div>
@@ -2823,18 +2831,26 @@ function toast(msg){
   toastTimer=setTimeout(function(){t.classList.remove('show')},2600);
 }
 
+/* Joriy board rejimi */
+function currentBoardMode(){
+  var k=document.getElementById('board-kanban');
+  return (k && k.style.display!=='none') ? 'kanban' : 'scrum';
+}
+
 /* Vazifa modali */
 function openIssueForm(mode,title){
   document.getElementById('if-title').textContent=title||'Yangi vazifa';
-  var sel=document.getElementById('if-board');
-  sel.value=mode||'scrum';
-  ifBoard(sel.value);
+  ifBoard(mode||'scrum');
   document.getElementById('if-status').value='TO_DO';
   ifStatus('TO_DO');
   document.getElementById('issue-form').classList.add('open');
 }
 function ifBoard(mode){
   var scrum=mode==='scrum';
+  document.getElementById('if-board-name').textContent=scrum?'Development':'Maintenance';
+  var bm=document.getElementById('if-board-mode');
+  bm.textContent=scrum?'SCRUM':'KANBAN';
+  bm.className='mode-chip '+(scrum?'scrum':'kanban');
   document.getElementById('if-sprint-wrap').style.display=scrum?'':'none';
   document.getElementById('if-est-label').textContent=scrum?'Baholash (point)':'Baholash (daqiqa)';
   document.getElementById('if-est').placeholder=scrum?'masalan 5':'masalan 90';
@@ -2950,7 +2966,7 @@ document.addEventListener('click',function(e){
       else openDetail('Yozuv tafsilotlari');
     }
     else if(name==='edit'){
-      if(ab.closest('#pv-board'))openIssueForm('scrum','Vazifani tahrirlash');
+      if(ab.closest('#pv-board'))openIssueForm(currentBoardMode(),'Vazifani tahrirlash');
       else openForm('Tahrirlash');
     }
     else if(name==='delete'){openDelete()}
