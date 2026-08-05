@@ -1021,6 +1021,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="mono">03.08.2026</span></span>
     <span class="tb-clock"><span class="material-icons-outlined">schedule</span>
       <span class="mono" id="clock">08:52:55</span></span>
+    <a class="btn-flat" href="index.html" title="DB arxitektura hujjatiga o'tish"
+      style="height:34px;padding:0 12px;border:1px solid var(--line-2);border-radius:9px;
+      color:var(--ink-2);text-decoration:none;font-size:12.5px">
+      <span class="material-icons-outlined" style="font-size:17px">schema</span>
+      DB arxitektura</a>
     <span class="tb-sep"></span>
     <button class="lang-btn" onclick="cycleLang(this)"><span class="flag"></span> <span id="lang-txt">O'z</span></button>
     <button class="tb-icon-btn" onclick="toggleNotif(event)">
@@ -5913,6 +5918,9 @@ function show(page){
   renderCrumbs(page);
   document.querySelector('.page').scrollTop=0;
   document.getElementById('call-drawer').classList.remove('open');
+  if(location.hash.slice(1)!==page){
+    history.replaceState(null,'','#'+page);
+  }
   requestAnimationFrame(fitBoards);
 }
 function toggleGroup(key){
@@ -5923,7 +5931,14 @@ var navItems=document.querySelectorAll('.nav-item[data-page], .nav-child[data-pa
 for(var k=0;k<navItems.length;k++){
   navItems[k].addEventListener('click',function(){show(this.getAttribute('data-page'))});
 }
-show('home');
+/* Manzildagi #sahifa bo'yicha ochish (arxitektura hujjatidan kelgan havolalar) */
+function routeFromHash(){
+  var k=location.hash.replace('#','');
+  if(k && document.getElementById('pv-'+k))show(k);
+  else show('home');
+}
+addEventListener('hashchange',routeFromHash);
+routeFromHash();
 
 /* Loyihalar: card/table toggle */
 function projView(v){
