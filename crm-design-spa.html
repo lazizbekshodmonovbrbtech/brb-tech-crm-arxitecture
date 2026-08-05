@@ -877,7 +877,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="nav-item" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
     <div class="nav-item" data-page="customers"><span class="material-icons-outlined">groups</span> Mijozlar</div>
     <div class="nav-item" data-page="contracts"><span class="material-icons-outlined">description</span> Shartnomalar</div>
-    <div class="nav-item group open" id="nav-tasks" onclick="toggleGroup()">
+    <div class="nav-item group open" id="nav-tasks" onclick="toggleGroup('tasks')">
       <span class="material-icons-outlined">task_alt</span> Vazifalar boshqaruvi
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children open" id="nav-tasks-children">
@@ -885,11 +885,15 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="nav-child" data-page="handover"><span class="material-icons-outlined">swap_horiz</span> Handover
         <span class="menu-badge">6</span></div>
     </div>
-    <div class="sb-section">Support</div>
-    <div class="nav-item" data-page="tickets"><span class="material-icons-outlined">confirmation_number</span> Ticketlar</div>
-    <div class="nav-item" data-page="inbox"><span class="material-icons-outlined">send</span> Telegram inbox</div>
+    <div class="nav-item group" id="nav-support" onclick="toggleGroup('support')">
+      <span class="material-icons-outlined">headset_mic</span> Support
+      <span class="material-icons-outlined chev">chevron_right</span></div>
+    <div class="nav-children" id="nav-support-children">
+      <div class="nav-child" data-page="tickets"><span class="material-icons-outlined">confirmation_number</span> Ticketlar</div>
+      <div class="nav-child" data-page="inbox"><span class="material-icons-outlined">send</span> Telegram inbox</div>
+      <div class="nav-child" data-page="calls"><span class="material-icons-outlined">support_agent</span> Call center</div>
+    </div>
     <div class="sb-section">Operatsiyalar</div>
-    <div class="nav-item" data-page="calls"><span class="material-icons-outlined">support_agent</span> Call center</div>
     <div class="nav-item" data-page="inventory"><span class="material-icons-outlined">inventory_2</span> Inventar</div>
     <div class="sb-section">KPI</div>
     <div class="nav-item" data-page="kpi"><span class="material-icons-outlined">insights</span> KPI natijalar</div>
@@ -3419,9 +3423,9 @@ var TRAIL={
   project:[['Vazifalar boshqaruvi',null],['Loyihalar','projects'],['Mobil ilova',null]],
   board:[['Loyihalar','projects'],['Mobil ilova','project'],['BOARD',null]],
   handover:[['Vazifalar boshqaruvi',null],['Handover',null]],
-  tickets:[['Ticketlar',null]],
-  inbox:[['Telegram inbox',null]],
-  calls:[['Call center',null]],
+  tickets:[['Support',null],['Ticketlar',null]],
+  inbox:[['Support',null],['Telegram inbox',null]],
+  calls:[['Support',null],['Call center',null]],
   inventory:[['Inventar',null]],
   kpi:[['KPI natijalar',null]],
   kpiprofiles:[['KPI profillari',null]]
@@ -3450,20 +3454,23 @@ function show(page){
   for(var j=0;j<items.length;j++){
     items[j].classList.toggle('active',items[j].getAttribute('data-page')===navKey);
   }
-  // guruh ichidagi sahifa ochilsa, guruh yoyilib turadi
-  var inGroup=document.querySelector('#nav-tasks-children .nav-child.active');
-  if(inGroup){
-    document.getElementById('nav-tasks').classList.add('open');
-    document.getElementById('nav-tasks-children').classList.add('open');
+  // guruh ichidagi sahifa ochilsa, o'sha guruh yoyiladi
+  var groups=['tasks','support'];
+  for(var g=0;g<groups.length;g++){
+    var kids=document.getElementById('nav-'+groups[g]+'-children');
+    if(kids&&kids.querySelector('.nav-child.active')){
+      document.getElementById('nav-'+groups[g]).classList.add('open');
+      kids.classList.add('open');
+    }
   }
   renderCrumbs(page);
   document.querySelector('.page').scrollTop=0;
   document.getElementById('call-drawer').classList.remove('open');
   requestAnimationFrame(fitBoards);
 }
-function toggleGroup(){
-  document.getElementById('nav-tasks').classList.toggle('open');
-  document.getElementById('nav-tasks-children').classList.toggle('open');
+function toggleGroup(key){
+  document.getElementById('nav-'+key).classList.toggle('open');
+  document.getElementById('nav-'+key+'-children').classList.toggle('open');
 }
 var navItems=document.querySelectorAll('.nav-item[data-page], .nav-child[data-page]');
 for(var k=0;k<navItems.length;k++){
