@@ -581,6 +581,30 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+/* Lead pozitsiyalari (lead_items) */
+.li-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.li-tbl th{text-align:left;padding:8px 10px;font-size:11px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:#8b9aa9;border-bottom:1px solid var(--mline)}
+.li-tbl th.r,.li-tbl td.r{text-align:right}
+.li-tbl td{padding:9px 10px;border-bottom:1px solid var(--mline2);color:#182634;vertical-align:middle}
+.li-tbl tr:last-child td{border-bottom:none}
+.li-prod{display:flex;align-items:center;gap:9px}
+.li-ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+.li-ic .material-icons-outlined{font-size:16px}
+.li-nm{font-weight:600;font-size:13px}
+.li-code{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9}
+.li-custom .li-ic{background:#f2e9d8;color:var(--m-warn)}
+.li-sum{display:flex;justify-content:flex-end;gap:26px;padding:12px 10px 2px;
+  border-top:1px solid var(--mline);margin-top:2px;font-size:13px}
+.li-sum .lb{color:#5c6e80}
+.li-sum .vl{font-family:var(--font-mono);font-weight:700;color:#182634;min-width:120px;text-align:right}
+.li-sum.total .vl{font-size:16px;color:var(--m-pos)}
+.ptype{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px}
+.ptype.ready{background:var(--m-pos-soft);color:var(--m-pos)}
+.ptype.custom{background:var(--m-acc-soft);color:var(--m-acc)}
+.ptype.service{background:#efe6f7;color:#6b3fa0}
+.ptype.license{background:var(--m-warn-soft);color:var(--m-warn)}
+
 /* ═══════ MONITORING GRAFIKLARI ═══════ */
 .mon-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;align-items:start}
 .mon-card{grid-column:span 6;background:var(--surface);border:1px solid var(--line-2);
@@ -1035,6 +1059,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="nav-children" id="nav-mkt-children">
       <div class="nav-child" data-page="mktmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
       <div class="nav-child" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
+      <div class="nav-child" data-page="products"><span class="material-icons-outlined">inventory</span> Mahsulot katalogi</div>
       <div class="nav-child" data-page="sources"><span class="material-icons-outlined">hub</span> Lead manbalari</div>
       <div class="nav-child" data-page="pipelines"><span class="material-icons-outlined">linear_scale</span> Voronkalar</div>
       <div class="nav-child" data-page="campaigns"><span class="material-icons-outlined">ads_click</span> Kampaniyalar</div>
@@ -1654,6 +1679,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Mobil bank ilovasi</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Ipak Yo'li Bank</div>
           <div class="lcard-sum">45.0 mln UZS</div>
+          <div style="display:flex;gap:5px;margin-top:6px"><span class="ptype custom" style="font-size:9px">MOBILE_DEV</span></div>
           <div class="bcard-foot"><span class="lcard-src">Instagram</span>
             <span class="ava" style="background:#4f7cd1">DS</span></div></div>
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Korporativ sayt + CRM</div>
@@ -1661,9 +1687,13 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <div class="lcard-sum">18.5 mln UZS</div>
           <div class="bcard-foot"><span class="lcard-src">Telegram bot</span>
             <span class="ava" style="background:#3aa981">BK</span></div></div>
-        <div class="bcard"><div class="bcard-title" style="font-weight:600">Ombor hisobi tizimi</div>
-          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Toshkent Parfum</div>
-          <div class="lcard-sum">4.7 mln UZS</div>
+        <div class="bcard" onclick="document.getElementById('lead-overlay').classList.add('open')">
+          <div class="bcard-title" style="font-weight:600">Ombor tizimi + integratsiya</div>
+          <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Toshkent Parfum MChJ</div>
+          <div class="lcard-sum">73.9 mln UZS</div>
+          <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">
+            <span class="ptype ready" style="font-size:9px">WAREHOUSE_SYS</span>
+            <span class="ptype service" style="font-size:9px">+3 pozitsiya</span></div>
           <div class="bcard-foot"><span class="lcard-src">Sayt</span>
             <span class="ava" style="background:#b56bb0">SN</span></div></div>
       </div>
@@ -1739,6 +1769,113 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <div class="bcard-foot"><span class="chip neutral" style="font-size:10px">Narx kelishmadi</span></div></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ════════════ MAHSULOT KATALOGI ════════════ -->
+<section class="page-view" id="pv-products">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">inventory</span>Katalog</div>
+      <div class="stat-value">12</div><div class="stat-sub">4 tayyor · 5 xizmat · 3 litsenziya</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">local_fire_department</span>Eng talabgir</div>
+      <div class="stat-value">Ombor</div><div class="stat-sub">18 lead · 3 oy</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>Eng yuqori konversiya</div>
+      <div class="stat-value">44%</div><div class="stat-sub">Support SLA paketi</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Katalogdan daromad</div>
+      <div class="stat-value">612</div><div class="stat-sub">mln UZS · yil boshidan</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Mahsulot va xizmatlar katalogi</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Mahsulot qidirish..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span></button>
+      <button class="btn-primary" onclick="openForm('Yangi mahsulot / xizmat')">
+        <span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>Kod</th><th>Nomi</th><th>Turi</th><th>Bazaviy narx</th>
+          <th>Muddat</th><th>Leadlar (3 oy)</th><th>Konversiya</th><th>Status</th><th class="sticky-r">Amallar</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">WAREHOUSE_SYS</td><td style="font-weight:600">Ombor boshqaruv tizimi</td>
+            <td><span class="ptype ready">READY_PRODUCT</span></td>
+            <td class="mono num">48,000,000</td><td class="mono">1—2 oy</td>
+            <td class="mono num">18</td>
+            <td><span class="mini-bar"><i style="width:33%"></i></span><span class="mono" style="font-size:12px">33%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">CRM_BOX</td><td style="font-weight:600">CRM (qutidagi yechim)</td>
+            <td><span class="ptype ready">READY_PRODUCT</span></td>
+            <td class="mono num">64,000,000</td><td class="mono">2—3 oy</td>
+            <td class="mono num">14</td>
+            <td><span class="mini-bar"><i style="width:29%"></i></span><span class="mono" style="font-size:12px">29%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">HRM_BOX</td><td style="font-weight:600">HRM + turniket integratsiyasi</td>
+            <td><span class="ptype ready">READY_PRODUCT</span></td>
+            <td class="mono num">35,000,000</td><td class="mono">1 oy</td>
+            <td class="mono num">9</td>
+            <td><span class="mini-bar"><i style="width:22%"></i></span><span class="mono" style="font-size:12px">22%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr class="actioned"><td class="mono">MOBILE_DEV</td><td style="font-weight:600">Mobil ilova ishlab chiqish</td>
+            <td><span class="ptype custom">CUSTOM_DEV</span></td>
+            <td class="mono num" style="color:var(--ink-4)">kelishuv bo'yicha</td><td class="mono">4—12 oy</td>
+            <td class="mono num">11</td>
+            <td><span class="mini-bar"><i style="width:27%"></i></span><span class="mono" style="font-size:12px">27%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">WEB_DEV</td><td style="font-weight:600">Veb-platforma ishlab chiqish</td>
+            <td><span class="ptype custom">CUSTOM_DEV</span></td>
+            <td class="mono num" style="color:var(--ink-4)">kelishuv bo'yicha</td><td class="mono">3—9 oy</td>
+            <td class="mono num">8</td>
+            <td><span class="mini-bar"><i style="width:25%"></i></span><span class="mono" style="font-size:12px">25%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">SUPPORT_SLA</td><td style="font-weight:600">Texnik qo'llab-quvvatlash (SLA)</td>
+            <td><span class="ptype service">SERVICE</span></td>
+            <td class="mono num">20,000,000</td><td class="mono">12 oy</td>
+            <td class="mono num">16</td>
+            <td><span class="mini-bar"><i style="width:44%"></i></span><span class="mono" style="font-size:12px;color:var(--m-pos);font-weight:600">44%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">INTEGRATION</td><td style="font-weight:600">Integratsiya xizmati</td>
+            <td><span class="ptype service">SERVICE</span></td>
+            <td class="mono num">12,000,000</td><td class="mono">1—3 oy</td>
+            <td class="mono num">7</td>
+            <td><span class="mini-bar"><i style="width:29%"></i></span><span class="mono" style="font-size:12px">29%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">CRM_LICENSE</td><td style="font-weight:600">CRM yillik litsenziya (1 user)</td>
+            <td><span class="ptype license">LICENSE</span></td>
+            <td class="mono num">1,200,000</td><td class="mono">12 oy</td>
+            <td class="mono num">5</td>
+            <td><span class="mini-bar"><i style="width:40%"></i></span><span class="mono" style="font-size:12px">40%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">POS_BOX</td><td style="font-weight:600">Savdo nuqtasi (POS) tizimi</td>
+            <td><span class="ptype ready">READY_PRODUCT</span></td>
+            <td class="mono num">28,000,000</td><td class="mono">1 oy</td>
+            <td class="mono num">2</td>
+            <td><span class="mini-bar"><i style="width:0%"></i></span><span class="mono" style="font-size:12px">0%</span></td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Ishlab chiqilmoqda</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span style="font-size:12px;color:#8b9aa9;margin-right:auto">
+      Katalog <span class="mono">global-reference</span> servisida — lead, shartnoma va hisob-fakturalar
+      shu yozuvlarga tayanadi</span><span class="mono">1-12 dan 12</span></div>
   </div>
 </section>
 
@@ -4829,6 +4966,157 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     </div>
   </div>
 </div>
+
+<!-- ════════════ LEAD DETAIL — POZITSIYALAR BILAN ════════════ -->
+<div class="overlay" id="lead-overlay" onclick="if(event.target===this)closeOv('lead-overlay')">
+  <div class="modal" style="width:min(980px,95vw)">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">filter_alt</span></span>
+        <div class="mh-t"><h1>Ombor tizimi + integratsiya</h1>
+          <div class="mh-id mono">LEAD-0284 · Toshkent Parfum MChJ</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="id-status" onclick="toast('Bosqich: Taklif yuborildi → Muzokara')">
+          <span class="st-dot" style="background:#a78bfa;box-shadow:0 0 0 3px rgba(167,139,250,.25)"></span>
+          Taklif yuborildi <span class="material-icons-outlined">expand_more</span></span>
+        <button class="close-x" onclick="closeOv('lead-overlay')"><span class="material-icons-outlined">close</span></button>
+      </div>
+    </div>
+    <div class="fm-body">
+      <div class="id-grid">
+        <div style="min-width:0">
+          <!-- POZITSIYALAR -->
+          <div class="desc-card">
+            <div class="dc-head"><h3>Savdo pozitsiyalari</h3>
+              <span class="dc-note">lead_items</span>
+              <button class="btn-flat" style="margin-left:auto;height:30px;padding:0 10px;font-size:12.5px"
+                onclick="openForm('Pozitsiya qo\'shish')">
+                <span class="material-icons-outlined" style="font-size:16px">add</span> Pozitsiya</button></div>
+            <div class="dc-body" style="padding:6px 14px 12px">
+              <table class="li-tbl">
+                <thead><tr><th>Mahsulot / xizmat</th><th>Turi</th><th class="r">Soni</th>
+                  <th class="r">Narx</th><th class="r">Chegirma</th><th class="r">Summa</th><th></th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><div class="li-prod">
+                      <span class="li-ic" style="background:var(--m-pos-soft);color:var(--m-pos)">
+                        <span class="material-icons-outlined">inventory_2</span></span>
+                      <div><div class="li-nm">Ombor boshqaruv tizimi</div>
+                        <div class="li-code">WAREHOUSE_SYS</div></div></div></td>
+                    <td><span class="ptype ready">READY</span></td>
+                    <td class="r mono">1</td><td class="r mono">48,000,000</td>
+                    <td class="r mono" style="color:var(--m-neg)">−10%</td>
+                    <td class="r mono" style="font-weight:600">43,200,000</td>
+                    <td class="r"><button class="act-btn danger" style="width:26px;height:26px"
+                      onclick="toast('Pozitsiya o\'chirildi')">
+                      <span class="material-icons-outlined" style="font-size:16px">close</span></button></td></tr>
+                  <tr>
+                    <td><div class="li-prod">
+                      <span class="li-ic" style="background:#efe6f7;color:#6b3fa0">
+                        <span class="material-icons-outlined">hub</span></span>
+                      <div><div class="li-nm">Integratsiya xizmati</div>
+                        <div class="li-code">INTEGRATION · 1C bilan ulash</div></div></div></td>
+                    <td><span class="ptype service">SERVICE</span></td>
+                    <td class="r mono">1</td><td class="r mono">12,000,000</td>
+                    <td class="r mono" style="color:var(--ink-4)">—</td>
+                    <td class="r mono" style="font-weight:600">12,000,000</td>
+                    <td class="r"><button class="act-btn danger" style="width:26px;height:26px"
+                      onclick="toast('Pozitsiya o\'chirildi')">
+                      <span class="material-icons-outlined" style="font-size:16px">close</span></button></td></tr>
+                  <tr class="li-custom">
+                    <td><div class="li-prod">
+                      <span class="li-ic"><span class="material-icons-outlined">edit_note</span></span>
+                      <div><div class="li-nm">Skaner uchun maxsus modul</div>
+                        <div class="li-code">katalogda yo'q · custom_title</div></div></div></td>
+                    <td><span class="ptype custom">CUSTOM</span></td>
+                    <td class="r mono">1</td><td class="r mono">6,500,000</td>
+                    <td class="r mono" style="color:var(--ink-4)">—</td>
+                    <td class="r mono" style="font-weight:600">6,500,000</td>
+                    <td class="r"><button class="act-btn danger" style="width:26px;height:26px"
+                      onclick="toast('Pozitsiya o\'chirildi')">
+                      <span class="material-icons-outlined" style="font-size:16px">close</span></button></td></tr>
+                  <tr>
+                    <td><div class="li-prod">
+                      <span class="li-ic" style="background:var(--m-warn-soft);color:var(--m-warn)">
+                        <span class="material-icons-outlined">key</span></span>
+                      <div><div class="li-nm">CRM yillik litsenziya</div>
+                        <div class="li-code">CRM_LICENSE · 12 foydalanuvchi</div></div></div></td>
+                    <td><span class="ptype license">LICENSE</span></td>
+                    <td class="r mono">12</td><td class="r mono">1,200,000</td>
+                    <td class="r mono" style="color:var(--m-neg)">−15%</td>
+                    <td class="r mono" style="font-weight:600">12,240,000</td>
+                    <td class="r"><button class="act-btn danger" style="width:26px;height:26px"
+                      onclick="toast('Pozitsiya o\'chirildi')">
+                      <span class="material-icons-outlined" style="font-size:16px">close</span></button></td></tr>
+                </tbody>
+              </table>
+              <div class="li-sum"><span class="lb">Oraliq summa</span><span class="vl">79,700,000</span></div>
+              <div class="li-sum"><span class="lb">Chegirma</span>
+                <span class="vl" style="color:var(--m-neg)">−6,960,000</span></div>
+              <div class="li-sum total"><span class="lb">Jami (lead.amount)</span>
+                <span class="vl">73,940,000 UZS</span></div>
+              <div style="font-size:11.5px;color:#8b9aa9;margin-top:10px;display:flex;align-items:center;gap:6px">
+                <span class="material-icons-outlined" style="font-size:15px">info</span>
+                Summa pozitsiyalardan avtomatik hisoblanadi — qo'lda kiritilmaydi.
+                Yutilganda shu pozitsiyalar shartnomaga ko'chadi.</div>
+            </div>
+          </div>
+
+          <div class="desc-card">
+            <div class="dc-head"><h3>Talab tafsiloti</h3></div>
+            <div class="dc-body" style="padding:12px 16px;font-size:13.5px;line-height:1.65;color:#182634">
+              3 ta filial ombori, kuniga ~400 harakat. 1C bilan ikki tomonlama sinxronizatsiya kerak.
+              Shtrix-kod skanerlari mavjud (Zebra), ular uchun maxsus modul talab qilinadi.
+            </div>
+          </div>
+        </div>
+
+        <div style="min-width:0">
+          <div class="desc-card">
+            <div class="dc-head"><h3>Lead ma'lumotlari</h3></div>
+            <div class="dc-body">
+              <div class="kv"><span class="kv-label">Mijoz</span><span class="kv-dots"></span>
+                <span class="kv-value">Toshkent Parfum MChJ</span></div>
+              <div class="kv"><span class="kv-label">Aloqa</span><span class="kv-dots"></span>
+                <span class="kv-value mono">+998 90 123 45 67</span></div>
+              <div class="kv"><span class="kv-label">Manba</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="chip soft-info" style="font-size:10.5px">Sayt formasi</span></span></div>
+              <div class="kv"><span class="kv-label">Kampaniya</span><span class="kv-dots"></span>
+                <span class="kv-value mono">CMP-011</span></div>
+              <div class="kv"><span class="kv-label">Voronka</span><span class="kv-dots"></span>
+                <span class="kv-value">Asosiy voronka</span></div>
+              <div class="kv"><span class="kv-label">Summa</span><span class="kv-dots"></span>
+                <span class="kv-value mono" style="font-weight:700">73.94 mln</span></div>
+              <div class="kv"><span class="kv-label">Mas'ul</span><span class="kv-dots"></span>
+                <span class="kv-value"><span class="mini-avatar" style="background:#4f7cd1">DS</span>D. Salimov</span></div>
+              <div class="kv"><span class="kv-label">Bosqichda</span><span class="kv-dots"></span>
+                <span class="kv-value mono">4 kun</span></div>
+            </div>
+          </div>
+          <div class="desc-card">
+            <div class="dc-head"><h3>Keyingi qadam</h3></div>
+            <div class="dc-body" style="padding:12px 16px">
+              <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:#182634">
+                <span class="material-icons-outlined" style="font-size:18px;color:var(--m-acc)">event</span>
+                Demo taqdimot — 07.08.2026, 15:00</div>
+              <div style="font-size:11.5px;color:#8b9aa9;margin-top:5px">
+                Mijoz texnik direktori bilan onlayn uchrashuv</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fm-foot">
+      <button class="btn-flat left" onclick="closeOv('lead-overlay')">Yopish</button>
+      <button class="btn-flat" style="color:var(--m-neg)" onclick="closeOv('lead-overlay');toast('Yo\'qotish sababi so\'raladi')">
+        <span class="material-icons-outlined" style="font-size:17px">do_not_disturb</span> Yo'qotildi</button>
+      <button class="btn-edit" style="background:var(--m-pos)"
+        onclick="closeOv('lead-overlay');toast('Shartnoma yaratildi — 4 pozitsiya ko\'chirildi')">
+        <span class="material-icons-outlined" style="font-size:18px">handshake</span> Yutildi → shartnoma</button>
+    </div>
+  </div>
+</div>
 <!-- ════════════ GENERIK FORM MODALI ════════════ -->
 <div class="overlay" id="form-overlay" onclick="if(event.target===this)closeOv('form-overlay')">
   <div class="modal" style="width:min(680px,94vw)">
@@ -5014,7 +5302,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 /* ═══════ SPA router ═══════ */
 var TITLES={home:'Mening profilim',
   mktmon:'Marketing monitoringi',contrmon:'Shartnoma monitoringi',taskmon:'Vazifa monitoringi',
-  supmon:'Support monitoringi',invmon:'Inventar monitoringi',kpimon:'KPI monitoringi',leads:'Leadlar',sources:'Lead manbalari',pipelines:'Voronkalar',campaigns:'Kampaniyalar',lostreasons:"Yo'qotish sabablari",customers:'Mijozlar',contracts:'Shartnomalar',
+  supmon:'Support monitoringi',invmon:'Inventar monitoringi',kpimon:'KPI monitoringi',leads:'Leadlar',products:'Mahsulot katalogi',sources:'Lead manbalari',pipelines:'Voronkalar',campaigns:'Kampaniyalar',lostreasons:"Yo'qotish sabablari",customers:'Mijozlar',contracts:'Shartnomalar',
   projects:'Loyihalar',project:'Mobil ilova',board:'Mobil ilova · Board',handover:'Handover',
   tickets:'Ticketlar',botlist:'Mijoz chatlari',inbox:'Chat',calls:'Call center',inventory:'Inventar',
   kpi:'Natijalar',kpiprofiles:'Profillar',
@@ -5032,6 +5320,7 @@ var TRAIL={
   supmon:[['Support',null],['Monitoring',null]],
   invmon:[['Inventar',null],['Monitoring',null]],
   kpimon:[['KPI',null],['Monitoring',null]],
+  products:[['Marketing',null],['Mahsulot katalogi',null]],
   leads:[['Marketing',null],['Leadlar',null]],
   sources:[['Marketing',null],['Lead manbalari',null]],
   pipelines:[['Marketing',null],['Voronkalar',null]],
