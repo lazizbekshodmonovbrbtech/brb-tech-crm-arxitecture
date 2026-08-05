@@ -548,9 +548,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .msg.announce{align-self:stretch;max-width:none;background:var(--m-warn-soft);
   border:1px solid #f0d9a8;border-radius:12px}
 .msg.announce .m-who{color:var(--m-warn)}
-.ann-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
-  letter-spacing:.05em;color:var(--m-warn);margin-bottom:4px}
-.ann-tag .material-icons-outlined{font-size:14px}
+.ann-tag{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;
+  letter-spacing:.05em;color:var(--m-warn);background:#f5e7c8;border:1px solid #eacd94;
+  padding:2px 9px;border-radius:999px}
+.ann-tag .material-icons-outlined{font-size:13px}
+.msg.announce .m-meta{display:flex;align-items:center;gap:9px;margin-top:8px}
 /* Yozish maydoni holatlari */
 .compose-lock{display:flex;align-items:center;gap:9px;padding:11px 16px;background:var(--msurface2);
   border-top:1px solid var(--mline);font-size:12.5px;color:var(--ink-3)}
@@ -6836,10 +6838,13 @@ function renderMsgs(){
     var m=c.msgs[i];
     if(m.sys){out+='<div class="msg system">'+m.text+' \u00b7 '+m.t+'</div>';continue}
     if(m.ann){
-      out+='<div class="msg out announce"><div class="ann-tag">'
-        +'<span class="material-icons-outlined">campaign</span>E\'LON \u2014 barcha a\'zolarga</div>'
+      out+='<div class="msg out announce">'
         +'<span class="m-body">'+m.text+'</span>'
-        +'<div class="m-meta">'+m.t+' \u00b7 '+m.who+'</div></div>';
+        +'<div class="m-meta">'
+        +'<span class="ann-tag"><span class="material-icons-outlined">campaign</span>'
+        +(m.bc?'OMMAVIY E\'LON':'E\'LON')
+        +(m.pinned?' \u00b7 mahkamlangan':'')+'</span>'
+        +'<span style="margin-left:auto">'+m.t+' \u00b7 '+m.who+'</span></div></div>';
       continue;
     }
     var locked = m.own==='other';
