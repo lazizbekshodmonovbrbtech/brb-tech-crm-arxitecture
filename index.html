@@ -186,11 +186,16 @@ body{
 .tbl-h b{font-size:12.5px;font-weight:600;letter-spacing:.02em}
 .tbl-h .n{margin-left:auto;font-size:9.5px;color:var(--faint)}
 .tbl-h .lnk{
-  background:none;border:1px solid transparent;color:var(--faint);
-  cursor:pointer;font-size:13px;line-height:1.2;padding:0 4px;border-radius:4px;flex:none;
-  transition:color .15s,border-color .15s;
+  width:24px;height:24px;flex:none;margin-left:2px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:7px;
+  color:var(--fk);cursor:pointer;padding:0;
+  transition:background .15s,border-color .15s,transform .12s;
 }
-.tbl-h .lnk:hover{color:var(--fk);border-color:var(--line)}
+.tbl-h .lnk svg{width:14px;height:14px;display:block}
+.tbl-h .lnk:hover{background:rgba(90,150,220,.16);border-color:var(--fk);transform:scale(1.08)}
+.tbl-h .lnk:active{transform:scale(.94)}
+.tbl-h .lnk.on{background:var(--fk);border-color:var(--fk);color:#0d1520}
 .row{
   display:flex;align-items:center;gap:6px;
   padding:3.5px 12px;font-size:11px;line-height:1.35;
@@ -1897,12 +1902,24 @@ function render(key){
     const sk=scopeKind(key,t);
     const audFoot=t.noaudit?'':`<div class="row aud">⊞ +7 audit${sk?(sk==='full'?' · +3 scope':' · +1 tenant'):''}</div>`;
     const cntTxt=t.noaudit?t.cols.length:`${t.cols.length}+7${sk?(sk==='full'?'+3':'+1'):''}`;
-    el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${cntTxt}</span><button class="lnk" title="Bog'langan tablelarga fokus">⌖</button></div>${rows}${audFoot}`;
+    el.innerHTML=`<div class="tbl-h"><b>${t.name}</b><span class="n">${cntTxt}</span><button class="lnk" title="Bog'liq tablelarni ajratib ko'rsatish">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/>
+          <path d="M7.4 6h9.2M6.2 8.1l4.6 8M17.8 8.1l-4.6 8"/>
+        </svg></button></div>${rows}${audFoot}`;
     el.style.left='0px';el.style.top='0px';
     canvas.appendChild(el);
     els[t.name]=el;heights[t.name]=el.offsetHeight;
     el.onclick=e=>{e.stopPropagation();focusTable(key,t.name)};
-    el.querySelector('.lnk').onclick=e=>{e.stopPropagation();focusConnections(key,t.name)};
+    el.querySelector('.lnk').onclick=e=>{
+      e.stopPropagation();
+      const b=e.currentTarget, wasOn=b.classList.contains('on');
+      canvas.querySelectorAll('.tbl-h .lnk.on').forEach(x=>x.classList.remove('on'));
+      if(wasOn){clearFocusStyles();canvas.classList.remove('has-focus');return;}
+      b.classList.add('on');
+      focusConnections(key,t.name);
+    };
   });
 
   // 2) Qo'shnilar grafi (ichki FK'lar bo'yicha)
@@ -2057,6 +2074,7 @@ function focusWire(srcName,dstName,path){
 
 function clearFocusStyles(){
   canvas.classList.remove('has-focus');
+  canvas.querySelectorAll('.tbl-h .lnk.on').forEach(b=>b.classList.remove('on'));
   canvas.querySelectorAll('.tbl').forEach(el=>el.classList.remove('focused','related','wired'));
   wires.querySelectorAll('.wire').forEach(w=>w.classList.remove('hot'));
 }
