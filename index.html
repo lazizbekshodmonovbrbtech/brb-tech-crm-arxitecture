@@ -1267,7 +1267,6 @@ const DB = {
  {name:"SEED_KODLAR",noaudit:true,desc:"Logika tayanadigan seed kodlar.",cols:[
   ["ticket_statuses.short_code","seed","UK","use:tickets.status_id","OPEN / IN_PROGRESS / PENDING_CUSTOMER / RESOLVED / CLOSED \u2014 is_system=true, o'chirilmaydi"],
   ["ticket_priorities.short_code","seed","UK","use:tickets.priority_id, sla_policies.priority_id","LOW / MEDIUM / HIGH / CRITICAL \u2014 SLA muddati shunga bog'lanadi"],
-  ["ticket_types.short_code","seed","UK","use:tickets.type_id","INCIDENT / BUG / QUESTION / FEATURE_REQUEST / ACCESS_REQUEST \u2014 BUG'da creates_issue=true"],
   ["sla_policies.short_code","seed","UK","use:tickets.sla_policy_id","STANDARD / PREMIUM / VIP_CRITICAL \u2014 priority + customer_segment kesimida tanlanadi"]]},
  {name:"ticket_priorities",desc:"Service ichki lug'ati — migration'da seed qilinadi (low, medium, high, critical). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
   ["id","long","PK","","Yozuv identifikatori"],
@@ -1303,7 +1302,6 @@ const DB = {
   ["project_id","long","EXT,NN","ext:project-service.projects","Qaysi loyiha bo'yicha"],
   ["customer_id","long","EXT","ext:customer-service.customers","Qaysi mijozdan"],
   ["contact_id","long","EXT","ext:customer-service.contacts","Kim murojaat qildi (role_type=TECHNICAL odatda)"],
-  ["type_id","long","FK,NN","ticket_types.id","Murojaat turi (bug / savol / talab)"],
   ["channel","enum","NN","","TicketChannel: TELEGRAM / CALL / WEB / EMAIL / MANUAL \u2014 dizayndagi 'kanal bo'yicha' hisoboti shundan"],
   ["subject","varchar(255)","NN","","Murojaat mavzusi"],
   ["description","text","","","Murojaat mazmuni"],
@@ -1320,16 +1318,9 @@ const DB = {
   ["first_response_breached","boolean","NN","","Birinchi javob muddati buzildimi"],
   ["resolve_breached","boolean","NN","","Hal qilish muddati buzildimi"],
   ["reopen_count","int","NN","","Necha marta qayta ochilgan \u2014 sifat ko'rsatkichi"],
-  ["linked_issue_id","long","EXT","ext:project-service.issues","Dasturchi vazifasiga aylantirilgan bo'lsa \u2014 ticket yopilishi shu vazifaga bog'liq bo'lishi mumkin"],
+  ["linked_issue_id","long","EXT","ext:project-service.issues","Bog'langan dasturchi vazifasi. QO'LDA yaratiladi: operator mijoz bilan gaplashib muammoni aniqlaydi, dasturchilar bilan kelishadi va shundan keyin issue ochadi. AVTOMATIK yaratish YO'Q \u2014 har murojaat vazifaga aylanmasligi kerak"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
- {name:"ticket_types",desc:"Murojaat turlari \u2014 marshrutlash va hisobot uchun. Turga qarab standart priority va SLA taklif qilinadi.",cols:[
-  ["id","long","PK","","Identifikator"],
-  ["short_code","varchar(30)","UK,NN","","INCIDENT / BUG / QUESTION / FEATURE_REQUEST / ACCESS_REQUEST \u2014 seed"],
-  ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
-  ["default_priority_id","long","FK","ticket_priorities.id","Standart muhimlik (INCIDENT \u2192 CRITICAL)"],
-  ["creates_issue","boolean","NN","","Avtomatik dasturchi vazifasi ochiladimi (BUG \u2192 true)"],
-  ["position","int","NN","","Tartib"],
-  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
+
  {name:"sla_pause_periods",desc:"SLA PAUZA DAVRLARI \u2014 mijozdan javob kutilgan vaqt. PENDING_CUSTOMER kategoriyasiga o'tganda ochiladi, chiqqanda yopiladi. Bu jadvalsiz operator mijozning sustligi uchun aybdor bo'lib qoladi.",cols:[
   ["id","long","PK","","Identifikator"],
   ["ticket_id","long","FK,NN","tickets.id","Ticket"],
