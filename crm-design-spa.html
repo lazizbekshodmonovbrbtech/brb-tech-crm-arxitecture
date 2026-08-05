@@ -604,6 +604,12 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .ptype.custom{background:var(--m-acc-soft);color:var(--m-acc)}
 .ptype.service{background:#efe6f7;color:#6b3fa0}
 .ptype.license{background:var(--m-warn-soft);color:var(--m-warn)}
+.bmod{font-family:var(--font-mono);font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:5px;
+  white-space:nowrap}
+.bmod.once{background:#eef1f5;color:#5c6e80}
+.bmod.sub{background:#e8f0fe;color:#2563eb}
+.bmod.user{background:#efe6f7;color:#6b3fa0}
+.bmod.usage{background:var(--m-warn-soft);color:var(--m-warn)}
 
 /* ═══════ MONITORING GRAFIKLARI ═══════ */
 .mon-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;align-items:start}
@@ -1073,6 +1079,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="nav-child" data-page="contrmon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="contracts"><span class="material-icons-outlined">article</span> Shartnomalar</div>
       <div class="nav-child" data-page="contrtypes"><span class="material-icons-outlined">category</span> Shartnoma turlari</div>
+      <div class="nav-child" data-page="subs"><span class="material-icons-outlined">autorenew</span> Obunalar</div>
       <div class="nav-child" data-page="paysched"><span class="material-icons-outlined">event_note</span> To'lov grafiklari</div>
       <div class="nav-child" data-page="payments"><span class="material-icons-outlined">payments</span> To'lovlar</div>
       <div class="nav-child" data-page="paymethods"><span class="material-icons-outlined">credit_card</span> To'lov usullari</div>
@@ -1781,8 +1788,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="stat-value">Ombor</div><div class="stat-sub">18 lead · 3 oy</div></div>
     <div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>Eng yuqori konversiya</div>
       <div class="stat-value">44%</div><div class="stat-sub">Support SLA paketi</div></div>
-    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Katalogdan daromad</div>
-      <div class="stat-value">612</div><div class="stat-sub">mln UZS · yil boshidan</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">autorenew</span>Obuna mahsulotlari</div>
+      <div class="stat-value">4</div><div class="stat-sub">MRR: 38.4 mln UZS</div></div>
   </div>
   <div class="table-card">
     <div class="table-toolbar">
@@ -1800,6 +1807,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <tbody>
           <tr><td class="mono">WAREHOUSE_SYS</td><td style="font-weight:600">Ombor boshqaruv tizimi</td>
             <td><span class="ptype ready">READY_PRODUCT</span></td>
+            <td><span class="bmod once">BIR MARTALIK</span></td>
             <td class="mono num">48,000,000</td><td class="mono">1—2 oy</td>
             <td class="mono num">18</td>
             <td><span class="mini-bar"><i style="width:33%"></i></span><span class="mono" style="font-size:12px">33%</span></td>
@@ -1808,7 +1816,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr><td class="mono">CRM_BOX</td><td style="font-weight:600">CRM (qutidagi yechim)</td>
             <td><span class="ptype ready">READY_PRODUCT</span></td>
-            <td class="mono num">64,000,000</td><td class="mono">2—3 oy</td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">4,800,000<span style="font-size:10.5px;color:#8b9aa9;font-family:var(--font-sans)"> /oy</span></td><td class="mono">12 oy min.</td>
             <td class="mono num">14</td>
             <td><span class="mini-bar"><i style="width:29%"></i></span><span class="mono" style="font-size:12px">29%</span></td>
             <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
@@ -1816,7 +1825,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr><td class="mono">HRM_BOX</td><td style="font-weight:600">HRM + turniket integratsiyasi</td>
             <td><span class="ptype ready">READY_PRODUCT</span></td>
-            <td class="mono num">35,000,000</td><td class="mono">1 oy</td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">2,900,000<span style="font-size:10.5px;color:#8b9aa9;font-family:var(--font-sans)"> /oy</span></td><td class="mono">12 oy min.</td>
             <td class="mono num">9</td>
             <td><span class="mini-bar"><i style="width:22%"></i></span><span class="mono" style="font-size:12px">22%</span></td>
             <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
@@ -1824,6 +1834,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr class="actioned"><td class="mono">MOBILE_DEV</td><td style="font-weight:600">Mobil ilova ishlab chiqish</td>
             <td><span class="ptype custom">CUSTOM_DEV</span></td>
+            <td><span class="bmod once">BIR MARTALIK</span></td>
             <td class="mono num" style="color:var(--ink-4)">kelishuv bo'yicha</td><td class="mono">4—12 oy</td>
             <td class="mono num">11</td>
             <td><span class="mini-bar"><i style="width:27%"></i></span><span class="mono" style="font-size:12px">27%</span></td>
@@ -1832,6 +1843,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr><td class="mono">WEB_DEV</td><td style="font-weight:600">Veb-platforma ishlab chiqish</td>
             <td><span class="ptype custom">CUSTOM_DEV</span></td>
+            <td><span class="bmod once">BIR MARTALIK</span></td>
             <td class="mono num" style="color:var(--ink-4)">kelishuv bo'yicha</td><td class="mono">3—9 oy</td>
             <td class="mono num">8</td>
             <td><span class="mini-bar"><i style="width:25%"></i></span><span class="mono" style="font-size:12px">25%</span></td>
@@ -1840,7 +1852,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr><td class="mono">SUPPORT_SLA</td><td style="font-weight:600">Texnik qo'llab-quvvatlash (SLA)</td>
             <td><span class="ptype service">SERVICE</span></td>
-            <td class="mono num">20,000,000</td><td class="mono">12 oy</td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">1,700,000<span style="font-size:10.5px;color:#8b9aa9;font-family:var(--font-sans)"> /oy</span></td><td class="mono">12 oy</td>
             <td class="mono num">16</td>
             <td><span class="mini-bar"><i style="width:44%"></i></span><span class="mono" style="font-size:12px;color:var(--m-pos);font-weight:600">44%</span></td>
             <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
@@ -1848,6 +1861,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr><td class="mono">INTEGRATION</td><td style="font-weight:600">Integratsiya xizmati</td>
             <td><span class="ptype service">SERVICE</span></td>
+            <td><span class="bmod once">BIR MARTALIK</span></td>
             <td class="mono num">12,000,000</td><td class="mono">1—3 oy</td>
             <td class="mono num">7</td>
             <td><span class="mini-bar"><i style="width:29%"></i></span><span class="mono" style="font-size:12px">29%</span></td>
@@ -1856,7 +1870,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr><td class="mono">CRM_LICENSE</td><td style="font-weight:600">CRM yillik litsenziya (1 user)</td>
             <td><span class="ptype license">LICENSE</span></td>
-            <td class="mono num">1,200,000</td><td class="mono">12 oy</td>
+            <td><span class="bmod user">USER/OY</span></td>
+            <td class="mono num">100,000<span style="font-size:10.5px;color:#8b9aa9;font-family:var(--font-sans)"> /user·oy</span></td><td class="mono">12 oy</td>
             <td class="mono num">5</td>
             <td><span class="mini-bar"><i style="width:40%"></i></span><span class="mono" style="font-size:12px">40%</span></td>
             <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
@@ -1864,6 +1879,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
               <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
           <tr><td class="mono">POS_BOX</td><td style="font-weight:600">Savdo nuqtasi (POS) tizimi</td>
             <td><span class="ptype ready">READY_PRODUCT</span></td>
+            <td><span class="bmod usage">TRANZAKSIYA</span></td>
             <td class="mono num">28,000,000</td><td class="mono">1 oy</td>
             <td class="mono num">2</td>
             <td><span class="mini-bar"><i style="width:0%"></i></span><span class="mono" style="font-size:12px">0%</span></td>
@@ -3790,6 +3806,112 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   </div>
 </section>
 
+<!-- ════════════ OBUNALAR ════════════ -->
+<section class="page-view" id="pv-subs">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">autorenew</span>Faol obunalar</div>
+      <div class="stat-value">27</div><div class="stat-sub">3 sinov · 2 to'xtatilgan</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>MRR</div>
+      <div class="stat-value">38.4</div><div class="stat-sub">mln UZS/oy · ARR 460.8 mln</div>
+      <div class="stat-bar"><i style="width:82%"></i></div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">event_repeat</span>30 kunda yangilanadi</div>
+      <div class="stat-value">6</div><div class="stat-sub">14.2 mln UZS</div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">trending_down</span>Churn (3 oy)</div>
+      <div class="stat-value">4.1%</div><div class="stat-sub">2 obuna bekor qilindi</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Obunalar</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Mijoz yoki mahsulot..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span></button>
+      <button class="btn-flat"><span class="material-icons-outlined">receipt_long</span> Hisob-faktura yaratish</button>
+      <button class="btn-primary" onclick="openForm('Yangi obuna')">
+        <span class="material-icons-outlined">add_circle</span> OBUNA</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>№</th><th>Mijoz</th><th>Mahsulot</th><th>Model</th><th>Miqdor</th>
+          <th>Oylik summa</th><th>Boshlangan</th><th>Keyingi hisob</th><th>Avto-yangilash</th>
+          <th>Holat</th><th class="sticky-r">Amallar</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">SUB-0071</td><td>Ipak Yo'li Bank</td>
+            <td><span class="li-nm" style="font-size:13px">Support SLA</span>
+              <div class="li-code">SUPPORT_SLA</div></td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">1</td>
+            <td class="mono num" style="font-weight:600">1,700,000</td>
+            <td class="mono">01.04.2026</td><td class="mono">01.09.2026</td>
+            <td><span class="chip soft-pos">Yoqilgan</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">SUB-0070</td><td>Toshkent Parfum MChJ</td>
+            <td><span class="li-nm" style="font-size:13px">CRM yillik litsenziya</span>
+              <div class="li-code">CRM_LICENSE · 12 user</div></td>
+            <td><span class="bmod user">USER/OY</span></td>
+            <td class="mono num">12</td>
+            <td class="mono num" style="font-weight:600">1,020,000</td>
+            <td class="mono">15.05.2026</td><td class="mono">15.08.2026</td>
+            <td><span class="chip soft-pos">Yoqilgan</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr class="actioned"><td class="mono">SUB-0069</td><td>Agro Invest MChJ</td>
+            <td><span class="li-nm" style="font-size:13px">CRM (qutidagi yechim)</span>
+              <div class="li-code">CRM_BOX</div></td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">1</td>
+            <td class="mono num" style="font-weight:600">4,800,000</td>
+            <td class="mono">10.02.2026</td>
+            <td class="mono" style="color:var(--m-warn);font-weight:600">10.08.2026 · 5 kun</td>
+            <td><span class="chip soft-pos">Yoqilgan</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">SUB-0068</td><td>Binokor Holding</td>
+            <td><span class="li-nm" style="font-size:13px">HRM + turniket</span>
+              <div class="li-code">HRM_BOX</div></td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">1</td>
+            <td class="mono num" style="font-weight:600">2,900,000</td>
+            <td class="mono">22.07.2026</td><td class="mono">22.08.2026</td>
+            <td><span class="chip soft-pos">Yoqilgan</span></td>
+            <td><span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>Sinov · 14 kun</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">SUB-0064</td><td>Samarqand Textile</td>
+            <td><span class="li-nm" style="font-size:13px">Support SLA</span>
+              <div class="li-code">SUPPORT_SLA</div></td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">1</td>
+            <td class="mono num" style="font-weight:600">1,700,000</td>
+            <td class="mono">01.01.2026</td>
+            <td class="mono" style="color:var(--m-neg);font-weight:600">01.08.2026 · 4 kun kechikdi</td>
+            <td><span class="chip soft-pos">Yoqilgan</span></td>
+            <td><span class="chip soft-neg"><span class="st-dot neg"></span>To'lov kechikdi</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">notifications</span></button></td></tr>
+          <tr><td class="mono">SUB-0059</td><td>Chust Pichoq Art</td>
+            <td><span class="li-nm" style="font-size:13px">CRM (qutidagi yechim)</span>
+              <div class="li-code">CRM_BOX</div></td>
+            <td><span class="bmod sub">OYLIK OBUNA</span></td>
+            <td class="mono num">1</td>
+            <td class="mono num" style="color:var(--ink-4)">—</td>
+            <td class="mono">05.11.2025</td><td class="mono" style="color:var(--ink-4)">—</td>
+            <td><span class="chip neutral">O'chirilgan</span></td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Bekor qilingan</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span style="font-size:12px;color:#8b9aa9;margin-right:auto">
+      Holatlar: TRIAL / ACTIVE / PAST_DUE / PAUSED / CANCELLED —
+      keyingi hisob sanasida avtomatik hisob-faktura yaratiladi</span>
+      <span class="mono">1-10 dan 32</span></div>
+  </div>
+</section>
+
 <!-- ════════════ TO'LOV GRAFIKLARI ════════════ -->
 <section class="page-view" id="pv-paysched">
   <div class="stat-strip">
@@ -5308,7 +5430,7 @@ var TITLES={home:'Mening profilim',
   kpi:'Natijalar',kpiprofiles:'Profillar',
   invcats:'Kategoriyalar',invassign:'Biriktirish tarixi',invwh:'Omborlar',
   invmove:'Ombor harakati',kpicrit:'Kriteriyalar',kpiperiods:'Davrlar',
-  contrtypes:'Shartnoma turlari',paysched:"To'lov grafiklari",payments:"To'lovlar",
+  contrtypes:'Shartnoma turlari',subs:'Obunalar',paysched:"To'lov grafiklari",payments:"To'lovlar",
   paymethods:"To'lov usullari"};
 var NAVKEY={project:'projects',board:'projects',inbox:'botlist'};
 /* Breadcrumb yo'llari: [nom, o'tish sahifasi yoki null] */
@@ -5329,6 +5451,7 @@ var TRAIL={
   customers:[['Mijozlar',null]],
   contracts:[['Shartnomalar',null],['Shartnomalar',null]],
   contrtypes:[['Shartnomalar',null],['Shartnoma turlari',null]],
+  subs:[['Shartnomalar',null],['Obunalar',null]],
   paysched:[['Shartnomalar',null],["To'lov grafiklari",null]],
   payments:[['Shartnomalar',null],["To'lovlar",null]],
   paymethods:[['Shartnomalar',null],["To'lov usullari",null]],
