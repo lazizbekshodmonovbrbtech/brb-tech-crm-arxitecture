@@ -3919,8 +3919,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <button class="btn-ann" id="hd-ann" style="margin-left:auto;height:34px"
           onclick="openAnnounce()">
           <span class="material-icons-outlined">campaign</span> E'lon yuborish</button>
-        <button class="btn-flat" onclick="toast('Ticket ochildi \u2014 T-2215')">
-          <span class="material-icons-outlined">confirmation_number</span> Ticket</button>
         <span class="thr" id="hd-owner" style="display:none"></span>
         <button class="tb-icon-btn" title="Suhbatni bo'shatish" id="hd-release" style="display:none"
           onclick="releaseChat()"><span class="material-icons-outlined">lock_open</span></button>
@@ -6813,10 +6811,10 @@ var CHATS=[
     text:"Hisobot eksportida ustunlar joyi almashib ketyapti, buni ham ko'rib bering",
     tk:'T-2215',own:'other',owner:'B. Karimov'},
    {who:'Dilshod Toshpulatov',ini:'DT',c:'#8a9a3a',dir:'in',t:'09:28',uid:503,
-    text:"Yangi filial uchun qo'shimcha login ochib berasizmi?",tk:null,own:'free'},
+    text:"Yangi filial uchun qo'shimcha login ochib berasizmi?",tk:'T-2216',own:'free'},
    {who:'S. Nazarova',dir:'out',t:'09:22',text:'Skrinshotni ko\'rdik, tekshiryapmiz.',edited:true,tk:'T-2214',own:'me'},
    {who:'Mansur Bobojonov',ini:'MB',c:'#3aa981',dir:'in',t:'09:31',uid:504,
-    text:"Kecha yuborgan hisobotimda xatolik bor edi, e'tibor bermang",deleted:true,tk:null,own:'free'},
+    text:"Kecha yuborgan hisobotimda xatolik bor edi, e'tibor bermang",deleted:true,tk:'T-2217',own:'free'},
    {ann:true,who:'S. Nazarova',dir:'out',t:'09:35',
     text:"Diqqat: 06.08 22:00\u201400:00 oralig'ida texnik ishlar bo'ladi, to'lov xizmati vaqtincha ishlamaydi."}
   ]},
@@ -6906,9 +6904,10 @@ function renderMsgs(){
         +'<button title="Reaksiya" onclick="addReact('+i+')"><span class="material-icons-outlined">add_reaction</span></button>'
       +'</div>';
     if(m.dir==='in'&&m.who)out+='<div class="m-who">'+m.who
-      +(m.tk?'<span class="thr '+(m.own==='me'?'mine':'other')+'">'+m.tk
-        +' \u00b7 '+(m.own==='me'?'siz':(m.owner||'band'))+'</span>'
-        :'<span class="thr free" onclick="claimMsg('+i+')">ticketsiz \u00b7 olish</span>')
+      +(m.own==='free'
+        ? '<span class="thr free" onclick="claimMsg('+i+')">'+(m.tk||'')+' \u00b7 olish</span>'
+        : '<span class="thr '+(m.own==='me'?'mine':'other')+'">'+(m.tk||'')
+          +' \u00b7 '+(m.own==='me'?'siz':(m.owner||'band'))+'</span>')
       +'</div>';
     if(m.reply)out+='<div class="msg-reply" title="Asl xabarga o\'tish"'
       +(m.reply.idx!==undefined?' onclick="jumpToMsg('+m.reply.idx+')"':'')+'>'
@@ -7016,15 +7015,15 @@ function claimThread(){
 function claimMsg(i){
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
   var m=c.msgs[i];
-  var num='T-22'+(20+Math.floor(Math.random()*9));
+  var num=m.tk||('T-22'+(20+Math.floor(Math.random()*9)));
   var uid=m.uid;
   for(var j=0;j<c.msgs.length;j++)
-    if(c.msgs[j].uid===uid&&!c.msgs[j].tk){c.msgs[j].tk=num;c.msgs[j].own='me'}
+    if(c.msgs[j].uid===uid&&c.msgs[j].own==='free'){c.msgs[j].tk=num;c.msgs[j].own='me'}
   replyTo=i;
   document.getElementById('reply-to').textContent='Javob: '+(m.who||'Siz')+' \u2014 '+(m.text||'').slice(0,40)+'...';
   document.getElementById('reply-bar').classList.add('on');
   renderMsgs();
-  toast(num+' ochildi va sizga biriktirildi \u2014 zanjir qulflandi');
+  toast(num+' sizga biriktirildi \u2014 zanjir qulflandi');
 }
 var bcMode=false, bcSel={};
 function openBroadcast(){
@@ -7388,9 +7387,19 @@ function sendMsg(){
 function openIssueTicket(no){show('tickets');toast(no+' ticketi ochildi')}
 function closeTicket(no){
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  for(var i=0;i<c.msgs.length;i++)if(c.msgs[i].tk===no)c.msgs[i].closed=true;
   c.msgs.push({sys:true,text:no+" yopildi \u2014 mijozdan baho so'raldi",t:nowHM()});
   renderMsgs();
   toast(no+" yopildi \u2014 status CLOSED, feedback so'rovi yuborildi");
+  // Demo: yopilgandan keyin mijoz yana yozsa YANGI ticket ochiladi
+  setTimeout(function(){
+    var next='T-22'+(30+Math.floor(Math.random()*9));
+    c.msgs.push({who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:nowHM(),uid:501,
+      text:'Rahmat! Yana bitta savol bor edi \u2014 hisobotni PDF qilib olsa bo\'ladimi?',
+      tk:next,own:'free'});
+    renderMsgs();renderChatList();
+    toast('Yangi xabar \u2014 '+next+' avtomatik ochildi (oldingi ticket yopilgan)');
+  },1800);
 }
 function syncChat(){
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
