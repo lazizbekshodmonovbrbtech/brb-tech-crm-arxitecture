@@ -3813,6 +3813,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span class="material-icons-outlined" id="cl-icon">lock</span>
         <span id="cl-text">Javob berish uchun xabarni tanlang</span>
         <button class="take" id="cl-take" style="display:none" onclick="claimThread()">Olish</button>
+        <button class="btn-ann" id="cl-ann" style="height:32px;margin-left:auto" onclick="openAnnounce()">
+          <span class="material-icons-outlined">campaign</span> E'lon yuborish</button>
       </div>
       <div class="ib-compose" id="ib-compose">
         <button class="tb-icon-btn" title="Fayl biriktirish" onclick="attachFile()">
@@ -6617,7 +6619,9 @@ function updateCompose(){
   var comp=document.getElementById('ib-compose');
   var take=document.getElementById('cl-take');
   var ann=document.getElementById('btn-ann');
+  var annLock=document.getElementById('cl-ann');
   ann.style.display=isGroup?'':'none';
+  annLock.style.display=isGroup?'':'none';
   if(!isGroup){
     // SHAXSIY CHAT \u2014 qulf butun chat darajasida
     if(c.owner==='other'){
@@ -6631,7 +6635,9 @@ function updateCompose(){
       lock.style.display='flex';lock.className='compose-lock';
       document.getElementById('cl-icon').textContent='person_add';
       document.getElementById('cl-text').innerHTML='Suhbat egasiz \u2014 javob berish uchun oling';
-      take.style.display='';comp.style.display='none';return;
+      take.style.display='';take.style.marginLeft='auto';
+    document.getElementById('cl-ann').style.marginLeft='8px';
+    comp.style.display='none';return;
     }
     lock.style.display='none';comp.style.display='';return;
   }
@@ -6642,6 +6648,7 @@ function updateCompose(){
       "Guruhda <b>reply majburiy</b> \u2014 javob berish uchun xabar ustiga bosing. "
       +"Umumiy xabar uchun <b>E\'lon</b> tugmasidan foydalaning.";
     take.style.display='none';
+    document.getElementById('cl-ann').style.marginLeft='auto';
     comp.style.display='none';
     return;
   }
@@ -6657,7 +6664,9 @@ function updateCompose(){
     lock.style.display='flex';lock.className='compose-lock';
     document.getElementById('cl-icon').textContent='person_add';
     document.getElementById('cl-text').innerHTML='Bu savolda ticket yo\'q \u2014 javob berish uchun zanjirni oling';
-    take.style.display='';comp.style.display='none';return;
+    take.style.display='';take.style.marginLeft='auto';
+    document.getElementById('cl-ann').style.marginLeft='8px';
+    comp.style.display='none';return;
   }
   lock.style.display='none';comp.style.display='';
 }
