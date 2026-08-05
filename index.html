@@ -424,13 +424,13 @@ const DB = {
   ["birthday","date","","","Tug'ilgan sana"],
   ["gender","varchar(255)","NN","","MALE / FEMALE"],
   ["avatar_file_hash","varchar(255)","EXT","ext:file.file_storage.hash","Avatar — hash orqali (FKsiz)"],
-  ["employee_status","enum","NN","","EmployeeStatus: ACTIVE / INACTIVE / BLOCKED"],
+  ["status","enum","NN","","EmployeeStatus: ACTIVE / INACTIVE / BLOCKED"],
   ["pinfl","varchar(14)","UK,NN","","JShShIR"],
   ["email","varchar(255)","UK","","Elektron pochta"],
   ["lang_key","varchar(255)","","","Interfeys tili"]]},
  {name:"assignment",desc:"Tayinlov — platformaning eng markaziy jadvali. AssignmentStatus: ACTIVE/PENDING/RELEASED/TERMINATED — soft delete YO'Q, hayot sikli bo'yicha yopiladi. QILINISHI KERAK: status RELEASED/TERMINATED bo'lganda outbox orqali assignment.ended, yangi yozuvda assignment.created eventi chiqarilishi kerak — project/support/callcenter handover jarayonlari shunga tayanadi.",cols:[
   ["id","bigint","PK","","SEQ_ASSIGNMENT_ID"],
-  ["assignment_status","enum","NN","","AssignmentStatus: PENDING / ACTIVE / RELEASED / TERMINATED"],
+  ["status","enum","NN","","AssignmentStatus: PENDING / ACTIVE / RELEASED / TERMINATED"],
   ["staff_unit_id","bigint","FK","staff_unit.id","Qaysi shtat birligiga"],
   ["allocated_fte_id","bigint","FK","ref_fte.id","Ajratilgan shtat ulushi"],
   ["assignment_type_id","bigint","FK","ref_assignment_type.id","Tayinlov turi"],
@@ -467,14 +467,14 @@ const DB = {
   ["id","bigint","PK","","SEQ_TENANT_PARTNERSHIP_ID"],
   ["requester_org_structure_id","bigint","FK,UK,NN","org_structure.id","Tashabbuskor tashkilot (root org_structure)"],
   ["partner_org_structure_id","bigint","FK,UK,NN","org_structure.id","Hamkor tashkilot (root org_structure)"],
-  ["partnership_status","enum","NN","","PartnershipStatus: PENDING / ACTIVE / SUSPENDED / ENDED"],
+  ["status","enum","NN","","PartnershipStatus: PENDING / ACTIVE / SUSPENDED / ENDED"],
   ["start_date","date","","","Hamkorlik boshlanishi"],
   ["end_date","date","","","Tugashi (null = muddatsiz)"]]},
  {name:"partnership_employee",desc:"QO'SHILADI (yangi jadval) — hamkorlikka AJRATILGAN xodimlar pool'i. Hamkor tashkilot O'ZI qaysi xodimlari autsors ishlashi mumkinligini belgilaydi; mezbon PM mehmon tanlashda FAQAT shu ro'yxatni ko'radi (butun xodimlar reyestri ochilmaydi — maxfiylik). UK: (partnership_id, assignment_id).",cols:[
   ["id","bigint","PK","","SEQ_PARTNERSHIP_EMPLOYEE_ID"],
   ["partnership_id","bigint","FK,UK,NN","tenant_partnership.id","Qaysi hamkorlik doirasida"],
   ["assignment_id","bigint","FK,UK,NN","assignment.id","Ajratilgan xodim tayinlovi (xodim tenantiniki)"],
-  ["pool_status","enum","NN","","PoolStatus: ACTIVE / WITHDRAWN \u2014 hamkor istalgan payt qaytarib oladi"],
+  ["status","enum","NN","","PoolStatus: ACTIVE / WITHDRAWN \u2014 hamkor istalgan payt qaytarib oladi"],
   ["start_date","date","","","Ajratilish boshlanishi"],
   ["end_date","date","","","Tugashi (null = partnership tugaguncha)"]]},
  {name:"ref_branch_type",desc:"HR ma'lumotnomasi: filial turi.",cols:[
@@ -608,13 +608,15 @@ const DB = {
   ["position","int","NN","","Tartib"],
   ["probability","int","NN","","Yopilish ehtimolligi % \u2014 vaznlangan prognoz shunga ko'paytiriladi"],
   ["max_days","int","","","Bosqichda maksimal turish (kun) \u2014 oshsa ogohlantirish"],
-  ["is_system","boolean","NN","","Tizim bosqichi (WON/LOST) \u2014 o'chirilmaydi"],]},
+  ["is_system","boolean","NN","","Tizim bosqichi (WON/LOST) \u2014 o'chirilmaydi"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"channel_types",desc:"Service ichki lug'ati — migration'da seed qilinadi (social, call, web, referral, other). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
 
  {name:"lead_sources",desc:"Lead manbalari \u2014 qaysi kanaldan keldi. Konversiya va CAC shu kesimda hisoblanadi.",cols:[
   ["id","bigint","PK","","Identifikator"],
@@ -622,7 +624,8 @@ const DB = {
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["channel_type_id","bigint","FK,NN","channel_types.id","Kanal turi"],
   ["integration_service","varchar(30)","","","Qaysi service orqali keladi: social-integration / callcenter / API / MANUAL"],
-  ["position","int","NN","","Tartib"]]},
+  ["position","int","NN","","Tartib"],
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
 
 
  {name:"leads",desc:"LEAD AGGREGATE ROOT. Sotuv imkoniyati. Mijoz customer-service'da (mantiqiy ref), summa lead_items'dan HISOBLANADI \u2014 qo'lda kiritilmaydi. Yutilganda contract yaratiladi va pozitsiyalar ko'chadi.",cols:[
@@ -656,14 +659,15 @@ const DB = {
   ["spent","numeric(18,2)","","","Sarflangan"],
   ["start_date","date","NN","","Boshlanish"],
   ["end_date","date","","","Tugash"],
-  ["campaign_status","enum","NN","","CampaignStatus: PLANNED / ACTIVE / COMPLETED / CANCELLED"]]},
+  ["status","enum","NN","","CampaignStatus: PLANNED / ACTIVE / COMPLETED / CANCELLED"]]},
  {name:"lead_lost_reasons",desc:"Yo'qotish sabablari ma'lumotnomasi. LOST kategoriyali bosqichga o'tishda sabab MAJBURIY \u2014 voronkaning zaif joyi shu tahlildan chiqadi.",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","PRICE / COMPETITOR / NO_BUDGET / NO_RESPONSE / NOT_FIT \u2014 seed"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["reason_group","enum","NN","","ReasonGroup: COMMERCIAL / FINANCIAL / TECHNICAL / COMMUNICATION"],
   ["requires_comment","boolean","NN","","Izoh majburiymi \u2014 narx va raqobatchi holatlarida true"],
-  ["position","int","NN","","Tartib"],]},
+  ["position","int","NN","","Tartib"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"products",desc:"MAHSULOT VA XIZMATLAR KATALOGI. IT kompaniyada tayyor mahsulot ham, buyurtma ishlanma ham, obuna xizmati ham sotiladi \u2014 hammasi shu yerda. Lead va shartnoma pozitsiyalari shunga tayanadi.",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","WAREHOUSE_SYS / CRM_BOX / MOBILE_DEV / SUPPORT_SLA \u2014 seed, UPDATE taqiqlangan"],
@@ -675,7 +679,8 @@ const DB = {
   ["base_price","numeric(18,2)","","","Bazaviy narx (CUSTOM_DEV'da NULL \u2014 kelishuv bo'yicha)"],
   ["currency_id","bigint","","ext:global-reference.currencies","Valyuta"],
   ["min_term_months","int","","","Minimal muddat (obunalarda)"],
-  ["delivery_days","int","","","O'rtacha yetkazish/joriy etish muddati"],]},
+  ["delivery_days","int","","","O'rtacha yetkazish/joriy etish muddati"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"lead_items",desc:"LEAD SAVDO POZITSIYALARI. leads.amount SHU YERDAN hisoblanadi. product_id NULL bo'lishi mumkin \u2014 katalogda yo'q noyob talab custom_title bilan yoziladi (IT kompaniyada tez-tez uchraydi).",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["lead_id","bigint","FK,NN","leads.id","Lead"],
@@ -706,7 +711,7 @@ const DB = {
   ["assignment_id","bigint","","ext:hrm.assignment","Mas'ul"],
   ["completed_at","timestamp","","","Bajarilgan vaqt"],
   ["result","text","","","Natija \u2014 bajarilganda lead_activities'ga ham yoziladi"],
-  ["task_status","enum","NN","","TaskStatus: PENDING / DONE / CANCELLED / OVERDUE"]]},
+  ["status","enum","NN","","TaskStatus: PENDING / DONE / CANCELLED / OVERDUE"]]},
  {name:"lead_attachments",desc:"Lead fayllari \u2014 tijorat taklifi, texnik topshiriq, mijoz yuborgan hujjatlar. Fayl file-service'da (hash orqali).",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["lead_id","bigint","FK,NN","leads.id","Lead"],
@@ -741,7 +746,7 @@ const DB = {
   ["name","varchar(255)","NN","","Hisob nomi"],
   ["credentials","jsonb","NN","","Token/kalitlar — shifrlangan saqlanadi"],
   ["webhook_url","varchar(500)","","","Ro'yxatdan o'tgan webhook manzili"],
-  ["account_status","enum","NN","","AccountStatus: ACTIVE / DISABLED / ERROR"]]},
+  ["status","enum","NN","","AccountStatus: ACTIVE / DISABLED / ERROR"]]},
  {name:"external_users",desc:"Platformadagi foydalanuvchilar — lead bilan bog'lash uchun identifikatsiya.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["platform_id","bigint","FK,NN","platforms.id","Qaysi platforma foydalanuvchisi"],
@@ -774,19 +779,22 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"payment_methods",desc:"Service ichki lug'ati — migration'da seed qilinadi (bank, cash, card). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"contract_statuses",desc:"Migration'da seed qilinadigan statuslar (draft, signed, active, closed, cancelled). short_code o'zgartirilmaydi, is_system=true yozuvlar o'chirilmaydi; UI'dan faqat nom/tartib boshqariladi va yangi status qo'shiladi.",cols:[
   ["id","bigint","PK","","Status identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi (event, trigger) shunga qurilgan, UPDATE taqiqlangan"],
   ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"contracts",desc:"Shartnomalar — yutilgan leaddan yaratiladi. Imzolanganda project-service'ga event chiqaradi.",cols:[
   ["id","bigint","PK","","Shartnoma identifikatori"],
   ["number","varchar(50)","UK,NN","","Shartnoma raqami"],
@@ -812,7 +820,7 @@ const DB = {
   ["contract_id","bigint","FK,NN","contracts.id","Qaysi shartnoma"],
   ["due_date","date","NN","","To'lov muddati"],
   ["amount","numeric(18,2)","NN","","To'lov summasi"],
-  ["schedule_status","enum","NN","","ScheduleStatus: PENDING / PAID / OVERDUE / CANCELLED"]]},
+  ["status","enum","NN","","ScheduleStatus: PENDING / PAID / OVERDUE / CANCELLED"]]},
  {name:"payments",desc:"Amalda kelib tushgan to'lovlar.",cols:[
   ["id","bigint","PK","","To'lov identifikatori"],
   ["contract_id","bigint","FK,NN","contracts.id","Qaysi shartnoma bo'yicha"],
@@ -846,7 +854,7 @@ const DB = {
   ["HistoryField","enum","NN","use:issue_history.field","STATUS / ASSIGNEE / PRIORITY / POINT / ESTIMATED_MINUTES / SPRINT / BOARD / TITLE / DESCRIPTION / DUE_DATE / PARENT / LABEL — issue_history.field. Yangi maydon kuzatilsa shu ro'yxatga qo'shiladi"],
   ["PipelineConditionKey","enum","","use:status_pipeline_rules.condition (jsonb kalitlari)","REQUIRE_POINT / REQUIRE_ESTIMATED_MINUTES / REQUIRE_BLOCKER_REASON / ALL_SUBTASKS_DONE / REQUIRE_COMMENT — status_pipeline_rules.condition (jsonb) KALITLARI. Qiymat: true/false. Noma'lum kalit = validatsiya xatosi (typo o'tib ketmasin)"],
   ["EstimationUnit","enum","","use:issues.point / issues.estimated_minutes, sprints.velocity, project_settings.point_to_minutes","POINT / MINUTE — hisobot va KPI konvertatsiyasida ishlatiladi. project_settings.point_to_minutes orqali POINT → MINUTE aylanadi"],
-  ["RecordStatus","enum","NN","use:barcha biznes jadvallar (platforma soft delete standarti)","ACTIVE / INACTIVE / DELETED — PLATFORMA standarti (soft delete), har bir biznes jadvalda bor. Enum katalogda takrorlanmaydi"]]},
+  ["RecordStatus","enum","NN","use:ma'lumotnoma va sozlama jadvallari (project_statuses, priorities, issue_types, project_actions...)","ACTIVE / INACTIVE / DELETED \\u2014 is_active boolean O'RNIGA ishlatiladi. INACTIVE: ro'yxatda ko'rsatilmaydi lekin mavjud yozuvlarda saqlanadi, DELETED: soft delete. DIQQAT: biznes jadvallarda status ustuni o'z domen enumini oladi (calls.status = ANSWERED/MISSED...)"]]},
  {name:"SEED_KODLAR",noaudit:true,desc:"ENUM EMAS, LEKIN LOGIKA TAYANADIGAN KODLAR — bular jadvalda saqlanadigan yozuvlar (UI'dan nomi va rangi o'zgartiriladi), ammo short_code seed qilinadi va UPDATE taqiqlanadi. Farqi: enum = kod ichida qat'iy ro'yxat; seed kod = jadvalda yozuv, lekin tizim shu kodni qidiradi. Yangi yozuv qo'shish mumkin (masalan yangi rol), seed kodni o'zgartirish — yo'q.",cols:[
   ["issue_types.short_code","seed","UK","use:issues.issue_type_id (level: SUBTASK→parent_issue_id majburiy)","EPIC (level 0) / STORY (1) / TASK (1) / BUG (1) / SUBTASK (2). level ierarxiyani belgilaydi: SUBTASK parent'siz bo'lolmaydi, EPIC parent ololmaydi"],
   ["priorities.short_code","seed","UK","use:issues.priority_id","LOW / MEDIUM / HIGH / CRITICAL — SLA va saralash shunga qaraydi"],
@@ -858,7 +866,7 @@ const DB = {
   ["key","varchar(10)","UK,NN","","Qisqa kod (masalan CRM, ERP) — issue raqamlari uchun"],
   ["name","varchar(255)","NN","","Loyiha nomi"],
   ["description","text","","","Loyiha tavsifi"],
-  ["project_status","enum","NN","","ProjectStatus (ENUM_KATALOG): ACTIVE / PAUSED / COMPLETED / ARCHIVED — CHECK constraint"]]},
+  ["status","enum","NN","","ProjectStatus (ENUM_KATALOG): ACTIVE / PAUSED / COMPLETED / ARCHIVED — CHECK constraint"]]},
  {name:"project_settings",desc:"Loyiha sozlamalari — faqat loyiha darajasidagi umumiy narsalar. Rejim (mode), baholash usuli (estimation_type), sprint davomiyligi, WIP — bularning hammasi BOARD darajasida (board_settings): har board o'ziga mosini tanlaydi. Bu yerda faqat KPI birlashtirish koeffitsiyenti qoladi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,UK,NN","projects.id","Qaysi loyiha (1:1)"],
@@ -868,24 +876,27 @@ const DB = {
   ["id","bigint","PK","","Rol identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — seed, UPDATE taqiqlangan"],
   ["name","varchar(50)","NN","","Rol nomi — UI'da o'zgartiriladi"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"project_actions",desc:"Loyiha ichidagi amallar katalogi — HRM'dagi action_catalog naqshi. Seed: ISSUE_CREATE, ISSUE_EDIT, ISSUE_DELETE, STATUS_CHANGE, SPRINT_MANAGE, STATUS_MANAGE (bosqichlar), BOARD_CONFIGURE (boardlar/ustunlar), MEMBER_MANAGE, SETTINGS_EDIT.",cols:[
   ["id","bigint","PK","","Amal identifikatori"],
   ["short_code","varchar(50)","UK,NN","","Amal kodi — seed, logika shunga tayanadi"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"],
   ["position","int","NN","","Tartib"],
-  ["is_system","boolean","NN","","Seed yozuvimi"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"project_role_permissions",desc:"Rol × amal ruxsati — HRM'dagi permission naqshi. UK: (role_id, action_id). Jsonb o'rniga normallashtirilgan: so'rov qilinadi, indekslanadi, validatsiya DB darajasida.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["role_id","bigint","FK,UK,NN","project_member_roles.id","Qaysi rol (UK tarkibida)"],
-  ["action_id","bigint","FK,UK,NN","project_actions.id","Qaysi amal (UK tarkibida)"],]},
+  ["action_id","bigint","FK,UK,NN","project_actions.id","Qaysi amal (UK tarkibida)"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"project_members",desc:"Loyiha a'zolari — HRM tayinloviga bog'lanadi. Tayinlov tugaganda (hrm: assignment.ended eventi) status ENDED bo'ladi va handover jarayoni boshlanadi — yozuv o'chirilmaydi, tarix saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyiha"],
   ["assignment_id","bigint","EXT,NN","ext:hrm.assignment.id","Xodim tayinlovi — BOSHQA tenantdan bo'lishi mumkin (mehmon a'zo) — faqat faol tenant_partnership VA partnership_employee pool'ida ajratilgan bo'lsa"],
   ["member_org_structure_id","bigint","EXT,NN","ext:hrm.org_structure.id","A'zoning UY tenanti — loyiha tenantidan farq qilsa = mehmon (cross-tenant). KPI faktlari shu tenant hisobiga yoziladi"],
   ["role_id","bigint","FK,NN","project_member_roles.id","Loyihadagi roli"],
-  ["member_status","enum","NN","","MemberStatus (ENUM_KATALOG): ACTIVE / ENDED — CHECK — assignment.ended yoki partnership.ended eventida yopiladi"],
+  ["status","enum","NN","","MemberStatus (ENUM_KATALOG): ACTIVE / ENDED — CHECK — assignment.ended yoki partnership.ended eventida yopiladi"],
   ["joined_at","timestamptz","NN","","Qo'shilgan vaqt"]]},
  {name:"assignment_handovers",desc:"Topshirish jarayoni — tayinlov tugaganda ochiq vazifalarni yangi mas'ulga o'tkazish. hrm assignment.ended eventida avtomatik PENDING ochiladi, vorisi (assignment.created dagi old_employee_id zanjiri) taklif sifatida qayd etiladi, PM tasdiqlaganda vazifalar bulk qayta biriktiriladi (har biri issue_history ga tushadi). Faqat ochiq kategoriyali (TO_DO/IN_PROGRESS/IN_REVIEW/BLOCK) vazifalar ko'chiriladi; DONE kategoriya va soft-delete qilinganlar tegilmaydi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -894,7 +905,7 @@ const DB = {
   ["suggested_assignment_id","bigint","EXT","ext:hrm.assignment.id","Tizim taklifi — vorisi (old_employee zanjiri orqali aniqlanadi)"],
   ["to_assignment_id","bigint","EXT","ext:hrm.assignment.id","PM tanlagan yakuniy qabul qiluvchi (bo'lib taqsimlansa NULL, taqsimot issue_history da)"],
   ["open_issues_count","int","NN","","Handover ochilgan paytdagi ochiq vazifalar soni"],
-  ["handover_status","enum","NN","","HandoverStatus (ENUM_KATALOG): PENDING / IN_PROGRESS / COMPLETED / CANCELLED — CHECK"],
+  ["status","enum","NN","","HandoverStatus (ENUM_KATALOG): PENDING / IN_PROGRESS / COMPLETED / CANCELLED — CHECK"],
   ["completed_at","timestamptz","","","Yakunlangan vaqt"]]},
  {name:"project_statuses",desc:"ADR (3 iteratsiya yakuniy qarori): loyihaga xos NOMLANGAN bosqichlar + qattiq CATEGORY enum birga. Tizim logikasi FAQAT category bilan ishlaydi (KPI fakt = DONE, blocker sabab = BLOCK, handover ochiq = TO_DO/IN_PROGRESS/IN_REVIEW/BLOCK, kanban yopish validatsiyasi = DONE), statuslar esa erkin nomlangan bosqichlar: masalan Code Review va QA Testing — ikkalasi category=IN_REVIEW, ikkita alohida ustun. Loyiha yaratilganda 5 standart status seed qilinadi (har kategoriyadan bittadan, is_system=true) — kichik loyiha hech narsa sozlamaydi.",cols:[
   ["id","bigint","PK","","Status identifikatori"],
@@ -903,13 +914,15 @@ const DB = {
   ["name","varchar(50)","NN","","Bosqich nomi — erkin, UI'da boshqariladi (Code Review, QA Testing, Deploy kutilmoqda...)"],
   ["category","enum","NN","","StatusCategory (ENUM_KATALOG): TO_DO / IN_PROGRESS / IN_REVIEW / BLOCK / DONE — platforma enumi (CHECK). TIZIM LOGIKASI FAQAT SHUNGA QURILGAN, status nomiga emas"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"priorities",desc:"Muhimlik darajalari — UI'dan boshqariladi (qo'shish, rang, tartib). short_code ustuni logika uchun barqaror qoladi.",cols:[
   ["id","bigint","PK","","Daraja identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod (low, medium, high, critical) — seed, tizim logikasi shunga qurilgan, o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'dan o'zgartiriladi"],
   ["color","varchar(7)","NN","","Rang (hex)"],
-  ["position","int","NN","","Tartib raqami"],]},
+  ["position","int","NN","","Tartib raqami"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"issue_types",desc:"Vazifa turlari — Epic, Story, Task, Bug, Subtask. UI'dan yangi tur qo'shish mumkin. Ierarxiya darajasini belgilaydi.",cols:[
   ["id","bigint","PK","","Tur identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
@@ -954,7 +967,7 @@ const DB = {
   ["goal","text","","","Sprint maqsadi"],
   ["start_date","date","","","Boshlanish sanasi"],
   ["end_date","date","","","Tugash sanasi"],
-  ["sprint_status","enum","NN","","SprintStatus (ENUM_KATALOG): PLANNED / ACTIVE / COMPLETED — CHECK — bir loyihada bitta ACTIVE (partial unique index)"],
+  ["status","enum","NN","","SprintStatus (ENUM_KATALOG): PLANNED / ACTIVE / COMPLETED — CHECK — bir loyihada bitta ACTIVE (partial unique index)"],
   ["velocity","int","","","Yakunda bajarilgan hajm — point yoki daqiqa (estimation_type bo'yicha)"]]},
  {name:"issues",desc:"Vazifalar — tizimning markaziy tablesi. parent_issue_id orqali Epic→Story→Subtask ierarxiyasi. sprint_id kanban rejimida NULL. Baholash (point YOKI estimated_minutes) Kanban rejimida ham majburiy — KPI shundan hisoblanadi. Status DONE kategoriyaga o'tganda issue.completed eventi chiqadi. Bekor qilish = soft delete. KPI QOIDASI: DONE bo'lib fakt yozilgan vazifa keyin bekor qilinsa — fakt QOLADI (ish bajarilgan, jamoa resurs sarflagan; bekor bo'lish xodim aybi emas). VOID faqat reopen holatida: ish aslida tugamagan degani (davr ochiq bo'lsa); CLOSED davr muhri buzilmaydi.",cols:[
   ["id","bigint","PK","","Vazifa identifikatori"],
@@ -1034,13 +1047,15 @@ const DB = {
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["color","varchar(7)","NN","","Rang (hex)"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"ticket_statuses",desc:"Migration'da seed qilinadigan statuslar (open, in_progress, resolved, closed). short_code o'zgartirilmaydi, is_system=true yozuvlar o'chirilmaydi; UI'dan faqat nom/tartib boshqariladi va yangi status qo'shiladi.",cols:[
   ["id","bigint","PK","","Status identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi (event, trigger) shunga qurilgan, UPDATE taqiqlangan"],
   ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"sla_policies",desc:"SLA siyosatlari — javob berish va hal qilish muddatlari.",cols:[
   ["id","bigint","PK","","SLA identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
@@ -1086,7 +1101,7 @@ const DB = {
   ["bot_username","varchar(100)","UK,NN","","Bot @username"],
   ["logo_file_hash","varchar(255)","EXT","ext:file.file_storage.hash","Loyiha logotipi (bot profil rasmi)"],
   ["webhook_url","varchar(500)","NN","","Webhook manzili (/webhook/{bot_id})"],
-  ["bot_status","enum","NN","","BotStatus: ACTIVE / INACTIVE"]]},
+  ["status","enum","NN","","BotStatus: ACTIVE / INACTIVE"]]},
  {name:"telegram_groups",desc:"Bot qo'shilgan mijoz guruhlari — loyiha bo'yicha muloqot guruhi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["bot_id","bigint","FK,NN","bots.id","Qaysi bot"],
@@ -1099,7 +1114,7 @@ const DB = {
   ["tg_user_id","bigint","NN","","Telegram foydalanuvchi ID"],
   ["username","varchar(100)","","","Foydalanuvchi @username"],
   ["operator","bigint","EXT","ext:hrm.assignment.id","Biriktirilgan operator"],
-  ["chat_status","enum","NN","","ChatStatus: ACTIVE / CLOSED"]]},
+  ["status","enum","NN","","ChatStatus: ACTIVE / CLOSED"]]},
  {name:"chat_messages",desc:"Guruh va shaxsiy chatlardagi barcha xabarlar. Kerak bo'lsa ticketga bog'lanadi.",cols:[
   ["id","bigint","PK","","Xabar identifikatori"],
   ["bot_id","bigint","FK,NN","bots.id","Qaysi bot orqali"],
@@ -1133,7 +1148,7 @@ const DB = {
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["operator","bigint","EXT,UK,NN","ext:hrm.assignment.id","Operator (tayinlov)"],
   ["extension","varchar(10)","UK,NN","","Ichki raqam"],
-  ["operator_status","enum","NN","","OperatorStatus: ONLINE / BUSY / AWAY / OFFLINE"]]},
+  ["status","enum","NN","","OperatorStatus: ONLINE / BUSY / AWAY / OFFLINE"]]},
  {name:"calls",desc:"Qo'ng'iroqlar tarixi — kiruvchi va chiquvchi. Mijoz/lead bilan bog'lanadi.",cols:[
   ["id","bigint","PK","","Qo'ng'iroq identifikatori"],
   ["direction","varchar(10)","NN","","inbound / outbound"],
@@ -1146,7 +1161,7 @@ const DB = {
   ["started_at","timestamptz","NN","","Boshlangan vaqt"],
   ["answered_at","timestamptz","","","Javob berilgan vaqt"],
   ["ended_at","timestamptz","","","Tugagan vaqt"],
-  ["call_status","enum","NN","","CallStatus: ANSWERED / MISSED / BUSY / FAILED"]]},
+  ["status","enum","NN","","CallStatus: ANSWERED / MISSED / BUSY / FAILED"]]},
  {name:"call_recordings",desc:"Qo'ng'iroq yozuvlari — audio fayllar file-service (MinIO)da saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["call_id","bigint","FK,UK,NN","calls.id","Qaysi qo'ng'iroq (1:1)"],
@@ -1171,7 +1186,8 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["channel","varchar(15)","NN","","email / sms / push / telegram"],
   ["provider","varchar(50)","NN","","SMTP / Eskiz / FCM ..."],
-  ["config","jsonb","NN","","Ulanish sozlamalari — shifrlangan"],]},
+  ["config","jsonb","NN","","Ulanish sozlamalari — shifrlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"templates",desc:"Xabarnoma shablonlari — kod bo'yicha chaqiriladi, o'zgaruvchilar bilan.",cols:[
   ["id","bigint","PK","","Shablon identifikatori"],
   ["short_code","varchar(50)","UK,NN","","Shablon kodi (issue_assigned, sla_breach...) — seed, kod logikasi shunga tayanadi"],
@@ -1186,14 +1202,14 @@ const DB = {
   ["recipient_type","varchar(20)","NN","","assignment / customer / phone / email"],
   ["recipient_ref","varchar(255)","NN","","Qabul qiluvchi identifikatori"],
   ["payload","jsonb","","","Shablon o'zgaruvchilari"],
-  ["delivery_status","enum","NN","","DeliveryStatus: PENDING / SENT / FAILED"],
+  ["status","enum","NN","","DeliveryStatus: PENDING / SENT / FAILED"],
   ["scheduled_at","timestamptz","","","Rejalashtirilgan vaqt"],
   ["sent_at","timestamptz","","","Yuborilgan vaqt"]]},
  {name:"delivery_logs",desc:"Yetkazish urinishlari logi — xatolarni tekshirish uchun.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["notification_id","bigint","FK,NN","notifications.id","Qaysi xabarnoma"],
   ["attempt","int","NN","","Urinish raqami"],
-  ["attempt_status","enum","NN","","AttemptStatus: SUCCESS / ERROR"],
+  ["status","enum","NN","","AttemptStatus: SUCCESS / ERROR"],
   ["provider_response","text","","","Provayder javobi"]]}
 ]},
 
@@ -1206,7 +1222,8 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["position","int","NN","","Tartib raqami"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"item_categories",desc:"Jihoz/mahsulot kategoriyalari — ierarxik (mebel → stol, texnika → kompyuter).",cols:[
   ["id","bigint","PK","","Kategoriya identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
@@ -1225,7 +1242,7 @@ const DB = {
   ["name","varchar(255)","NN","","Jihoz nomi"],
   ["inventory_number","varchar(50)","UK,NN","","Inventar raqami"],
   ["serial_number","varchar(100)","UK","","Zavod seriya raqami"],
-  ["item_status","enum","NN","","ItemStatus: IN_STOCK / ASSIGNED / REPAIR / WRITTEN_OFF"],
+  ["status","enum","NN","","ItemStatus: IN_STOCK / ASSIGNED / REPAIR / WRITTEN_OFF"],
   ["purchase_date","date","","","Sotib olingan sana"],
   ["price","numeric(18,2)","","","Qiymati"]]},
  {name:"item_assignments",desc:"Jihoz biriktirish tarixi — TO'G'RIDAN-TO'G'RI XODIMGA (employee_id). Assignment emas: lavozim o'zgarsa jihoz xodimda qolaveradi.",cols:[
@@ -1257,7 +1274,8 @@ const DB = {
   ["source_service","varchar(50)","NN","","Fakt manbasi: project / support / callcenter / turnstile"],
   ["unit","varchar(20)","NN","","O'lchov: count / minutes / rating / score / percent"],
   ["position","int","NN","","Tartib"],
-  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],]},
+  ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"kpi_profiles",desc:"KPI profili — qaysi lavozim qanday baholanishini belgilaydi (dasturchi, support operatori, sotuvchi...). Lavozimga bog'lanadi: yangi xodim tayinlanganda profili avtomatik aniqlanadi.",cols:[
   ["id","bigint","PK","","Profil identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod"],
@@ -1274,7 +1292,7 @@ const DB = {
   ["id","bigint","PK","","Davr identifikatori"],
   ["year","int","UK,NN","","Yil"],
   ["month","int","UK,NN","","Oy (1-12)"],
-  ["period_status","enum","NN","","PeriodStatus: OPEN / CALCULATING / CLOSED \u2014 CLOSED muhrlangan, o'zgarmaydi"]]},
+  ["status","enum","NN","","PeriodStatus: OPEN / CALCULATING / CLOSED \u2014 CLOSED muhrlangan, o'zgarmaydi"]]},
  {name:"kpi_facts",desc:"Xom faktlar — barcha servicelardan event orqali keladi: issue yopildi (project), ticket yopildi (support), feedback keldi, qo'ng'iroq AI baholandi (callcenter). Hisoblash shu faktlardan agregatsiya qiladi.",cols:[
   ["id","bigint","PK","","Fakt identifikatori"],
   ["criterion_id","bigint","FK,NN","kpi_criteria.id","Qaysi kriteriyaga tegishli"],
@@ -1283,7 +1301,7 @@ const DB = {
   ["source_ref","varchar(100)","NN","","Manba yozuv ID (issue_id, ticket_id, call_id...) — takroriylikni oldini olish uchun"],
   ["value","decimal(12,2)","NN","","Fakt qiymati — TASK_COMPLETION uchun doim DAQIQADA (point konvertatsiya qilingan holda keladi), boshqa kriteriyalar o'z birligida (baho, score, soni)"],
   ["occurred_at","timestamp","NN","","Hodisa sodir bo'lgan vaqt — davrga biriktirishda shu ishlatiladi"],
-  ["fact_status","enum","NN","","FactStatus: ACTIVE / VOIDED \u2014 FAQAT issue.reopened (ish tugamagan) holatida VOID"],
+  ["status","enum","NN","","FactStatus: ACTIVE / VOIDED \u2014 FAQAT issue.reopened (ish tugamagan) holatida VOID"],
   ["payload","jsonb","","","Qo'shimcha kontekst (audit/tekshiruv uchun)"]]},
  {name:"attendance_records",desc:"Turniket ma'lumotlari — kelish/ketish vaqtlari. Jismoniy fakt bo'lgani uchun EMPLOYEE'ga bog'lanadi (inventory kabi); DISCIPLINE hisoblanayotganda faol assignmentga o'giriladi. UK: (employee_id, work_date).",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
@@ -1307,7 +1325,7 @@ const DB = {
   ["profile_id","bigint","FK,NN","kpi_profiles.id","Qaysi profil bo'yicha hisoblangan (tarixiy qayd)"],
   ["total_score","decimal(5,2)","NN","","Yakuniy KPI (0-100)"],
   ["calculated_at","timestamp","NN","","Hisoblangan vaqt"],
-  ["result_status","enum","NN","","ResultStatus: CALCULATED / APPROVED"]]}
+  ["status","enum","NN","","ResultStatus: CALCULATED / APPROVED"]]}
 ]},
 
 "multi-tenant-standart":{
@@ -1364,7 +1382,7 @@ const DB = {
   ["topic","varchar(200)","NN","","Kafka topic: crm.{service}.{aggregate}.{event}"],
   ["payload","jsonb","NN","","Event tanasi — envelope standarti bo'yicha (aktor, vaqt, ma'lumot)"],
   ["headers","jsonb","","","Qo'shimcha headerlar (trace_id, correlation_id)"],
-  ["publish_status","enum","NN","","PublishStatus: NEW / PUBLISHED / FAILED \u2014 poller shu bo'yicha ishlaydi"],
+  ["status","enum","NN","","PublishStatus: NEW / PUBLISHED / FAILED \u2014 poller shu bo'yicha ishlaydi"],
   ["occurred_at","timestamp","NN","","Hodisa vaqti (biznes tranzaksiya vaqti)"],
   ["published_at","timestamp","","","Kafka'ga yuborilgan vaqt"]]},
  {name:"processed_events",noaudit:true,desc:"INBOX — consumer tomonida idempotentlik: har bir qabul qilingan event_id shu yerga yoziladi (biznes o'zgarish bilan bitta tranzaksiyada). Takror kelgan event (at-least-once tufayli) UK orqali rad etiladi. UK: (event_id, consumer).",cols:[
