@@ -699,7 +699,8 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .ib-mid{flex:1;display:flex;flex-direction:column;min-width:0;background:#f7f9fc}
 .ib-head{display:flex;align-items:center;gap:11px;padding:11px 16px;background:var(--surface);
   border-bottom:1px solid var(--line-2)}
-.ib-head-name{font-size:14.5px;font-weight:600;color:var(--ink)}
+.ib-head-name{font-size:14.5px;font-weight:600;color:var(--ink);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:340px}
 .ib-head-sub{font-size:11.5px;color:var(--ink-3);margin-top:1px}
 .ib-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
 .msg{max-width:64%;padding:9px 13px;border-radius:12px;font-size:13.5px;line-height:1.5}
@@ -3916,14 +3917,15 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <span id="hd-sub">Guruh · 14 a'zo</span>
             <span class="ch-type grp" id="hd-type">SUPERGROUP</span>
           </div></div>
-        <button class="btn-ann" id="hd-ann" style="margin-left:auto;height:34px"
-          onclick="openAnnounce()">
-          <span class="material-icons-outlined">campaign</span> E'lon yuborish</button>
-        <span class="thr" id="hd-owner" style="display:none"></span>
-        <button class="tb-icon-btn" title="Suhbatni bo'shatish" id="hd-release" style="display:none"
-          onclick="releaseChat()"><span class="material-icons-outlined">lock_open</span></button>
-        <button class="tb-icon-btn" title="Sinxronizatsiya" onclick="syncChat()">
-          <span class="material-icons-outlined">sync</span></button>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <span class="thr" id="hd-owner" style="display:none;margin:0"></span>
+          <button class="btn-ann" id="hd-ann" style="height:34px" onclick="openAnnounce()">
+            <span class="material-icons-outlined">campaign</span> E'lon yuborish</button>
+          <button class="tb-icon-btn" title="Suhbatni bo'shatish" id="hd-release" style="display:none"
+            onclick="releaseChat()"><span class="material-icons-outlined">lock_open</span></button>
+          <button class="tb-icon-btn" title="Sinxronizatsiya" onclick="syncChat()">
+            <span class="material-icons-outlined">sync</span></button>
+        </div>
       </div>
       <div class="ib-msgs" id="msg-list"></div>
       <div class="reply-bar" id="reply-bar">
