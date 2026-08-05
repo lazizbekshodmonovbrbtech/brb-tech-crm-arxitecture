@@ -581,6 +581,76 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+/* ═══════ MONITORING GRAFIKLARI ═══════ */
+.mon-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;align-items:start}
+.mon-card{grid-column:span 6;background:var(--surface);border:1px solid var(--line-2);
+  border-radius:14px;box-shadow:0 2px 6px rgba(15,23,42,.05);overflow:hidden}
+.mon-card.c4{grid-column:span 4}
+.mon-card.c8{grid-column:span 8}
+.mon-card.c12{grid-column:span 12}
+.mon-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.mon-head h3{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8b9aa9}
+.mon-head .note{margin-left:auto;font-size:11.5px;color:#b6c2d1;font-family:var(--font-mono)}
+.mon-body{padding:14px 16px}
+/* Donut */
+.donut-wrap{display:flex;align-items:center;gap:18px}
+.donut{width:132px;height:132px;border-radius:50%;flex-shrink:0;position:relative}
+.donut::after{content:'';position:absolute;inset:26px;background:var(--surface);border-radius:50%}
+.donut-c{position:absolute;inset:0;display:grid;place-items:center;z-index:2;text-align:center}
+.donut-c .v{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#182634;line-height:1.1}
+.donut-c .l{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#8b9aa9}
+.leg{flex:1;min-width:0}
+.leg-row{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:12.5px;color:#5c6e80}
+.leg-row .dt{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.leg-row .vl{margin-left:auto;font-family:var(--font-mono);font-weight:600;color:#182634}
+/* Ustunli grafik */
+.cbar{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:8px}
+.cbar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%}
+.cbar-v{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);font-weight:600}
+.cbar-b{width:100%;max-width:44px;border-radius:6px 6px 3px 3px;margin-top:auto;min-height:3px;
+  background:linear-gradient(180deg,#5b8def,#2563eb);cursor:pointer;transition:filter .15s}
+.cbar-b:hover{filter:brightness(1.12)}
+.cbar-b.g{background:linear-gradient(180deg,#4ec48a,#1b7a4d)}
+.cbar-b.p{background:linear-gradient(180deg,#a78bfa,#7c3aed)}
+.cbar-b.o{background:linear-gradient(180deg,#f5b74e,#c98a3d)}
+.cbar-l{font-size:10px;color:#8b9aa9;font-weight:600;white-space:nowrap}
+/* Stacked bar */
+.stk{display:flex;height:26px;border-radius:7px;overflow:hidden;margin-bottom:4px}
+.stk i{display:block;height:100%}
+.stk-row{margin-bottom:12px}
+.stk-lb{display:flex;justify-content:space-between;font-size:11.5px;color:#8b9aa9;margin-bottom:5px}
+.stk-lb b{color:#182634;font-family:var(--font-mono)}
+/* Voronka */
+.fun-row{display:flex;align-items:center;gap:11px;padding:6px 0}
+.fun-n{width:120px;font-size:12.5px;color:#182634;flex-shrink:0}
+.fun-t{flex:1;height:24px;background:#eef1f5;border-radius:6px;overflow:hidden;position:relative}
+.fun-t i{display:block;height:100%;border-radius:6px;
+  background:linear-gradient(90deg,#2563eb,#5b8def)}
+.fun-v{width:74px;text-align:right;font-family:var(--font-mono);font-size:12px;font-weight:600;color:#182634}
+.fun-p{width:44px;text-align:right;font-family:var(--font-mono);font-size:11px;color:#8b9aa9}
+/* Sparkline / chiziqli */
+.spark{width:100%;height:120px}
+.spark path.ln{fill:none;stroke:#2563eb;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.spark path.ar{fill:rgba(37,99,235,.10);stroke:none}
+.spark path.ln2{fill:none;stroke:#1b7a4d;stroke-width:2.5;stroke-dasharray:5 4}
+.spark .gl{stroke:#eef1f5;stroke-width:1}
+.spark text{font-family:var(--font-mono);font-size:9px;fill:#b6c2d1}
+/* Reyting ro'yxati */
+.rank{display:flex;align-items:center;gap:11px;padding:8px 0;font-size:13px}
+.rank+.rank{border-top:1px solid var(--mline2)}
+.rank .no{width:20px;font-family:var(--font-mono);font-size:11px;color:#b6c2d1;font-weight:700}
+.rank .nm{flex:1;color:#182634;min-width:0}
+.rank .bar{width:90px;height:6px;border-radius:3px;background:#eef1f5;overflow:hidden}
+.rank .bar i{display:block;height:100%;border-radius:3px;background:var(--m-acc)}
+.rank .vv{width:56px;text-align:right;font-family:var(--font-mono);font-size:12px;font-weight:600;color:#182634}
+/* Heatmap */
+.heat{display:grid;grid-template-columns:34px repeat(7,1fr);gap:4px;font-size:10px}
+.heat .hh{color:#b6c2d1;text-align:center;font-weight:600;padding-bottom:2px}
+.heat .hl{color:#b6c2d1;display:flex;align-items:center;font-family:var(--font-mono)}
+.heat .hc{aspect-ratio:1.6;border-radius:5px;background:#eef3f9}
+.heat .hc.l1{background:#cfe0f7}.heat .hc.l2{background:#9dc0ef}
+.heat .hc.l3{background:#5b8def}.heat .hc.l4{background:#2563eb}
+
 /* Loyiha bot kartalari */
 .bot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
 .bot-card{background:var(--surface);border:1px solid var(--line-2);border-radius:14px;
@@ -963,6 +1033,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">campaign</span> Marketing
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-mkt-children">
+      <div class="nav-child" data-page="mktmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
       <div class="nav-child" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
       <div class="nav-child" data-page="sources"><span class="material-icons-outlined">hub</span> Lead manbalari</div>
       <div class="nav-child" data-page="pipelines"><span class="material-icons-outlined">linear_scale</span> Voronkalar</div>
@@ -974,6 +1045,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">description</span> Shartnomalar
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-contr-children">
+      <div class="nav-child" data-page="contrmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
       <div class="nav-child" data-page="contracts"><span class="material-icons-outlined">article</span> Shartnomalar</div>
       <div class="nav-child" data-page="contrtypes"><span class="material-icons-outlined">category</span> Shartnoma turlari</div>
       <div class="nav-child" data-page="paysched"><span class="material-icons-outlined">event_note</span> To'lov grafiklari</div>
@@ -985,6 +1057,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">task_alt</span> Vazifalar boshqaruvi
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children open" id="nav-tasks-children">
+      <div class="nav-child" data-page="taskmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
       <div class="nav-child" data-page="projects"><span class="material-icons-outlined">folder</span> Loyihalar</div>
       <div class="nav-child" data-page="handover"><span class="material-icons-outlined">swap_horiz</span> Handover
         <span class="menu-badge">6</span></div>
@@ -994,6 +1067,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">headset_mic</span> Support
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-support-children">
+      <div class="nav-child" data-page="supmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
       <div class="nav-child" data-page="tickets"><span class="material-icons-outlined">confirmation_number</span> Ticketlar</div>
       <div class="nav-child" data-page="botlist"><span class="material-icons-outlined">forum</span> Mijoz chatlari</div>
       <div class="nav-child" data-page="calls"><span class="material-icons-outlined">support_agent</span> Call center</div>
@@ -1003,6 +1077,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">inventory_2</span> Inventar
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-inv-children">
+      <div class="nav-child" data-page="invmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
       <div class="nav-child" data-page="inventory"><span class="material-icons-outlined">devices</span> Jihozlar</div>
       <div class="nav-child" data-page="invcats"><span class="material-icons-outlined">category</span> Kategoriyalar</div>
       <div class="nav-child" data-page="invassign"><span class="material-icons-outlined">assignment_ind</span> Biriktirish tarixi</div>
@@ -1014,6 +1089,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">insights</span> KPI
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-kpi-children">
+      <div class="nav-child" data-page="kpimon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
       <div class="nav-child" data-page="kpi"><span class="material-icons-outlined">leaderboard</span> Natijalar</div>
       <div class="nav-child" data-page="kpiprofiles"><span class="material-icons-outlined">tune</span> Profillar</div>
       <div class="nav-child" data-page="kpicrit"><span class="material-icons-outlined">checklist</span> Kriteriyalar</div>
@@ -1252,6 +1328,299 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       </div>
     </div>
   </div>
+</section>
+
+<!-- ════════════ MKTMON ════════════ -->
+<section class="page-view" id="pv-mktmon">
+  <div class="stat-strip"><div class="stat"><div class="stat-top"><span class="material-icons-outlined">filter_alt</span>Faol leadlar</div><div class="stat-value">14</div><div class="stat-sub">6 bosqichda</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Voronka qiymati</div><div class="stat-value">338.6</div><div class="stat-sub">mln UZS</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>Konversiya</div><div class="stat-value">31%</div><div class="stat-bar"><i style="width:31%"></i></div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">schedule</span>O'rtacha sikl</div><div class="stat-value">18 kun</div><div class="stat-sub">yangi → yutildi</div></div></div>
+  <div class="mon-grid"><div class="mon-card c8"><div class="mon-head"><h3>Voronka bosqichlari</h3>
+      <span class="note">oxirgi 90 kun</span></div>
+      <div class="mon-body"><div class="fun-row"><span class="fun-n">Yangi</span>
+          <span class="fun-t"><i style="width:100%"></i></span>
+          <span class="fun-v">48</span><span class="fun-p">100%</span></div><div class="fun-row"><span class="fun-n">Aloqa qilindi</span>
+          <span class="fun-t"><i style="width:71%"></i></span>
+          <span class="fun-v">34</span><span class="fun-p">71%</span></div><div class="fun-row"><span class="fun-n">Taklif yuborildi</span>
+          <span class="fun-t"><i style="width:46%"></i></span>
+          <span class="fun-v">22</span><span class="fun-p">46%</span></div><div class="fun-row"><span class="fun-n">Muzokara</span>
+          <span class="fun-t"><i style="width:31%"></i></span>
+          <span class="fun-v">15</span><span class="fun-p">31%</span></div><div class="fun-row"><span class="fun-n">Yutildi</span>
+          <span class="fun-t"><i style="width:31%"></i></span>
+          <span class="fun-v">15</span><span class="fun-p">31%</span></div></div></div><div class="mon-card c4"><div class="mon-head"><h3>Manba ulushi</h3>
+      <span class="note">lead soni</span></div>
+      <div class="mon-body"><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#2563eb 0% 36%,#7c3aed 36% 63%,#0ea5e9 63% 83%,#1b7a4d 83% 95%,#cbd5e1 95% 100%)">
+      <div class="donut-c"><div><div class="v">116</div><div class="l">lead</div></div></div></div>
+      <div class="leg"><div class="leg-row"><span class="dt" style="background:#2563eb"></span>Instagram<span class="vl">36%</span></div><div class="leg-row"><span class="dt" style="background:#7c3aed"></span>Telegram<span class="vl">27%</span></div><div class="leg-row"><span class="dt" style="background:#0ea5e9"></span>Sayt<span class="vl">20%</span></div><div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>Tavsiya<span class="vl">12%</span></div><div class="leg-row"><span class="dt" style="background:#cbd5e1"></span>Boshqa<span class="vl">5%</span></div></div></div></div></div><div class="mon-card c8"><div class="mon-head"><h3>Oylik dinamika</h3>
+      <span class="note">yangi lead / yutilgan</span></div>
+      <div class="mon-body"><svg class="spark" viewBox="0 0 560 120" preserveAspectRatio="none"><line class="gl" x1="14" y1="14" x2="546" y2="14"/><line class="gl" x1="14" y1="45" x2="546" y2="45"/><line class="gl" x1="14" y1="75" x2="546" y2="75"/><line class="gl" x1="14" y1="106" x2="546" y2="106"/><path class="ar" d="M14 58 L103 48 L191 53 L280 35 L369 41 L457 26 L546 31 L546 106 L14 106 Z"/><path class="ln" d="M14 58 L103 48 L191 53 L280 35 L369 41 L457 26 L546 31"/><path class="ln2" d="M14 96 L103 91 L191 94 L280 87 L369 89 L457 82 L546 84"/><text x="14" y="118" text-anchor="middle">Fev</text><text x="103" y="118" text-anchor="middle">Mar</text><text x="191" y="118" text-anchor="middle">Apr</text><text x="280" y="118" text-anchor="middle">May</text><text x="369" y="118" text-anchor="middle">Iyn</text><text x="457" y="118" text-anchor="middle">Iyl</text><text x="546" y="118" text-anchor="middle">Avg</text></svg></div></div><div class="mon-card c4"><div class="mon-head"><h3>Yo'qotish sabablari</h3>
+      <span class="note">3 oy</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Narx kelishmadi</span>
+          <span class="bar"><i style="width:100%;background:var(--m-neg)"></i></span>
+          <span class="vv">42%</span></div><div class="rank"><span class="no">2</span><span class="nm">Raqobatchini tanladi</span>
+          <span class="bar"><i style="width:60%;background:var(--m-neg)"></i></span>
+          <span class="vv">25%</span></div><div class="rank"><span class="no">3</span><span class="nm">Byudjet yo'q</span>
+          <span class="bar"><i style="width:40%;background:var(--m-neg)"></i></span>
+          <span class="vv">17%</span></div><div class="rank"><span class="no">4</span><span class="nm">Javob bermadi</span>
+          <span class="bar"><i style="width:30%;background:var(--m-neg)"></i></span>
+          <span class="vv">12%</span></div><div class="rank"><span class="no">5</span><span class="nm">Mos emas</span>
+          <span class="bar"><i style="width:10%;background:var(--m-neg)"></i></span>
+          <span class="vv">4%</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Kampaniyalar ROI</h3>
+      <span class="note">joriy chorak</span></div>
+      <div class="mon-body"><div class="cbar"><div class="cbar-col"><span class="cbar-v">58</span><span class="cbar-b g" style="height:100%"></span><span class="cbar-l">CMP-014</span></div><div class="cbar-col"><span class="cbar-v">31</span><span class="cbar-b g" style="height:53%"></span><span class="cbar-l">CMP-013</span></div><div class="cbar-col"><span class="cbar-v">24</span><span class="cbar-b g" style="height:41%"></span><span class="cbar-l">CMP-012</span></div><div class="cbar-col"><span class="cbar-v">8</span><span class="cbar-b g" style="height:14%"></span><span class="cbar-l">CMP-011</span></div></div></div></div><div class="mon-card"><div class="mon-head"><h3>Manba samaradorligi</h3>
+      <span class="note">konversiya %</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Tavsiya</span>
+          <span class="bar"><i style="width:100%;background:var(--m-acc)"></i></span>
+          <span class="vv">58%</span></div><div class="rank"><span class="no">2</span><span class="nm">Ko'rgazma</span>
+          <span class="bar"><i style="width:57%;background:var(--m-acc)"></i></span>
+          <span class="vv">33%</span></div><div class="rank"><span class="no">3</span><span class="nm">Qo'ng'iroq</span>
+          <span class="bar"><i style="width:55%;background:var(--m-acc)"></i></span>
+          <span class="vv">32%</span></div><div class="rank"><span class="no">4</span><span class="nm">Telegram</span>
+          <span class="bar"><i style="width:50%;background:var(--m-acc)"></i></span>
+          <span class="vv">29%</span></div><div class="rank"><span class="no">5</span><span class="nm">Instagram</span>
+          <span class="bar"><i style="width:41%;background:var(--m-acc)"></i></span>
+          <span class="vv">24%</span></div><div class="rank"><span class="no">6</span><span class="nm">Sayt</span>
+          <span class="bar"><i style="width:29%;background:var(--m-acc)"></i></span>
+          <span class="vv">17%</span></div></div></div></div>
+</section>
+
+<!-- ════════════ CONTRMON ════════════ -->
+<section class="page-view" id="pv-contrmon">
+  <div class="stat-strip"><div class="stat"><div class="stat-top"><span class="material-icons-outlined">description</span>Faol shartnomalar</div><div class="stat-value">31</div><div class="stat-sub">jami 47 tadan</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Portfel qiymati</div><div class="stat-value">1.24</div><div class="stat-sub">mlrd UZS</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">account_balance_wallet</span>To'langan</div><div class="stat-value">68%</div><div class="stat-bar"><i style="width:68%"></i></div></div><div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">event_busy</span>Muddati o'tgan</div><div class="stat-value">3</div><div class="stat-sub">42.0 mln UZS</div></div></div>
+  <div class="mon-grid"><div class="mon-card c8"><div class="mon-head"><h3>Tushum dinamikasi</h3>
+      <span class="note">mln UZS · oylik</span></div>
+      <div class="mon-body"><svg class="spark" viewBox="0 0 560 120" preserveAspectRatio="none"><line class="gl" x1="14" y1="14" x2="546" y2="14"/><line class="gl" x1="14" y1="45" x2="546" y2="45"/><line class="gl" x1="14" y1="75" x2="546" y2="75"/><line class="gl" x1="14" y1="106" x2="546" y2="106"/><path class="ar" d="M14 70 L103 62 L191 54 L280 66 L369 47 L457 26 L546 40 L546 106 L14 106 Z"/><path class="ln" d="M14 70 L103 62 L191 54 L280 66 L369 47 L457 26 L546 40"/><text x="14" y="118" text-anchor="middle">Fev</text><text x="103" y="118" text-anchor="middle">Mar</text><text x="191" y="118" text-anchor="middle">Apr</text><text x="280" y="118" text-anchor="middle">May</text><text x="369" y="118" text-anchor="middle">Iyn</text><text x="457" y="118" text-anchor="middle">Iyl</text><text x="546" y="118" text-anchor="middle">Avg</text></svg></div></div><div class="mon-card c4"><div class="mon-head"><h3>Shartnoma turlari</h3>
+      <span class="note">ulush</span></div>
+      <div class="mon-body"><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#2563eb 0% 44%,#1b7a4d 44% 70%,#7c3aed 70% 88%,#f5b74e 88% 100%)">
+      <div class="donut-c"><div><div class="v">47</div><div class="l">shartnoma</div></div></div></div>
+      <div class="leg"><div class="leg-row"><span class="dt" style="background:#2563eb"></span>Ishlab chiqish<span class="vl">44%</span></div><div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>Support<span class="vl">26%</span></div><div class="leg-row"><span class="dt" style="background:#7c3aed"></span>Litsenziya<span class="vl">18%</span></div><div class="leg-row"><span class="dt" style="background:#f5b74e"></span>Integratsiya<span class="vl">12%</span></div></div></div></div></div><div class="mon-card"><div class="mon-head"><h3>To'lov holati</h3>
+      <span class="note">summa bo'yicha</span></div>
+      <div class="mon-body">
+   <div class="stk-row"><div class="stk-lb"><span>To'langan</span><b>843.6 mln · 68%</b></div>
+     <div class="stk"><i style="width:68%;background:linear-gradient(90deg,#1b7a4d,#4ec48a)"></i>
+       <i style="width:22%;background:linear-gradient(90deg,#5b8def,#9dc0ef)"></i>
+       <i style="width:10%;background:linear-gradient(90deg,#b83d2e,#e0564a)"></i></div></div>
+   <div class="leg" style="margin-top:10px">
+     <div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>To'langan<span class="vl">843.6 mln</span></div>
+     <div class="leg-row"><span class="dt" style="background:#5b8def"></span>Kutilmoqda (muddatida)<span class="vl">272.4 mln</span></div>
+     <div class="leg-row"><span class="dt" style="background:#b83d2e"></span>Muddati o'tgan<span class="vl">124.0 mln</span></div>
+   </div></div></div><div class="mon-card"><div class="mon-head"><h3>To'lov usullari</h3>
+      <span class="note">tranzaksiya ulushi</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Bank o'tkazmasi</span>
+          <span class="bar"><i style="width:100%;background:var(--m-acc)"></i></span>
+          <span class="vv">89%</span></div><div class="rank"><span class="no">2</span><span class="nm">Naqd</span>
+          <span class="bar"><i style="width:7%;background:var(--m-acc)"></i></span>
+          <span class="vv">6%</span></div><div class="rank"><span class="no">3</span><span class="nm">Payme</span>
+          <span class="bar"><i style="width:3%;background:var(--m-acc)"></i></span>
+          <span class="vv">3%</span></div><div class="rank"><span class="no">4</span><span class="nm">Click</span>
+          <span class="bar"><i style="width:2%;background:var(--m-acc)"></i></span>
+          <span class="vv">2%</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Yirik mijozlar</h3>
+      <span class="note">portfel bo'yicha</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Ipak Yo'li Bank</span>
+          <span class="bar"><i style="width:100%;background:var(--m-pos)"></i></span>
+          <span class="vv">420 mln</span></div><div class="rank"><span class="no">2</span><span class="nm">Trans Cargo Group</span>
+          <span class="bar"><i style="width:69%;background:var(--m-pos)"></i></span>
+          <span class="vv">288 mln</span></div><div class="rank"><span class="no">3</span><span class="nm">Samarqand Textile</span>
+          <span class="bar"><i style="width:44%;background:var(--m-pos)"></i></span>
+          <span class="vv">186 mln</span></div><div class="rank"><span class="no">4</span><span class="nm">Agro Invest MChJ</span>
+          <span class="bar"><i style="width:34%;background:var(--m-pos)"></i></span>
+          <span class="vv">142 mln</span></div><div class="rank"><span class="no">5</span><span class="nm">Boshqalar</span>
+          <span class="bar"><i style="width:49%;background:var(--m-pos)"></i></span>
+          <span class="vv">204 mln</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Bosqichli to'lovlar</h3>
+      <span class="note">kelgusi 6 oy</span></div>
+      <div class="mon-body"><div class="cbar"><div class="cbar-col"><span class="cbar-v">184</span><span class="cbar-b p" style="height:88%"></span><span class="cbar-l">Avg</span></div><div class="cbar-col"><span class="cbar-v">142</span><span class="cbar-b p" style="height:68%"></span><span class="cbar-l">Sen</span></div><div class="cbar-col"><span class="cbar-v">96</span><span class="cbar-b p" style="height:46%"></span><span class="cbar-l">Okt</span></div><div class="cbar-col"><span class="cbar-v">210</span><span class="cbar-b p" style="height:100%"></span><span class="cbar-l">Noy</span></div><div class="cbar-col"><span class="cbar-v">168</span><span class="cbar-b p" style="height:80%"></span><span class="cbar-l">Dek</span></div><div class="cbar-col"><span class="cbar-v">88</span><span class="cbar-b p" style="height:42%"></span><span class="cbar-l">Yan</span></div></div></div></div></div>
+</section>
+
+<!-- ════════════ TASKMON ════════════ -->
+<section class="page-view" id="pv-taskmon">
+  <div class="stat-strip"><div class="stat"><div class="stat-top"><span class="material-icons-outlined">folder</span>Faol loyihalar</div><div class="stat-value">3</div><div class="stat-sub">1 yakunlangan</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">assignment</span>Ochiq vazifalar</div><div class="stat-value">59</div><div class="stat-sub">barcha boardlarda</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">speed</span>Velocity</div><div class="stat-value">38 pt</div><div class="stat-sub">oxirgi 3 sprint o'rtacha</div><div class="stat-bar"><i style="width:76%"></i></div></div><div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">block</span>Blokdagi</div><div class="stat-value">2</div><div class="stat-sub">o'rtacha 1.8 kun</div></div></div>
+  <div class="mon-grid"><div class="mon-card"><div class="mon-head"><h3>Sprint velocity</h3>
+      <span class="note">story point</span></div>
+      <div class="mon-body"><div class="cbar"><div class="cbar-col"><span class="cbar-v">29</span><span class="cbar-b " style="height:76%"></span><span class="cbar-l">S-10</span></div><div class="cbar-col"><span class="cbar-v">32</span><span class="cbar-b " style="height:84%"></span><span class="cbar-l">S-11</span></div><div class="cbar-col"><span class="cbar-v">35</span><span class="cbar-b " style="height:92%"></span><span class="cbar-l">S-12</span></div><div class="cbar-col"><span class="cbar-v">38</span><span class="cbar-b " style="height:100%"></span><span class="cbar-l">S-13</span></div><div class="cbar-col"><span class="cbar-v">34</span><span class="cbar-b " style="height:89%"></span><span class="cbar-l">S-14</span></div></div></div></div><div class="mon-card"><div class="mon-head"><h3>Status taqsimoti</h3>
+      <span class="note">ochiq vazifalar</span></div>
+      <div class="mon-body"><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#94a3b8 0% 34%,#2563eb 34% 61%,#7c3aed 61% 76%,#0ea5e9 76% 88%,#f5b74e 88% 92%,#1b7a4d 92% 100%)">
+      <div class="donut-c"><div><div class="v">59</div><div class="l">vazifa</div></div></div></div>
+      <div class="leg"><div class="leg-row"><span class="dt" style="background:#94a3b8"></span>To Do<span class="vl">34%</span></div><div class="leg-row"><span class="dt" style="background:#2563eb"></span>In Progress<span class="vl">27%</span></div><div class="leg-row"><span class="dt" style="background:#7c3aed"></span>Code Review<span class="vl">15%</span></div><div class="leg-row"><span class="dt" style="background:#0ea5e9"></span>QA Testing<span class="vl">12%</span></div><div class="leg-row"><span class="dt" style="background:#f5b74e"></span>Blocked<span class="vl">4%</span></div><div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>Done bugun<span class="vl">8%</span></div></div></div></div></div><div class="mon-card c8"><div class="mon-head"><h3>Yopilgan vazifalar</h3>
+      <span class="note">oxirgi 7 hafta</span></div>
+      <div class="mon-body"><svg class="spark" viewBox="0 0 560 120" preserveAspectRatio="none"><line class="gl" x1="14" y1="14" x2="546" y2="14"/><line class="gl" x1="14" y1="45" x2="546" y2="45"/><line class="gl" x1="14" y1="75" x2="546" y2="75"/><line class="gl" x1="14" y1="106" x2="546" y2="106"/><path class="ar" d="M14 53 L103 44 L191 56 L280 35 L369 41 L457 26 L546 44 L546 106 L14 106 Z"/><path class="ln" d="M14 53 L103 44 L191 56 L280 35 L369 41 L457 26 L546 44"/><text x="14" y="118" text-anchor="middle">H1</text><text x="103" y="118" text-anchor="middle">H2</text><text x="191" y="118" text-anchor="middle">H3</text><text x="280" y="118" text-anchor="middle">H4</text><text x="369" y="118" text-anchor="middle">H5</text><text x="457" y="118" text-anchor="middle">H6</text><text x="546" y="118" text-anchor="middle">H7</text></svg></div></div><div class="mon-card c4"><div class="mon-head"><h3>Vazifa turlari</h3>
+      <span class="note">ochiq</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Story</span>
+          <span class="bar"><i style="width:100%;background:var(--m-acc)"></i></span>
+          <span class="vv">24</span></div><div class="rank"><span class="no">2</span><span class="nm">Task</span>
+          <span class="bar"><i style="width:75%;background:var(--m-acc)"></i></span>
+          <span class="vv">18</span></div><div class="rank"><span class="no">3</span><span class="nm">Bug</span>
+          <span class="bar"><i style="width:46%;background:var(--m-acc)"></i></span>
+          <span class="vv">11</span></div><div class="rank"><span class="no">4</span><span class="nm">Subtask</span>
+          <span class="bar"><i style="width:25%;background:var(--m-acc)"></i></span>
+          <span class="vv">6</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Xodimlar yuki</h3>
+      <span class="note">ochiq vazifa / a'zo</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">D. Salimov</span>
+          <span class="bar"><i style="width:100%;background:var(--m-warn)"></i></span>
+          <span class="vv">12</span></div><div class="rank"><span class="no">2</span><span class="nm">B. Karimov</span>
+          <span class="bar"><i style="width:75%;background:var(--m-warn)"></i></span>
+          <span class="vv">9</span></div><div class="rank"><span class="no">3</span><span class="nm">S. Nazarova</span>
+          <span class="bar"><i style="width:67%;background:var(--m-warn)"></i></span>
+          <span class="vv">8</span></div><div class="rank"><span class="no">4</span><span class="nm">R. Tohirov (mehmon)</span>
+          <span class="bar"><i style="width:50%;background:var(--m-warn)"></i></span>
+          <span class="vv">6</span></div><div class="rank"><span class="no">5</span><span class="nm">A. Zokirov</span>
+          <span class="bar"><i style="width:42%;background:var(--m-warn)"></i></span>
+          <span class="vv">5</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Blok tahlili</h3>
+      <span class="note">issue_blockers</span></div>
+      <div class="mon-body">
+   <div class="fun-row"><span class="fun-n">Hamkor javobi</span>
+     <span class="fun-t"><i style="width:100%;background:linear-gradient(90deg,#c98a3d,#f5b74e)"></i></span>
+     <span class="fun-v">4</span><span class="fun-p">44%</span></div>
+   <div class="fun-row"><span class="fun-n">Texnik to'siq</span>
+     <span class="fun-t"><i style="width:75%;background:linear-gradient(90deg,#c98a3d,#f5b74e)"></i></span>
+     <span class="fun-v">3</span><span class="fun-p">33%</span></div>
+   <div class="fun-row"><span class="fun-n">Talab noaniq</span>
+     <span class="fun-t"><i style="width:50%;background:linear-gradient(90deg,#c98a3d,#f5b74e)"></i></span>
+     <span class="fun-v">2</span><span class="fun-p">23%</span></div>
+   <div style="margin-top:12px;padding-top:11px;border-top:1px solid var(--mline2);
+     display:flex;justify-content:space-between;font-size:12.5px;color:#8b9aa9">
+     <span>O'rtacha blokda turish</span><b class="mono" style="color:var(--m-warn)">1.8 kun</b></div></div></div><div class="mon-card c12"><div class="mon-head"><h3>Faollik issiqlik xaritasi</h3>
+      <span class="note">yopilgan vazifalar · 4 hafta</span></div>
+      <div class="mon-body">
+   <div class="heat">
+     <span></span><span class="hh">Du</span><span class="hh">Se</span><span class="hh">Ch</span>
+     <span class="hh">Pa</span><span class="hh">Ju</span><span class="hh">Sh</span><span class="hh">Ya</span>
+     <span class="hl">H-4</span><span class="hc l2"></span><span class="hc l3"></span><span class="hc l1"></span>
+     <span class="hc l4"></span><span class="hc l3"></span><span class="hc"></span><span class="hc"></span>
+     <span class="hl">H-3</span><span class="hc l3"></span><span class="hc l4"></span><span class="hc l2"></span>
+     <span class="hc l3"></span><span class="hc l4"></span><span class="hc l1"></span><span class="hc"></span>
+     <span class="hl">H-2</span><span class="hc l1"></span><span class="hc l2"></span><span class="hc l3"></span>
+     <span class="hc l2"></span><span class="hc l3"></span><span class="hc"></span><span class="hc"></span>
+     <span class="hl">H-1</span><span class="hc l2"></span><span class="hc l3"></span><span class="hc l1"></span>
+     <span class="hc l4"></span><span class="hc l3"></span><span class="hc l1"></span><span class="hc"></span>
+   </div></div></div></div>
+</section>
+
+<!-- ════════════ SUPMON ════════════ -->
+<section class="page-view" id="pv-supmon">
+  <div class="stat-strip"><div class="stat"><div class="stat-top"><span class="material-icons-outlined">confirmation_number</span>Ochiq ticketlar</div><div class="stat-value">23</div><div class="stat-sub">96 tadan</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">bolt</span>O'rtacha javob</div><div class="stat-value">14 min</div><div class="stat-sub">maqsad: 30 min</div><div class="stat-bar"><i style="width:53%"></i></div></div><div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">timer_off</span>SLA xavfda</div><div class="stat-value">3</div><div class="stat-sub">2 kritik</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">sentiment_satisfied</span>Mijoz bahosi</div><div class="stat-value">4.6</div><div class="stat-sub">5 dan · 84 ta baho</div><div class="stat-bar"><i style="width:92%"></i></div></div></div>
+  <div class="mon-grid"><div class="mon-card c8"><div class="mon-head"><h3>Ticket oqimi</h3>
+      <span class="note">kelgan / yopilgan · 7 kun</span></div>
+      <div class="mon-body"><svg class="spark" viewBox="0 0 560 120" preserveAspectRatio="none"><line class="gl" x1="14" y1="14" x2="546" y2="14"/><line class="gl" x1="14" y1="45" x2="546" y2="45"/><line class="gl" x1="14" y1="75" x2="546" y2="75"/><line class="gl" x1="14" y1="106" x2="546" y2="106"/><path class="ar" d="M14 66 L103 46 L191 56 L280 33 L369 43 L457 26 L546 49 L546 106 L14 106 Z"/><path class="ln" d="M14 66 L103 46 L191 56 L280 33 L369 43 L457 26 L546 49"/><path class="ln2" d="M14 73 L103 53 L191 59 L280 39 L369 46 L457 36 L546 53"/><text x="14" y="118" text-anchor="middle">Du</text><text x="103" y="118" text-anchor="middle">Se</text><text x="191" y="118" text-anchor="middle">Ch</text><text x="280" y="118" text-anchor="middle">Pa</text><text x="369" y="118" text-anchor="middle">Ju</text><text x="457" y="118" text-anchor="middle">Sh</text><text x="546" y="118" text-anchor="middle">Ya</text></svg></div></div><div class="mon-card c4"><div class="mon-head"><h3>Priority taqsimoti</h3>
+      <span class="note">ochiq</span></div>
+      <div class="mon-body"><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#b83d2e 0% 9%,#e0564a 9% 35%,#f5b74e 35% 79%,#94a3b8 79% 100%)">
+      <div class="donut-c"><div><div class="v">23</div><div class="l">ticket</div></div></div></div>
+      <div class="leg"><div class="leg-row"><span class="dt" style="background:#b83d2e"></span>Critical<span class="vl">9%</span></div><div class="leg-row"><span class="dt" style="background:#e0564a"></span>High<span class="vl">26%</span></div><div class="leg-row"><span class="dt" style="background:#f5b74e"></span>Medium<span class="vl">44%</span></div><div class="leg-row"><span class="dt" style="background:#94a3b8"></span>Low<span class="vl">21%</span></div></div></div></div></div><div class="mon-card"><div class="mon-head"><h3>SLA bajarilishi</h3>
+      <span class="note">oxirgi 30 kun</span></div>
+      <div class="mon-body">
+   <div class="stk-row"><div class="stk-lb"><span>Muddatida yopilgan</span><b>91%</b></div>
+     <div class="stk"><i style="width:91%;background:linear-gradient(90deg,#1b7a4d,#4ec48a)"></i>
+       <i style="width:6%;background:linear-gradient(90deg,#c98a3d,#f5b74e)"></i>
+       <i style="width:3%;background:linear-gradient(90deg,#b83d2e,#e0564a)"></i></div></div>
+   <div class="leg" style="margin-top:10px">
+     <div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>Muddatida<span class="vl">87 ta</span></div>
+     <div class="leg-row"><span class="dt" style="background:#f5b74e"></span>Kechikdi (&lt;2 soat)<span class="vl">6 ta</span></div>
+     <div class="leg-row"><span class="dt" style="background:#b83d2e"></span>SLA buzildi<span class="vl">3 ta</span></div>
+   </div></div></div><div class="mon-card"><div class="mon-head"><h3>Operatorlar</h3>
+      <span class="note">yopilgan ticket · oy</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">S. Nazarova</span>
+          <span class="bar"><i style="width:100%;background:var(--m-pos)"></i></span>
+          <span class="vv">34</span></div><div class="rank"><span class="no">2</span><span class="nm">B. Karimov</span>
+          <span class="bar"><i style="width:82%;background:var(--m-pos)"></i></span>
+          <span class="vv">28</span></div><div class="rank"><span class="no">3</span><span class="nm">A. Abdullayev</span>
+          <span class="bar"><i style="width:62%;background:var(--m-pos)"></i></span>
+          <span class="vv">21</span></div><div class="rank"><span class="no">4</span><span class="nm">M. Yusupova</span>
+          <span class="bar"><i style="width:38%;background:var(--m-pos)"></i></span>
+          <span class="vv">13</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Kanal bo'yicha murojaat</h3>
+      <span class="note">oy</span></div>
+      <div class="mon-body"><div class="cbar"><div class="cbar-col"><span class="cbar-v">48</span><span class="cbar-b p" style="height:100%"></span><span class="cbar-l">Telegram</span></div><div class="cbar-col"><span class="cbar-v">31</span><span class="cbar-b p" style="height:65%"></span><span class="cbar-l">Qo'ng'iroq</span></div><div class="cbar-col"><span class="cbar-v">14</span><span class="cbar-b p" style="height:29%"></span><span class="cbar-l">Sayt</span></div><div class="cbar-col"><span class="cbar-v">3</span><span class="cbar-b p" style="height:6%"></span><span class="cbar-l">Email</span></div></div></div></div><div class="mon-card"><div class="mon-head"><h3>Loyihalar bo'yicha</h3>
+      <span class="note">ochiq ticket</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Mobil ilova (MOB)</span>
+          <span class="bar"><i style="width:100%;background:var(--m-warn)"></i></span>
+          <span class="vv">11</span></div><div class="rank"><span class="no">2</span><span class="nm">Ichki CRM</span>
+          <span class="bar"><i style="width:55%;background:var(--m-warn)"></i></span>
+          <span class="vv">6</span></div><div class="rank"><span class="no">3</span><span class="nm">Logistika (LOG)</span>
+          <span class="bar"><i style="width:36%;background:var(--m-warn)"></i></span>
+          <span class="vv">4</span></div><div class="rank"><span class="no">4</span><span class="nm">HR tizimi</span>
+          <span class="bar"><i style="width:18%;background:var(--m-warn)"></i></span>
+          <span class="vv">2</span></div></div></div></div>
+</section>
+
+<!-- ════════════ INVMON ════════════ -->
+<section class="page-view" id="pv-invmon">
+  <div class="stat-strip"><div class="stat"><div class="stat-top"><span class="material-icons-outlined">inventory_2</span>Jami jihozlar</div><div class="stat-value">214</div><div class="stat-sub">8 kategoriya</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">person</span>Biriktirilgan</div><div class="stat-value">168</div><div class="stat-sub">78%</div><div class="stat-bar"><i style="width:78%"></i></div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Balans qiymati</div><div class="stat-value">1.86</div><div class="stat-sub">mlrd UZS</div></div><div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">build</span>Ta'mirda</div><div class="stat-value">6</div><div class="stat-sub">2 kafolat ostida</div></div></div>
+  <div class="mon-grid"><div class="mon-card c4"><div class="mon-head"><h3>Holat taqsimoti</h3>
+      <span class="note">jihozlar</span></div>
+      <div class="mon-body"><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#1b7a4d 0% 78%,#5b8def 78% 93%,#f5b74e 93% 96%,#cbd5e1 96% 100%)">
+      <div class="donut-c"><div><div class="v">214</div><div class="l">jihoz</div></div></div></div>
+      <div class="leg"><div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>Biriktirilgan<span class="vl">78%</span></div><div class="leg-row"><span class="dt" style="background:#5b8def"></span>Omborda<span class="vl">15%</span></div><div class="leg-row"><span class="dt" style="background:#f5b74e"></span>Ta'mirda<span class="vl">3%</span></div><div class="leg-row"><span class="dt" style="background:#cbd5e1"></span>Hisobdan chiqarilgan<span class="vl">4%</span></div></div></div></div></div><div class="mon-card c8"><div class="mon-head"><h3>Kategoriyalar</h3>
+      <span class="note">jihozlar soni</span></div>
+      <div class="mon-body"><div class="cbar"><div class="cbar-col"><span class="cbar-v">64</span><span class="cbar-b " style="height:100%"></span><span class="cbar-l">Noutbuk</span></div><div class="cbar-col"><span class="cbar-v">52</span><span class="cbar-b " style="height:81%"></span><span class="cbar-l">Monitor</span></div><div class="cbar-col"><span class="cbar-v">46</span><span class="cbar-b " style="height:72%"></span><span class="cbar-l">Mebel</span></div><div class="cbar-col"><span class="cbar-v">29</span><span class="cbar-b " style="height:45%"></span><span class="cbar-l">Aksessuar</span></div><div class="cbar-col"><span class="cbar-v">23</span><span class="cbar-b " style="height:36%"></span><span class="cbar-l">Telefon</span></div></div></div></div><div class="mon-card c8"><div class="mon-head"><h3>Harakat dinamikasi</h3>
+      <span class="note">biriktirish / qaytarish</span></div>
+      <div class="mon-body"><svg class="spark" viewBox="0 0 560 120" preserveAspectRatio="none"><line class="gl" x1="14" y1="14" x2="546" y2="14"/><line class="gl" x1="14" y1="45" x2="546" y2="45"/><line class="gl" x1="14" y1="75" x2="546" y2="75"/><line class="gl" x1="14" y1="106" x2="546" y2="106"/><path class="ar" d="M14 61 L103 46 L191 66 L280 36 L369 51 L457 26 L546 36 L546 106 L14 106 Z"/><path class="ln" d="M14 61 L103 46 L191 66 L280 36 L369 51 L457 26 L546 36"/><path class="ln2" d="M14 86 L103 76 L191 81 L280 71 L369 76 L457 61 L546 76"/><text x="14" y="118" text-anchor="middle">Fev</text><text x="103" y="118" text-anchor="middle">Mar</text><text x="191" y="118" text-anchor="middle">Apr</text><text x="280" y="118" text-anchor="middle">May</text><text x="369" y="118" text-anchor="middle">Iyn</text><text x="457" y="118" text-anchor="middle">Iyl</text><text x="546" y="118" text-anchor="middle">Avg</text></svg></div></div><div class="mon-card c4"><div class="mon-head"><h3>Omborlar</h3>
+      <span class="note">joriy qoldiq</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Asosiy ombor</span>
+          <span class="bar"><i style="width:100%;background:var(--m-acc)"></i></span>
+          <span class="vv">24</span></div><div class="rank"><span class="no">2</span><span class="nm">Ta'mir zonasi</span>
+          <span class="bar"><i style="width:25%;background:var(--m-acc)"></i></span>
+          <span class="vv">6</span></div><div class="rank"><span class="no">3</span><span class="nm">Hisobdan chiqarilganlar</span>
+          <span class="bar"><i style="width:38%;background:var(--m-acc)"></i></span>
+          <span class="vv">9</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Bo'limlar bo'yicha</h3>
+      <span class="note">biriktirilgan qiymat</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Development</span>
+          <span class="bar"><i style="width:100%;background:var(--m-pos)"></i></span>
+          <span class="vv">684 mln</span></div><div class="rank"><span class="no">2</span><span class="nm">QA</span>
+          <span class="bar"><i style="width:46%;background:var(--m-pos)"></i></span>
+          <span class="vv">312 mln</span></div><div class="rank"><span class="no">3</span><span class="nm">Sotuv</span>
+          <span class="bar"><i style="width:36%;background:var(--m-pos)"></i></span>
+          <span class="vv">248 mln</span></div><div class="rank"><span class="no">4</span><span class="nm">Buxgalteriya</span>
+          <span class="bar"><i style="width:27%;background:var(--m-pos)"></i></span>
+          <span class="vv">186 mln</span></div><div class="rank"><span class="no">5</span><span class="nm">Boshqaruv</span>
+          <span class="bar"><i style="width:21%;background:var(--m-pos)"></i></span>
+          <span class="vv">142 mln</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Amortizatsiya holati</h3>
+      <span class="note">balans qiymati bo'yicha</span></div>
+      <div class="mon-body">
+   <div class="stk-row"><div class="stk-lb"><span>Yangi (0—12 oy)</span><b>42%</b></div>
+     <div class="stk"><i style="width:42%;background:linear-gradient(90deg,#1b7a4d,#4ec48a)"></i>
+       <i style="width:33%;background:linear-gradient(90deg,#5b8def,#9dc0ef)"></i>
+       <i style="width:17%;background:linear-gradient(90deg,#c98a3d,#f5b74e)"></i>
+       <i style="width:8%;background:linear-gradient(90deg,#b83d2e,#e0564a)"></i></div></div>
+   <div class="leg" style="margin-top:10px">
+     <div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>0—12 oy<span class="vl">90 dona</span></div>
+     <div class="leg-row"><span class="dt" style="background:#5b8def"></span>1—3 yil<span class="vl">71 dona</span></div>
+     <div class="leg-row"><span class="dt" style="background:#f5b74e"></span>3—5 yil<span class="vl">36 dona</span></div>
+     <div class="leg-row"><span class="dt" style="background:#e0564a"></span>5+ yil · almashtirish kerak<span class="vl">17 dona</span></div>
+   </div></div></div></div>
+</section>
+
+<!-- ════════════ KPIMON ════════════ -->
+<section class="page-view" id="pv-kpimon">
+  <div class="stat-strip"><div class="stat"><div class="stat-top"><span class="material-icons-outlined">groups</span>Baholanadi</div><div class="stat-value">48</div><div class="stat-sub">xodim</div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">insights</span>O'rtacha KPI</div><div class="stat-value">82.4</div><div class="stat-sub">iyul davri</div><div class="stat-bar"><i style="width:82%"></i></div></div><div class="stat"><div class="stat-top"><span class="material-icons-outlined">emoji_events</span>Eng yuqori</div><div class="stat-value">96.8</div><div class="stat-sub">M. Yusupova</div></div><div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">warning</span>80 dan past</div><div class="stat-value">7</div><div class="stat-sub">15% xodimlar</div></div></div>
+  <div class="mon-grid"><div class="mon-card c8"><div class="mon-head"><h3>KPI dinamikasi</h3>
+      <span class="note">o'rtacha ball · oylik</span></div>
+      <div class="mon-body"><svg class="spark" viewBox="0 0 560 120" preserveAspectRatio="none"><line class="gl" x1="14" y1="14" x2="546" y2="14"/><line class="gl" x1="14" y1="45" x2="546" y2="45"/><line class="gl" x1="14" y1="75" x2="546" y2="75"/><line class="gl" x1="14" y1="106" x2="546" y2="106"/><path class="ar" d="M14 32 L120 30 L227 29 L333 28 L440 27 L546 26 L546 106 L14 106 Z"/><path class="ln" d="M14 32 L120 30 L227 29 L333 28 L440 27 L546 26"/><text x="14" y="118" text-anchor="middle">Mar</text><text x="120" y="118" text-anchor="middle">Apr</text><text x="227" y="118" text-anchor="middle">May</text><text x="333" y="118" text-anchor="middle">Iyn</text><text x="440" y="118" text-anchor="middle">Iyl</text><text x="546" y="118" text-anchor="middle">Avg</text></svg></div></div><div class="mon-card c4"><div class="mon-head"><h3>Ball taqsimoti</h3>
+      <span class="note">xodimlar</span></div>
+      <div class="mon-body"><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#1b7a4d 0% 19%,#4ec48a 19% 67%,#f5b74e 67% 88%,#e0564a 88% 100%)">
+      <div class="donut-c"><div><div class="v">48</div><div class="l">xodim</div></div></div></div>
+      <div class="leg"><div class="leg-row"><span class="dt" style="background:#1b7a4d"></span>90+<span class="vl">19%</span></div><div class="leg-row"><span class="dt" style="background:#4ec48a"></span>80—89<span class="vl">48%</span></div><div class="leg-row"><span class="dt" style="background:#f5b74e"></span>70—79<span class="vl">21%</span></div><div class="leg-row"><span class="dt" style="background:#e0564a"></span>70 dan past<span class="vl">12%</span></div></div></div></div></div><div class="mon-card"><div class="mon-head"><h3>Kriteriyalar bo'yicha</h3>
+      <span class="note">o'rtacha ball</span></div>
+      <div class="mon-body"><div class="cbar"><div class="cbar-col"><span class="cbar-v">88</span><span class="cbar-b g" style="height:100%"></span><span class="cbar-l">Vazifa</span></div><div class="cbar-col"><span class="cbar-v">84</span><span class="cbar-b g" style="height:95%"></span><span class="cbar-l">Feedback</span></div><div class="cbar-col"><span class="cbar-v">79</span><span class="cbar-b g" style="height:90%"></span><span class="cbar-l">Ticket</span></div><div class="cbar-col"><span class="cbar-v">81</span><span class="cbar-b g" style="height:92%"></span><span class="cbar-l">Qo'ng'iroq</span></div><div class="cbar-col"><span class="cbar-v">74</span><span class="cbar-b g" style="height:84%"></span><span class="cbar-l">Intizom</span></div></div></div></div><div class="mon-card"><div class="mon-head"><h3>Top xodimlar</h3>
+      <span class="note">iyul davri</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">M. Yusupova · QA</span>
+          <span class="bar"><i style="width:100%;background:var(--m-pos)"></i></span>
+          <span class="vv">96.8</span></div><div class="rank"><span class="no">2</span><span class="nm">D. Salimov · Dev</span>
+          <span class="bar"><i style="width:90%;background:var(--m-pos)"></i></span>
+          <span class="vv">87.5</span></div><div class="rank"><span class="no">3</span><span class="nm">B. Karimov · Support</span>
+          <span class="bar"><i style="width:87%;background:var(--m-pos)"></i></span>
+          <span class="vv">84.1</span></div><div class="rank"><span class="no">4</span><span class="nm">S. Nazarova · QA</span>
+          <span class="bar"><i style="width:86%;background:var(--m-pos)"></i></span>
+          <span class="vv">82.9</span></div><div class="rank"><span class="no">5</span><span class="nm">A. Abdullayev · Call</span>
+          <span class="bar"><i style="width:76%;background:var(--m-pos)"></i></span>
+          <span class="vv">73.9</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Profillar bo'yicha</h3>
+      <span class="note">o'rtacha ball / xodim soni</span></div>
+      <div class="mon-body"><div class="rank"><span class="no">1</span><span class="nm">Dasturchi</span>
+          <span class="bar"><i style="width:96%;background:var(--m-acc)"></i></span>
+          <span class="vv">85.2 · 18 kishi</span></div><div class="rank"><span class="no">2</span><span class="nm">QA muhandis</span>
+          <span class="bar"><i style="width:100%;background:var(--m-acc)"></i></span>
+          <span class="vv">89.4 · 7 kishi</span></div><div class="rank"><span class="no">3</span><span class="nm">Support operatori</span>
+          <span class="bar"><i style="width:91%;background:var(--m-acc)"></i></span>
+          <span class="vv">81.0 · 12 kishi</span></div><div class="rank"><span class="no">4</span><span class="nm">Call operator</span>
+          <span class="bar"><i style="width:85%;background:var(--m-acc)"></i></span>
+          <span class="vv">76.3 · 11 kishi</span></div></div></div><div class="mon-card"><div class="mon-head"><h3>Intizom (turniket)</h3>
+      <span class="note">kechikishlar · oylik</span></div>
+      <div class="mon-body"><div class="cbar"><div class="cbar-col"><span class="cbar-v">34</span><span class="cbar-b o" style="height:100%"></span><span class="cbar-l">Mar</span></div><div class="cbar-col"><span class="cbar-v">28</span><span class="cbar-b o" style="height:82%"></span><span class="cbar-l">Apr</span></div><div class="cbar-col"><span class="cbar-v">31</span><span class="cbar-b o" style="height:91%"></span><span class="cbar-l">May</span></div><div class="cbar-col"><span class="cbar-v">22</span><span class="cbar-b o" style="height:65%"></span><span class="cbar-l">Iyn</span></div><div class="cbar-col"><span class="cbar-v">19</span><span class="cbar-b o" style="height:56%"></span><span class="cbar-l">Iyl</span></div><div class="cbar-col"><span class="cbar-v">12</span><span class="cbar-b o" style="height:35%"></span><span class="cbar-l">Avg</span></div></div></div></div></div>
 </section>
 
 <!-- ════════════ LEAD PIPELINE ════════════ -->
@@ -4643,7 +5012,9 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <script>
 /* ═══════ SPA router ═══════ */
-var TITLES={home:'Mening profilim',leads:'Leadlar',sources:'Lead manbalari',pipelines:'Voronkalar',campaigns:'Kampaniyalar',lostreasons:"Yo'qotish sabablari",customers:'Mijozlar',contracts:'Shartnomalar',
+var TITLES={home:'Mening profilim',
+  mktmon:'Marketing monitoringi',contrmon:'Shartnoma monitoringi',taskmon:'Vazifa monitoringi',
+  supmon:'Support monitoringi',invmon:'Inventar monitoringi',kpimon:'KPI monitoringi',leads:'Leadlar',sources:'Lead manbalari',pipelines:'Voronkalar',campaigns:'Kampaniyalar',lostreasons:"Yo'qotish sabablari",customers:'Mijozlar',contracts:'Shartnomalar',
   projects:'Loyihalar',project:'Mobil ilova',board:'Mobil ilova · Board',handover:'Handover',
   tickets:'Ticketlar',botlist:'Mijoz chatlari',inbox:'Chat',calls:'Call center',inventory:'Inventar',
   kpi:'Natijalar',kpiprofiles:'Profillar',
@@ -4655,6 +5026,12 @@ var NAVKEY={project:'projects',board:'projects',inbox:'botlist'};
 /* Breadcrumb yo'llari: [nom, o'tish sahifasi yoki null] */
 var TRAIL={
   home:[['Mening profilim',null]],
+  mktmon:[['Marketing',null],['Monitoring',null]],
+  contrmon:[['Shartnomalar',null],['Monitoring',null]],
+  taskmon:[['Vazifalar boshqaruvi',null],['Monitoring',null]],
+  supmon:[['Support',null],['Monitoring',null]],
+  invmon:[['Inventar',null],['Monitoring',null]],
+  kpimon:[['KPI',null],['Monitoring',null]],
   leads:[['Marketing',null],['Leadlar',null]],
   sources:[['Marketing',null],['Lead manbalari',null]],
   pipelines:[['Marketing',null],['Voronkalar',null]],
