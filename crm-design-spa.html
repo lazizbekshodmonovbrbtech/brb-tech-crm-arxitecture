@@ -3788,6 +3788,9 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span class="ch-type grp" id="hd-type" style="margin-left:6px">SUPERGROUP</span>
         <button class="btn-flat" style="margin-left:auto" onclick="toast('Ticket ochildi \u2014 T-2215')">
           <span class="material-icons-outlined">confirmation_number</span> Ticket</button>
+        <span class="thr" id="hd-owner" style="display:none"></span>
+        <button class="tb-icon-btn" title="Suhbatni bo'shatish" id="hd-release" style="display:none"
+          onclick="releaseChat()"><span class="material-icons-outlined">lock_open</span></button>
         <button class="tb-icon-btn" title="Sinxronizatsiya" onclick="syncChat()">
           <span class="material-icons-outlined">sync</span></button>
       </div>
@@ -6479,10 +6482,23 @@ var CHATS=[
    {who:'B. Karimov',dir:'out',t:'08:30',text:'Ertaga test muhitida ko\'rsatamiz.'}
   ]},
  {id:3,type:'PRIVATE',name:'Nodira Karimova',ini:'NK',c:'#b56bb0',sub:'Shaxsiy chat · @nodira_k',
-  cust:'Nodira Karimova',tgid:'482913004',unread:0,forum:false,mc:1,
+  cust:'Nodira Karimova',tgid:'482913004',unread:0,forum:false,mc:1,owner:'me',ownerName:'S. Nazarova',
   msgs:[
    {who:'Nodira Karimova',ini:'NK',c:'#b56bb0',dir:'in',t:'kecha',text:'Rahmat, hammasi ishladi!',
     react:[{e:'❤️',n:1,mine:true}]}
+  ]},
+ {id:5,type:'PRIVATE',name:'Shoxrux Mirzayev',ini:'SM',c:'#5b7cc9',sub:'Shaxsiy chat · @shoxrux_m',
+  cust:'Binokor Holding',tgid:'517204881',unread:2,forum:false,mc:1,owner:'other',ownerName:'B. Karimov',
+  msgs:[
+   {who:'Shoxrux Mirzayev',ini:'SM',c:'#5b7cc9',dir:'in',t:'09:05',uid:601,
+    text:"HRM modulida davomat hisoboti ochilmayapti"},
+   {who:'B. Karimov',dir:'out',t:'09:08',text:"Tekshiryapman, biroz kuting"}
+  ]},
+ {id:6,type:'PRIVATE',name:'Kamola Yusupova',ini:'KY',c:'#a95f8f',sub:'Shaxsiy chat · @kamola_y',
+  cust:'Agro Invest MChJ',tgid:'729103455',unread:1,forum:false,mc:1,owner:'free',
+  msgs:[
+   {who:'Kamola Yusupova',ini:'KY',c:'#a95f8f',dir:'in',t:'09:40',uid:701,
+    text:"Assalomu alaykum, litsenziya muddatini uzaytirish uchun kimga murojaat qilay?"}
   ]},
  {id:4,type:'SUPERGROUP',name:'Trans Cargo · LOG',ini:'TC',c:'#c98a3d',sub:"Guruh · 9 a'zo",
   cust:'Trans Cargo Group',tgid:'-1005554443',unread:0,forum:false,mc:9,
@@ -6512,7 +6528,11 @@ function renderChatList(){
       +'<span class="t">'+(last.t||'')+'</span></div>'
       +'<div class="ib-last">'+lt+'</div>'
       +'<div class="ib-badges"><span class="ch-type '+chatTypeCls(c.type)+'">'+c.type+'</span>'
-      +(c.forum?'<span class="ch-type grp">FORUM</span>':'')+'</div></div>'
+      +(c.forum?'<span class="ch-type grp">FORUM</span>':'')
+      +(c.type==='PRIVATE'&&c.owner==='other'?'<span class="thr other" style="margin:0">'+c.ownerName+'</span>':'')
+      +(c.type==='PRIVATE'&&c.owner==='free'?'<span class="thr free" style="margin:0">egasiz</span>':'')
+      +(c.type==='PRIVATE'&&c.owner==='me'?'<span class="thr mine" style="margin:0">siz</span>':'')
+      +'</div></div>'
       +(c.unread?'<span class="ib-unread">'+c.unread+'</span>':'')+'</div>';
   }
   box.innerHTML=out||'<div style="padding:20px;text-align:center;font-size:12.5px;color:var(--ink-4)">Topilmadi</div>';
@@ -6573,7 +6593,23 @@ function updateCompose(){
   var take=document.getElementById('cl-take');
   var ann=document.getElementById('btn-ann');
   ann.style.display=isGroup?'':'none';
-  if(!isGroup){lock.style.display='none';comp.style.display='';return}
+  if(!isGroup){
+    // SHAXSIY CHAT \u2014 qulf butun chat darajasida
+    if(c.owner==='other'){
+      lock.style.display='flex';lock.className='compose-lock warn';
+      document.getElementById('cl-icon').textContent='lock';
+      document.getElementById('cl-text').innerHTML='Bu suhbatga <b>'+c.ownerName
+        +'</b> javob bermoqda. Bir vaqtda bitta operator yozadi.';
+      take.style.display='none';comp.style.display='none';return;
+    }
+    if(c.owner==='free'){
+      lock.style.display='flex';lock.className='compose-lock';
+      document.getElementById('cl-icon').textContent='person_add';
+      document.getElementById('cl-text').innerHTML='Suhbat egasiz \u2014 javob berish uchun oling';
+      take.style.display='';comp.style.display='none';return;
+    }
+    lock.style.display='none';comp.style.display='';return;
+  }
   if(replyTo===null){
     lock.style.display='flex';lock.className='compose-lock';
     document.getElementById('cl-icon').textContent='reply';
@@ -6600,7 +6636,16 @@ function updateCompose(){
   }
   lock.style.display='none';comp.style.display='';
 }
-function claimThread(){if(replyTo!==null)claimMsg(replyTo)}
+function claimThread(){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  if(c.type==='PRIVATE'){
+    c.owner='me';c.ownerName='S. Nazarova';
+    updateCompose();renderChatList();
+    toast(c.name+' suhbati sizga biriktirildi \u2014 boshqa operator yoza olmaydi');
+    return;
+  }
+  if(replyTo!==null)claimMsg(replyTo);
+}
 function claimMsg(i){
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
   var m=c.msgs[i];
@@ -6640,7 +6685,20 @@ function openChatItem(id){
   document.getElementById('ctx-mc').textContent=c.mc;
   document.getElementById('ctx-topics').style.display=c.forum?'':'none';
   document.getElementById('reply-bar').classList.remove('on');
+  var ow=document.getElementById('hd-owner'), rel=document.getElementById('hd-release');
+  if(c.type==='PRIVATE'&&c.owner){
+    ow.style.display='';rel.style.display=c.owner==='me'?'':'none';
+    ow.className='thr '+(c.owner==='me'?'mine':(c.owner==='other'?'other':'free'));
+    ow.textContent=c.owner==='me'?'siz javob bermoqdasiz'
+      :(c.owner==='other'?c.ownerName+' javob bermoqda':'egasiz');
+  }else{ow.style.display='none';rel.style.display='none'}
   renderChatList();renderMsgs();
+}
+function releaseChat(){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  c.owner='free';c.ownerName=null;
+  openChatItem(curChat);
+  toast('Suhbat bo\'shatildi \u2014 boshqa operator olishi mumkin');
 }
 function chatTab(btn,v){
   var s=btn.parentElement.querySelectorAll('.ib-tab');
