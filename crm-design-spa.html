@@ -586,6 +586,58 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+/* Xodim profili (bosh sahifa) */
+.prof-hero{display:flex;align-items:center;gap:16px;background:var(--surface);
+  border:1px solid var(--line-2);border-radius:14px;padding:18px 20px;margin-bottom:14px;
+  box-shadow:0 2px 6px rgba(15,23,42,.05);position:relative;overflow:hidden}
+.prof-hero::before{content:'';position:absolute;inset:0 auto 0 0;width:4px;
+  background:linear-gradient(180deg,#2563eb,#7c3aed)}
+.prof-ava{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;
+  font-size:21px;font-weight:700;color:#fff;flex-shrink:0;
+  background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 6px 16px rgba(102,126,234,.35)}
+.prof-name{font-size:19px;font-weight:700;color:var(--ink);line-height:1.2}
+.prof-meta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-3);margin-top:4px;flex-wrap:wrap}
+.prof-meta .sep{color:#cbd5e1}
+.prof-kpi{margin-left:auto;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.pk{text-align:center}
+.pk .v{font-family:var(--font-mono);font-size:22px;font-weight:700;color:#182634;line-height:1.1}
+.pk .l{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:#8b9aa9;margin-top:3px}
+.pk.pos .v{color:var(--m-pos)}
+.prof-grid{display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start}
+.kpi-crit-row{display:flex;align-items:center;gap:11px;padding:9px 0}
+.kpi-crit-row+.kpi-crit-row{border-top:1px solid var(--mline2)}
+.kcr-n{font-size:13px;color:#182634;min-width:140px}
+.kcr-w{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9;
+  background:#f2f5f9;padding:1px 7px;border-radius:5px}
+.kcr-bar{flex:1;height:6px;border-radius:3px;background:#eef1f5;overflow:hidden;min-width:60px}
+.kcr-bar i{display:block;height:100%;border-radius:3px}
+.kcr-v{font-family:var(--font-mono);font-size:12.5px;font-weight:700;width:34px;text-align:right}
+.wk-chart{display:flex;align-items:flex-end;gap:8px;height:96px;padding:6px 0 0}
+.wk-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%}
+.wk-bar{width:100%;border-radius:5px 5px 3px 3px;background:linear-gradient(180deg,#5b8def,#2563eb);
+  margin-top:auto;transition:filter .15s;cursor:pointer;min-height:3px}
+.wk-bar:hover{filter:brightness(1.12)}
+.wk-bar.today{background:linear-gradient(180deg,#7c3aed,#5b21b6)}
+.wk-lb{font-size:10px;color:#8b9aa9;font-weight:600}
+.wk-n{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)}
+.eq-item{display:flex;align-items:center;gap:11px;padding:10px 0}
+.eq-item+.eq-item{border-top:1px solid var(--mline2)}
+.eq-ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;
+  background:var(--m-acc-soft);color:var(--m-acc);flex-shrink:0}
+.eq-n{font-size:13px;font-weight:600;color:#182634}
+.eq-s{font-size:11px;color:#8b9aa9;margin-top:1px}
+.tl{display:flex;gap:11px;padding:9px 0}
+.tl+.tl{border-top:1px solid var(--mline2)}
+.tl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.tl-t{font-size:12.5px;color:#182634;line-height:1.45}
+.tl-d{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9;margin-top:2px}
+.att-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:12.5px}
+.att-row+.att-row{border-top:1px solid var(--mline2)}
+.att-row .d{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);width:74px}
+.att-row .t{font-family:var(--font-mono);font-size:12px;color:#182634}
+.att-row .st{margin-left:auto}
+
 /* Sozlamalar bo'limi */
 .set-wrap{display:grid;grid-template-columns:212px 1fr;gap:16px;align-items:start}
 .set-nav{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);
@@ -887,7 +939,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 <!-- ══════════ SIDEBAR ══════════ -->
 <aside class="sidebar">
   <div class="sb-scroll">
-    <div class="nav-item" data-page="home"><span class="material-icons-outlined">home</span> Bosh sahifa</div>
+    <div class="nav-item" data-page="home"><span class="material-icons-outlined">account_circle</span> Mening profilim</div>
     <div class="nav-item" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
     <div class="nav-item" data-page="customers"><span class="material-icons-outlined">groups</span> Mijozlar</div>
     <div class="nav-item" data-page="contracts"><span class="material-icons-outlined">description</span> Shartnomalar</div>
@@ -945,61 +997,222 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <main class="page">
 
-<!-- ════════════ BOSH SAHIFA ════════════ -->
+<!-- ════════════ BOSH SAHIFA — XODIM PROFILI ════════════ -->
 <section class="page-view" id="pv-home">
-  <div class="stat-strip" style="margin-bottom:14px">
+
+  <!-- Profil sarlavhasi -->
+  <div class="prof-hero">
+    <div class="prof-ava">DS</div>
+    <div style="min-width:0">
+      <div class="prof-name">Davron Salimov</div>
+      <div class="prof-meta">
+        <span class="mono">EMP-0042</span><span class="sep">·</span>
+        <span>Senior dasturchi</span><span class="sep">·</span>
+        <span>Development bo'limi</span><span class="sep">·</span>
+        <span>BRB Tech</span>
+        <span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span>
+      </div>
+      <div class="prof-meta" style="margin-top:5px">
+        <span class="material-icons-outlined" style="font-size:15px;color:var(--ink-4)">badge</span>
+        Tayinlov: 20.03.2024 dan · 2 yil 5 oy
+        <span class="sep">·</span>
+        <span class="material-icons-outlined" style="font-size:15px;color:var(--ink-4)">supervisor_account</span>
+        Rahbar: A. Zokirov
+      </div>
+    </div>
+    <div class="prof-kpi">
+      <div class="pk pos"><div class="v">87.5</div><div class="l">KPI · Iyul</div></div>
+      <div class="pk"><div class="v">12</div><div class="l">Ochiq vazifa</div></div>
+      <div class="pk"><div class="v">21</div><div class="l">Bu oy yopilgan</div></div>
+      <div class="pk"><div class="v">96%</div><div class="l">Davomat</div></div>
+    </div>
+  </div>
+
+  <!-- Statistikalar -->
+  <div class="stat-strip">
     <div class="stat"><div class="stat-top"><span class="material-icons-outlined">assignment</span>Ochiq vazifalar</div>
-      <div class="stat-value">12</div><div class="stat-sub">Barcha boardlarda</div></div>
-    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">timer</span>Sprintdagi</div>
-      <div class="stat-value">9</div><div class="stat-sub">Sprint 14 · 5 kun qoldi</div></div>
+      <div class="stat-value">12</div><div class="stat-sub">2 loyihada · 1 blokda</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">timer</span>Sprint 14</div>
+      <div class="stat-value">9</div><div class="stat-sub">34 pt · 5 kun qoldi</div>
+      <div class="stat-bar"><i style="width:64%"></i></div></div>
     <div class="stat"><div class="stat-top"><span class="material-icons-outlined">task_alt</span>Bu oy yopilgan</div>
-      <div class="stat-value">21</div><div class="stat-sub">O'tgan oy: 17</div>
+      <div class="stat-value">21</div><div class="stat-sub">O'tgan oy: 17 · +24%</div>
       <div class="stat-bar"><i style="width:76%"></i></div></div>
     <div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>KPI ball</div>
-      <div class="stat-value">87.5</div><div class="stat-sub">2026 Iyul davri</div>
+      <div class="stat-value">87.5</div><div class="stat-sub">2026 Iyul · muhrlangan</div>
       <div class="stat-bar"><i style="width:87%"></i></div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">event_busy</span>Muddati yaqin</div>
+      <div class="stat-value">3</div><div class="stat-sub">7 kun ichida</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">devices</span>Biriktirilgan jihozlar</div>
+      <div class="stat-value">4</div><div class="stat-sub">jami 18.4 mln UZS</div></div>
   </div>
-  <div class="dash-grid">
-    <div class="list-plain">
-      <div class="lp-head"><h3>Mening vazifalarim</h3><span class="dc-note">8 ta ochiq</span></div>
-      <div class="lp-row" onclick="openIssue()"><span class="material-icons t-ic story">bookmark</span>
-        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-142</span>
-        OAuth 2.0 integratsiyasi (Google, Apple)
-        <span style="margin-left:auto" class="prio hi">Yuqori</span>
-        <span class="chip soft-info">In Progress</span>
-        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">08.08.2026</span></div>
-      <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
-        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-145</span>
-        Onboarding animatsiyalari
-        <span style="margin-left:auto" class="prio md">O'rta</span>
-        <span class="chip soft-info">In Progress</span>
-        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">09.08.2026</span></div>
-      <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
-        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-139</span>
-        Chat xabarlarini keshlash
-        <span style="margin-left:auto" class="prio hi">Yuqori</span>
-        <span class="chip soft-info">In Progress</span>
-        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">10.08.2026</span></div>
-      <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
-        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-151</span>
-        Push-bildirishnoma sozlamalari ekrani
-        <span style="margin-left:auto" class="prio md">O'rta</span>
-        <span class="chip neutral">To Do</span>
-        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">12.08.2026</span></div>
-      <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
-        <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-152</span>
-        Profil rasmini kesish (crop) funksiyasi
-        <span style="margin-left:auto" class="prio lo">Past</span>
-        <span class="chip neutral">To Do</span>
-        <span class="mono" style="font-size:11.5px;color:var(--ink-4)">14.08.2026</span></div>
+
+  <div class="prof-grid">
+    <!-- CHAP USTUN -->
+    <div style="min-width:0">
+      <div class="list-plain" style="margin-bottom:14px">
+        <div class="lp-head"><h3>Mening vazifalarim</h3>
+          <span class="dc-note">12 ta ochiq · <a href="#" onclick="show('projects');return false">hammasi</a></span></div>
+        <div class="lp-row" onclick="openIssue()"><span class="material-icons t-ic story">bookmark</span>
+          <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-142</span>
+          OAuth 2.0 integratsiyasi (Google, Apple)
+          <span style="margin-left:auto" class="prio hi">Yuqori</span>
+          <span class="chip soft-info">In Progress</span>
+          <span class="mono" style="font-size:11.5px;color:var(--m-neg);font-weight:600">08.08</span></div>
+        <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
+          <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-145</span>
+          Onboarding animatsiyalari
+          <span style="margin-left:auto" class="prio md">O'rta</span>
+          <span class="chip soft-info">In Progress</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">09.08</span></div>
+        <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+          <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-139</span>
+          Chat xabarlarini keshlash
+          <span style="margin-left:auto" class="prio hi">Yuqori</span>
+          <span class="chip soft-info">In Progress</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">10.08</span></div>
+        <div class="lp-row"><span class="material-icons t-ic story">bookmark</span>
+          <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-126</span>
+          To'lov shlyuzi integratsiyasi (Payme)
+          <span style="margin-left:auto" class="prio hi">Yuqori</span>
+          <span class="chip soft-warn">Blocked</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">12.08</span></div>
+        <div class="lp-row"><span class="material-icons t-ic task">check_box</span>
+          <span class="mono" style="color:var(--ink-4);font-size:11.5px">MOB-152</span>
+          Profil rasmini kesish (crop) funksiyasi
+          <span style="margin-left:auto" class="prio lo">Past</span>
+          <span class="chip neutral">To Do</span>
+          <span class="mono" style="font-size:11.5px;color:var(--ink-4)">14.08</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div class="desc-card" style="margin:0">
+          <div class="dc-head"><h3>Haftalik faollik</h3><span class="dc-note">yopilgan vazifalar</span></div>
+          <div class="dc-body" style="padding:12px 16px 14px">
+            <div class="wk-chart">
+              <div class="wk-col"><span class="wk-n">3</span><span class="wk-bar" style="height:50%"></span><span class="wk-lb">Du</span></div>
+              <div class="wk-col"><span class="wk-n">5</span><span class="wk-bar" style="height:83%"></span><span class="wk-lb">Se</span></div>
+              <div class="wk-col"><span class="wk-n">2</span><span class="wk-bar" style="height:33%"></span><span class="wk-lb">Ch</span></div>
+              <div class="wk-col"><span class="wk-n">6</span><span class="wk-bar" style="height:100%"></span><span class="wk-lb">Pa</span></div>
+              <div class="wk-col"><span class="wk-n">4</span><span class="wk-bar today" style="height:66%"></span><span class="wk-lb">Ju</span></div>
+              <div class="wk-col"><span class="wk-n">1</span><span class="wk-bar" style="height:17%"></span><span class="wk-lb">Sh</span></div>
+              <div class="wk-col"><span class="wk-n">0</span><span class="wk-bar" style="height:2%"></span><span class="wk-lb">Ya</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="desc-card" style="margin:0">
+          <div class="dc-head"><h3>KPI tarkibi</h3><span class="dc-note">Iyul · 87.5</span></div>
+          <div class="dc-body" style="padding:10px 16px 12px">
+            <div class="kpi-crit-row"><span class="kcr-n">Vazifalar bajarilishi</span>
+              <span class="kcr-w">50%</span>
+              <span class="kcr-bar"><i style="width:100%;background:var(--m-pos)"></i></span>
+              <span class="kcr-v" style="color:var(--m-pos)">100</span></div>
+            <div class="kpi-crit-row"><span class="kcr-n">Mijoz feedback'i</span>
+              <span class="kcr-w">20%</span>
+              <span class="kcr-bar"><i style="width:90%;background:var(--m-pos)"></i></span>
+              <span class="kcr-v" style="color:var(--m-pos)">90</span></div>
+            <div class="kpi-crit-row"><span class="kcr-n">Ticket hal qilish</span>
+              <span class="kcr-w">10%</span>
+              <span class="kcr-bar"><i style="width:72%;background:var(--m-acc)"></i></span>
+              <span class="kcr-v" style="color:var(--m-acc)">72</span></div>
+            <div class="kpi-crit-row"><span class="kcr-n">Intizom (turniket)</span>
+              <span class="kcr-w">20%</span>
+              <span class="kcr-bar"><i style="width:91%;background:var(--m-pos)"></i></span>
+              <span class="kcr-v" style="color:var(--m-pos)">91</span></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;
+              border-top:1px solid var(--mline2);font-size:12px;color:#8b9aa9">
+              <span class="material-icons-outlined" style="font-size:15px">lock</span>
+              Davr muhrlangan — qayta hisoblanmaydi
+              <a href="#" style="margin-left:auto" onclick="show('kpi');return false">batafsil</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="desc-card">
+        <div class="dc-head"><h3>Mening loyihalarim</h3><span class="dc-note">2 ta faol</span></div>
+        <div class="dc-body" style="padding:12px 16px">
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;cursor:pointer"
+            onclick="show('project')">
+            <span class="pc-code" style="background:#2563eb;width:36px;height:36px;font-size:11px">MOB</span>
+            <div style="flex:1"><div style="font-size:13.5px;font-weight:600;color:#182634">Mobil ilova</div>
+              <div style="font-size:11.5px;color:#8b9aa9">Ipak Yo'li Bank · Development board</div></div>
+            <span class="chip soft-info" style="font-size:10.5px">DEVELOPER</span>
+            <span class="mono" style="font-size:12px;color:var(--ink-3)">9 vazifa</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--mline2)">
+            <span class="pc-code" style="background:#7c3aed;width:36px;height:36px;font-size:11px">CRM</span>
+            <div style="flex:1"><div style="font-size:13.5px;font-weight:600;color:#182634">Ichki CRM platforma</div>
+              <div style="font-size:11.5px;color:#8b9aa9">Ichki loyiha · Development board</div></div>
+            <span class="chip soft-info" style="font-size:10.5px">TECH_LEAD</span>
+            <span class="mono" style="font-size:12px;color:var(--ink-3)">3 vazifa</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="list-plain">
-      <div class="lp-head"><h3>Faollik lentasi</h3></div>
-      <div class="feed-row">Bekzod <b>MOB-150</b> uchun fix PR ochdi<div class="t">12 daqiqa oldin</div></div>
-      <div class="feed-row">Dilnoza <b>MOB-145</b> subtaskini yakunladi<div class="t">40 daqiqa oldin</div></div>
-      <div class="feed-row">Aziz <b>MOB-142</b> ga izoh qoldirdi<div class="t">1 soat oldin</div></div>
-      <div class="feed-row">Sevara <b>MOB-133</b> QA testlarini boshladi<div class="t">2 soat oldin</div></div>
-      <div class="feed-row"><b>MOB-126</b> bloklandi — hamkor API kaliti kutilmoqda<div class="t">3 soat oldin</div></div>
+
+    <!-- O'NG USTUN -->
+    <div style="min-width:0">
+      <div class="desc-card">
+        <div class="dc-head"><h3>Biriktirilgan jihozlar</h3><span class="dc-note">4</span></div>
+        <div class="dc-body" style="padding:8px 16px 12px">
+          <div class="eq-item"><span class="eq-ic"><span class="material-icons-outlined">laptop_mac</span></span>
+            <div style="flex:1;min-width:0"><div class="eq-n">MacBook Pro 14 M3</div>
+              <div class="eq-s"><span class="mono">INV-00214</span> · 15.01.2026 dan</div></div></div>
+          <div class="eq-item"><span class="eq-ic"><span class="material-icons-outlined">monitor</span></span>
+            <div style="flex:1;min-width:0"><div class="eq-n">Dell UltraSharp 27"</div>
+              <div class="eq-s"><span class="mono">INV-00221</span> · 15.01.2026 dan</div></div></div>
+          <div class="eq-item"><span class="eq-ic"><span class="material-icons-outlined">keyboard</span></span>
+            <div style="flex:1;min-width:0"><div class="eq-n">Logitech MX Keys</div>
+              <div class="eq-s"><span class="mono">INV-00233</span> · 02.03.2026 dan</div></div></div>
+          <div class="eq-item"><span class="eq-ic" style="background:var(--m-warn-soft);color:var(--m-warn)">
+              <span class="material-icons-outlined">smartphone</span></span>
+            <div style="flex:1;min-width:0"><div class="eq-n">iPhone 14 (test)</div>
+              <div class="eq-s"><span class="mono">INV-00187</span> · ta'mirdan qaytdi</div></div></div>
+          <div style="margin-top:10px;font-size:11.5px;color:#8b9aa9;display:flex;align-items:center;gap:6px">
+            <span class="material-icons-outlined" style="font-size:15px">info</span>
+            Jami balans qiymati: <b class="mono" style="color:#182634">18.4 mln UZS</b></div>
+        </div>
+      </div>
+
+      <div class="desc-card">
+        <div class="dc-head"><h3>Davomat</h3><span class="dc-note">shu hafta · turniket</span></div>
+        <div class="dc-body" style="padding:8px 16px 12px">
+          <div class="att-row"><span class="d">Du 28.07</span><span class="t">08:52 — 18:10</span>
+            <span class="st chip soft-pos" style="font-size:10.5px">9s 18m</span></div>
+          <div class="att-row"><span class="d">Se 29.07</span><span class="t">09:14 — 18:30</span>
+            <span class="st chip soft-warn" style="font-size:10.5px">14 min kech</span></div>
+          <div class="att-row"><span class="d">Ch 30.07</span><span class="t">08:47 — 17:55</span>
+            <span class="st chip soft-pos" style="font-size:10.5px">9s 08m</span></div>
+          <div class="att-row"><span class="d">Pa 31.07</span><span class="t">08:50 — 19:05</span>
+            <span class="st chip soft-pos" style="font-size:10.5px">10s 15m</span></div>
+          <div class="att-row"><span class="d">Ju 01.08</span><span class="t">08:53 — ...</span>
+            <span class="st chip soft-info" style="font-size:10.5px">ish joyida</span></div>
+          <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--mline2);
+            display:flex;justify-content:space-between;font-size:12px;color:#8b9aa9">
+            <span>Oylik davomat</span><b class="mono" style="color:var(--m-pos)">96%</b></div>
+        </div>
+      </div>
+
+      <div class="desc-card">
+        <div class="dc-head"><h3>Mening faolligim</h3></div>
+        <div class="dc-body" style="padding:8px 16px 12px">
+          <div class="tl"><span class="tl-dot" style="background:#22c55e"></span>
+            <div><div class="tl-t"><b>MOB-133</b> Code Review'ga o'tkazdingiz</div>
+              <div class="tl-d">25 daqiqa oldin</div></div></div>
+          <div class="tl"><span class="tl-dot" style="background:#3b82f6"></span>
+            <div><div class="tl-t"><b>MOB-142</b> ga izoh qoldirdingiz</div>
+              <div class="tl-d">30 daqiqa oldin</div></div></div>
+          <div class="tl"><span class="tl-dot" style="background:#f59e0b"></span>
+            <div><div class="tl-t"><b>MOB-126</b> bloklandi — Payme API kaliti</div>
+              <div class="tl-d">3 soat oldin</div></div></div>
+          <div class="tl"><span class="tl-dot" style="background:#22c55e"></span>
+            <div><div class="tl-t"><b>MOB-128</b> yakunlandi — KPI fakt: 240 daqiqa</div>
+              <div class="tl-d">kecha 17:40</div></div></div>
+          <div class="tl"><span class="tl-dot" style="background:#8b5cf6"></span>
+            <div><div class="tl-t">Sprint 14 ga qo'shildingiz — 34 pt</div>
+              <div class="tl-d">28.07.2026</div></div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -3758,7 +3971,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <script>
 /* ═══════ SPA router ═══════ */
-var TITLES={home:'Bosh sahifa',leads:'Leadlar',customers:'Mijozlar',contracts:'Shartnomalar',
+var TITLES={home:'Mening profilim',leads:'Leadlar',customers:'Mijozlar',contracts:'Shartnomalar',
   projects:'Loyihalar',project:'Mobil ilova',board:'Mobil ilova · Board',handover:'Handover',
   tickets:'Ticketlar',inbox:'Telegram inbox',calls:'Call center',inventory:'Inventar',
   kpi:'Natijalar',kpiprofiles:'Profillar',
@@ -3767,7 +3980,7 @@ var TITLES={home:'Bosh sahifa',leads:'Leadlar',customers:'Mijozlar',contracts:'S
 var NAVKEY={project:'projects',board:'projects'};
 /* Breadcrumb yo'llari: [nom, o'tish sahifasi yoki null] */
 var TRAIL={
-  home:[['Bosh sahifa',null]],
+  home:[['Mening profilim',null]],
   leads:[['Leadlar',null]],
   customers:[['Mijozlar',null]],
   contracts:[['Shartnomalar',null]],
