@@ -223,11 +223,9 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   gap:14px;margin-bottom:14px}
 .stat{background:var(--surface);border:1px solid var(--line-2);border-radius:14px;
   padding:15px 17px 14px;display:flex;flex-direction:column;gap:4px;min-height:104px;
-  box-shadow:0 2px 6px rgba(15,23,42,.05);position:relative;overflow:hidden;
+  box-shadow:0 2px 6px rgba(15,23,42,.05);
   transition:box-shadow .16s,transform .12s,border-color .16s}
 .stat:hover{border-color:#c9d6ea;box-shadow:0 8px 20px rgba(15,23,42,.09);transform:translateY(-2px)}
-.stat::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--m-acc);opacity:.85}
 .stat-top{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;
   letter-spacing:.09em;text-transform:uppercase;color:#8b9aa9;margin-bottom:3px}
 .stat-top .material-icons-outlined{font-size:16px;color:var(--m-acc);flex-shrink:0;
@@ -239,13 +237,10 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .stat-bar{height:5px;border-radius:3px;background:#eef1f5;margin-top:8px;width:100%;overflow:hidden}
 .stat-bar i{display:block;height:100%;border-radius:3px;background:var(--m-pos)}
 /* Ogohlantiruvchi ko'rsatkich */
-.stat.neg::before{background:var(--m-neg)}
 .stat.neg .stat-value{color:var(--m-neg)}
 .stat.neg .stat-top .material-icons-outlined{color:var(--m-neg);background:var(--m-neg-soft)}
 /* Ijobiy urg'u (progress bari borlar) */
-.stat:has(.stat-bar)::before{background:var(--m-pos)}
 .stat:has(.stat-bar) .stat-top .material-icons-outlined{color:var(--m-pos);background:var(--m-pos-soft)}
-.stat.neg:has(.stat-bar)::before{background:var(--m-neg)}
 .stat.neg:has(.stat-bar) .stat-top .material-icons-outlined{color:var(--m-neg);background:var(--m-neg-soft)}
 
 /* ═══════ KANBAN (board va pipeline) ═══════ */
