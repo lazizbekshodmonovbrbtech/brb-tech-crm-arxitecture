@@ -959,7 +959,16 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 <aside class="sidebar">
   <div class="sb-scroll">
     <div class="nav-item" data-page="home"><span class="material-icons-outlined">account_circle</span> Mening profilim</div>
-    <div class="nav-item" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
+    <div class="nav-item group" id="nav-mkt" onclick="toggleGroup('mkt')">
+      <span class="material-icons-outlined">campaign</span> Marketing
+      <span class="material-icons-outlined chev">chevron_right</span></div>
+    <div class="nav-children" id="nav-mkt-children">
+      <div class="nav-child" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
+      <div class="nav-child" data-page="sources"><span class="material-icons-outlined">hub</span> Lead manbalari</div>
+      <div class="nav-child" data-page="pipelines"><span class="material-icons-outlined">linear_scale</span> Voronkalar</div>
+      <div class="nav-child" data-page="campaigns"><span class="material-icons-outlined">ads_click</span> Kampaniyalar</div>
+      <div class="nav-child" data-page="lostreasons"><span class="material-icons-outlined">do_not_disturb</span> Yo'qotish sabablari</div>
+    </div>
     <div class="nav-item" data-page="customers"><span class="material-icons-outlined">groups</span> Mijozlar</div>
     <div class="nav-item group" id="nav-contr" onclick="toggleGroup('contr')">
       <span class="material-icons-outlined">description</span> Shartnomalar
@@ -1361,6 +1370,276 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <div class="bcard-foot"><span class="chip neutral" style="font-size:10px">Narx kelishmadi</span></div></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ════════════ LEAD MANBALARI ════════════ -->
+<section class="page-view" id="pv-sources">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">hub</span>Manbalar</div>
+      <div class="stat-value">7</div><div class="stat-sub">6 faol</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">emoji_events</span>Eng samarali</div>
+      <div class="stat-value">Tavsiya</div><div class="stat-sub">konversiya 58%</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">volume_up</span>Eng ko'p lead</div>
+      <div class="stat-value">Instagram</div><div class="stat-sub">42 lead · 3 oy</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>O'rtacha lead narxi</div>
+      <div class="stat-value">185K</div><div class="stat-sub">UZS · CAC</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Lead manbalari</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Manba qidirish..."></div>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>Kod</th><th>Nomi</th><th>Kanal turi</th><th>Integratsiya</th>
+          <th>Leadlar (3 oy)</th><th>Konversiya</th><th>O'rtacha byudjet</th><th>Status</th><th class="sticky-r">Amallar</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">INSTAGRAM</td><td style="font-weight:600">Instagram</td>
+            <td><span class="chip soft-info">Ijtimoiy tarmoq</span></td>
+            <td><span class="chip soft-pos">social-integration</span></td>
+            <td class="mono num">42</td>
+            <td><span class="mini-bar"><i style="width:24%"></i></span><span class="mono" style="font-size:12px">24%</span></td>
+            <td class="mono num">18.5 mln</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">TELEGRAM</td><td style="font-weight:600">Telegram bot</td>
+            <td><span class="chip soft-info">Messenger</span></td>
+            <td><span class="chip soft-pos">social-integration</span></td>
+            <td class="mono num">31</td>
+            <td><span class="mini-bar"><i style="width:29%"></i></span><span class="mono" style="font-size:12px">29%</span></td>
+            <td class="mono num">12.0 mln</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr class="actioned"><td class="mono">REFERRAL</td><td style="font-weight:600">Tavsiya (referral)</td>
+            <td><span class="chip soft-warn">Og'zaki</span></td>
+            <td style="color:var(--ink-4)">— qo'lda</td>
+            <td class="mono num">14</td>
+            <td><span class="mini-bar"><i style="width:58%"></i></span><span class="mono" style="font-size:12px;color:var(--m-pos);font-weight:600">58%</span></td>
+            <td class="mono num">64.0 mln</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">WEBSITE</td><td style="font-weight:600">Sayt formasi</td>
+            <td><span class="chip soft-info">Veb</span></td>
+            <td><span class="chip soft-pos">API webhook</span></td>
+            <td class="mono num">23</td>
+            <td><span class="mini-bar"><i style="width:17%"></i></span><span class="mono" style="font-size:12px">17%</span></td>
+            <td class="mono num">8.2 mln</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">CALL</td><td style="font-weight:600">Kiruvchi qo'ng'iroq</td>
+            <td><span class="chip soft-info">Telefon</span></td>
+            <td><span class="chip soft-pos">callcenter</span></td>
+            <td class="mono num">19</td>
+            <td><span class="mini-bar"><i style="width:32%"></i></span><span class="mono" style="font-size:12px">32%</span></td>
+            <td class="mono num">21.4 mln</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">EXPO</td><td style="font-weight:600">Ko'rgazma / tadbir</td>
+            <td><span class="chip soft-warn">Oflayn</span></td>
+            <td style="color:var(--ink-4)">— qo'lda</td>
+            <td class="mono num">6</td>
+            <td><span class="mini-bar"><i style="width:33%"></i></span><span class="mono" style="font-size:12px">33%</span></td>
+            <td class="mono num">45.0 mln</td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Mavsumiy</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span class="mono">1-7 dan 7</span></div>
+  </div>
+</section>
+
+<!-- ════════════ VORONKALAR ════════════ -->
+<section class="page-view" id="pv-pipelines">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">linear_scale</span>Voronkalar</div>
+      <div class="stat-value">2</div><div class="stat-sub">1 standart</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">view_column</span>Bosqichlar</div>
+      <div class="stat-value">6</div><div class="stat-sub">asosiy voronkada</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">trending_up</span>Umumiy konversiya</div>
+      <div class="stat-value">31%</div><div class="stat-bar"><i style="width:31%"></i></div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">hourglass_bottom</span>Eng uzun bosqich</div>
+      <div class="stat-value">Muzokara</div><div class="stat-sub">o'rtacha 9 kun</div></div>
+  </div>
+  <div class="set-card">
+    <div class="set-head"><h3>Asosiy voronka</h3><span class="chip soft-pos" style="font-size:10.5px">standart</span>
+      <span class="tbl">lead_pipelines · lead_stages</span>
+      <button class="btn-flat" style="margin-left:auto;height:32px;font-size:12.5px"
+        onclick="openForm('Yangi bosqich')"><span class="material-icons-outlined" style="font-size:17px">add</span> Bosqich</button></div>
+    <div class="set-body">
+      <div style="font-size:12px;color:#8b9aa9;margin-bottom:10px;line-height:1.5">
+        Nom erkin, <b style="color:var(--m-warn)">kategoriya qat'iy</b>: OPEN bosqichlar voronkada,
+        WON shartnomaga o'tadi, LOST sabab talab qiladi. Tartibni sudrab o'zgartiring.
+      </div>
+      <div class="st-list">
+        <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+          <span class="sq" style="background:#94a3b8"></span><span class="nm">Yangi</span>
+          <span class="cat-pill todo">OPEN</span><span class="sys-tag">tizim</span>
+          <span style="margin-left:auto;font-size:12px;color:#8b9aa9">5 lead · o'rtacha 2 kun</span></div>
+        <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+          <span class="sq" style="background:#3b82f6"></span><span class="nm">Aloqa qilindi</span>
+          <span class="cat-pill">OPEN</span>
+          <span style="margin-left:auto;font-size:12px;color:#8b9aa9">3 lead · o'rtacha 3 kun</span></div>
+        <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+          <span class="sq" style="background:#8b5cf6"></span><span class="nm">Taklif yuborildi</span>
+          <span class="cat-pill">OPEN</span>
+          <span style="margin-left:auto;font-size:12px;color:#8b9aa9">2 lead · o'rtacha 4 kun</span></div>
+        <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+          <span class="sq" style="background:#0ea5e9"></span><span class="nm">Muzokara</span>
+          <span class="cat-pill">OPEN</span>
+          <span style="margin-left:auto;font-size:12px;color:var(--m-warn);font-weight:600">1 lead · o'rtacha 9 kun</span></div>
+        <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+          <span class="sq" style="background:#22c55e"></span><span class="nm">Yutildi</span>
+          <span class="cat-pill done">WON</span><span class="sys-tag">tizim</span>
+          <span style="margin-left:auto;font-size:12px;color:#8b9aa9">shartnoma yaratiladi</span></div>
+        <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+          <span class="sq" style="background:#cbd5e1"></span><span class="nm">Yo'qotildi</span>
+          <span class="cat-pill block">LOST</span><span class="sys-tag">tizim</span>
+          <span style="margin-left:auto;font-size:12px;color:#8b9aa9">sabab majburiy</span></div>
+      </div>
+    </div>
+    <div class="set-foot"><button class="btn-primary" onclick="toast('Voronka saqlandi')">
+      <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+  </div>
+  <div class="set-card">
+    <div class="set-head"><h3>Yuridik mijozlar voronkasi</h3><span class="tbl">lead_pipelines</span></div>
+    <div class="set-body" style="font-size:12.5px;color:#5c6e80">
+      4 bosqich: Kirish → Tender hujjatlari → Komissiya → Yutildi/Yo'qotildi.
+      Yuridik shaxslar uchun alohida oqim (tender jarayoni bilan).
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ KAMPANIYALAR ════════════ -->
+<section class="page-view" id="pv-campaigns">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">ads_click</span>Faol kampaniyalar</div>
+      <div class="stat-value">3</div><div class="stat-sub">2 tugallangan</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Byudjet (chorak)</div>
+      <div class="stat-value">32.0</div><div class="stat-sub">mln UZS · 68% sarflandi</div>
+      <div class="stat-bar"><i style="width:68%"></i></div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">group_add</span>Jalb qilingan lead</div>
+      <div class="stat-value">73</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">savings</span>ROI</div>
+      <div class="stat-value">4.2x</div><div class="stat-sub">yopilgan shartnomalar bo'yicha</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Marketing kampaniyalari</h1>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Kampaniya qidirish..."></div>
+      <button class="tb-icon-btn"><span class="material-icons-outlined">filter_list</span></button>
+      <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>Kod</th><th>Nomi</th><th>Manba</th><th>Davr</th><th>Byudjet</th>
+          <th>Leadlar</th><th>Yutilgan</th><th>ROI</th><th>Status</th><th class="sticky-r">Amallar</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">CMP-014</td><td style="font-weight:600">Bank sektori — Q3</td>
+            <td><span class="chip soft-info">Instagram</span></td>
+            <td class="mono">01.07 — 30.09</td><td class="mono num">14,000,000</td>
+            <td class="mono num">28</td><td class="mono num">6</td>
+            <td class="mono num" style="color:var(--m-pos);font-weight:600">5.8x</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">CMP-013</td><td style="font-weight:600">Telegram bot reklama</td>
+            <td><span class="chip soft-info">Telegram</span></td>
+            <td class="mono">15.06 — 15.09</td><td class="mono num">8,000,000</td>
+            <td class="mono num">31</td><td class="mono num">4</td>
+            <td class="mono num" style="color:var(--m-pos);font-weight:600">3.1x</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr class="actioned"><td class="mono">CMP-012</td><td style="font-weight:600">IT Expo 2026</td>
+            <td><span class="chip soft-warn">Ko'rgazma</span></td>
+            <td class="mono">12.05 — 14.05</td><td class="mono num">10,000,000</td>
+            <td class="mono num">6</td><td class="mono num">2</td>
+            <td class="mono num" style="color:var(--m-acc);font-weight:600">2.4x</td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Tugallangan</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          <tr><td class="mono">CMP-011</td><td style="font-weight:600">Sayt SEO va kontent</td>
+            <td><span class="chip soft-info">Sayt</span></td>
+            <td class="mono">01.04 — 30.06</td><td class="mono num">6,000,000</td>
+            <td class="mono num">8</td><td class="mono num">1</td>
+            <td class="mono num" style="color:var(--m-neg);font-weight:600">0.8x</td>
+            <td><span class="chip neutral"><span class="st-dot neutral"></span>Tugallangan</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span class="mono">1-5 dan 5</span></div>
+  </div>
+</section>
+
+<!-- ════════════ YO'QOTISH SABABLARI ════════════ -->
+<section class="page-view" id="pv-lostreasons">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">do_not_disturb</span>Sabablar</div>
+      <div class="stat-value">6</div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">trending_down</span>Yo'qotilgan (3 oy)</div>
+      <div class="stat-value">24</div><div class="stat-sub">lead · 186 mln UZS</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">priority_high</span>Asosiy sabab</div>
+      <div class="stat-value">Narx</div><div class="stat-sub">42% holatda</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">replay</span>Qayta jalb qilingan</div>
+      <div class="stat-value">3</div><div class="stat-sub">yo'qotilganlardan</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Yo'qotish sabablari</h1>
+      <button class="btn-primary" style="margin-left:auto"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
+    </div>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>Kod</th><th>Sababi</th><th>Guruh</th><th>Izoh talab</th>
+          <th>Holatlar (3 oy)</th><th>Ulush</th><th>Status</th><th class="sticky-r">Amallar</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">PRICE</td><td style="font-weight:600">Narx kelishmadi</td>
+            <td><span class="chip soft-warn">Tijorat</span></td>
+            <td><span class="chip soft-pos">Ha</span></td><td class="mono num">10</td>
+            <td><span class="mini-bar"><i style="width:42%;background:var(--m-neg)"></i></span><span class="mono" style="font-size:12px">42%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">COMPETITOR</td><td style="font-weight:600">Raqobatchini tanladi</td>
+            <td><span class="chip soft-warn">Tijorat</span></td>
+            <td><span class="chip soft-pos">Ha</span></td><td class="mono num">6</td>
+            <td><span class="mini-bar"><i style="width:25%;background:var(--m-neg)"></i></span><span class="mono" style="font-size:12px">25%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">NO_BUDGET</td><td style="font-weight:600">Byudjet yo'q / kechiktirildi</td>
+            <td><span class="chip soft-info">Moliyaviy</span></td>
+            <td><span class="chip neutral">Yo'q</span></td><td class="mono num">4</td>
+            <td><span class="mini-bar"><i style="width:17%;background:var(--m-neg)"></i></span><span class="mono" style="font-size:12px">17%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">NO_RESPONSE</td><td style="font-weight:600">Javob bermadi</td>
+            <td><span class="chip neutral">Aloqa</span></td>
+            <td><span class="chip neutral">Yo'q</span></td><td class="mono num">3</td>
+            <td><span class="mini-bar"><i style="width:12%;background:var(--m-neg)"></i></span><span class="mono" style="font-size:12px">12%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">NOT_FIT</td><td style="font-weight:600">Talab imkoniyatga mos emas</td>
+            <td><span class="chip soft-info">Texnik</span></td>
+            <td><span class="chip soft-pos">Ha</span></td><td class="mono num">1</td>
+            <td><span class="mini-bar"><i style="width:4%;background:var(--m-neg)"></i></span><span class="mono" style="font-size:12px">4%</span></td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span style="font-size:12px;color:#8b9aa9;margin-right:auto">
+      LOST bosqichiga o'tishda sabab majburiy — <span class="mono">lead_lost_reasons</span></span>
+      <span class="mono">1-6 dan 6</span></div>
   </div>
 </section>
 
@@ -4364,7 +4643,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <script>
 /* ═══════ SPA router ═══════ */
-var TITLES={home:'Mening profilim',leads:'Leadlar',customers:'Mijozlar',contracts:'Shartnomalar',
+var TITLES={home:'Mening profilim',leads:'Leadlar',sources:'Lead manbalari',pipelines:'Voronkalar',campaigns:'Kampaniyalar',lostreasons:"Yo'qotish sabablari",customers:'Mijozlar',contracts:'Shartnomalar',
   projects:'Loyihalar',project:'Mobil ilova',board:'Mobil ilova · Board',handover:'Handover',
   tickets:'Ticketlar',botlist:'Mijoz chatlari',inbox:'Chat',calls:'Call center',inventory:'Inventar',
   kpi:'Natijalar',kpiprofiles:'Profillar',
@@ -4376,7 +4655,11 @@ var NAVKEY={project:'projects',board:'projects',inbox:'botlist'};
 /* Breadcrumb yo'llari: [nom, o'tish sahifasi yoki null] */
 var TRAIL={
   home:[['Mening profilim',null]],
-  leads:[['Leadlar',null]],
+  leads:[['Marketing',null],['Leadlar',null]],
+  sources:[['Marketing',null],['Lead manbalari',null]],
+  pipelines:[['Marketing',null],['Voronkalar',null]],
+  campaigns:[['Marketing',null],['Kampaniyalar',null]],
+  lostreasons:[['Marketing',null],["Yo'qotish sabablari",null]],
   customers:[['Mijozlar',null]],
   contracts:[['Shartnomalar',null],['Shartnomalar',null]],
   contrtypes:[['Shartnomalar',null],['Shartnoma turlari',null]],
@@ -4426,7 +4709,7 @@ function show(page){
     items[j].classList.toggle('active',items[j].getAttribute('data-page')===navKey);
   }
   // guruh ichidagi sahifa ochilsa, o'sha guruh yoyiladi
-  var groups=['tasks','support','inv','kpi','contr'];
+  var groups=['tasks','support','inv','kpi','contr','mkt'];
   for(var g=0;g<groups.length;g++){
     var kids=document.getElementById('nav-'+groups[g]+'-children');
     if(kids&&kids.querySelector('.nav-child.active')){
