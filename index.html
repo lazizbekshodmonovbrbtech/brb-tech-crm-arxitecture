@@ -82,6 +82,19 @@ body{
   margin-left:auto;font-size:10px;color:var(--faint);
   background:var(--panel);padding:1px 6px;border-radius:8px;
 }
+/* Yakunlangan servis — jadvallar soni yashil */
+.menu-item.done .cnt{
+  color:#5bd49a;background:rgba(91,212,154,.13);
+  border:1px solid rgba(91,212,154,.30);font-weight:600;
+}
+.menu-item.done .dot{background:#5bd49a;box-shadow:0 0 6px rgba(91,212,154,.55)}
+.menu-item.done.active .dot{background:#5bd49a}
+#svc-title .done-badge{
+  display:inline-flex;align-items:center;gap:5px;margin-left:10px;
+  font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.04em;
+  color:#5bd49a;background:rgba(91,212,154,.12);
+  border:1px solid rgba(91,212,154,.30);border-radius:7px;padding:2px 9px;
+}
 .menu-item.doc{font-style:normal}
 .menu-item.doc .dot{
   background:transparent;border:1.2px dashed var(--faint);
@@ -1779,6 +1792,14 @@ const canvas=$('#canvas'),wrap=$('#canvas-wrap'),wires=$('#wires'),
       drawer=$('#drawer'),overlay=$('#overlay'),menu=$('#menu');
 let currentSvc=null,focused=null;
 
+/* Yakunlangan (to'liq loyihalangan) servislar — enum katalogi, outbox va status standarti bajarilgan */
+const DONE_SERVICES = new Set([
+  "customer-service",
+  "lead-service",
+  "contract-service",
+  "project-service"
+]);
+
 /* ---------- Menu ---------- */
 (function buildMenu(){
   const groups={};
@@ -1788,7 +1809,9 @@ let currentSvc=null,focused=null;
     items.forEach(k=>{
       const el=document.createElement('div');
       const isDoc=DB[k].kind==='doc';
-      el.className='menu-item'+(isDoc?' doc':'');el.dataset.svc=k;
+      const isDone=DONE_SERVICES.has(k);
+      el.className='menu-item'+(isDoc?' doc':'')+(isDone?' done':'');el.dataset.svc=k;
+      if(isDone)el.title='Yakunlangan: enum katalogi, outbox va status standarti bajarilgan';
       el.innerHTML=`<span class="dot">${isDoc?'§':''}</span>${k}<span class="cnt">${isDoc?'doc':DB[k].tables.length}</span>`;
       el.onclick=()=>{selectService(k);if(innerWidth<=820)$('#sidebar').classList.remove('open')};
       menu.appendChild(el);
@@ -1801,7 +1824,9 @@ function selectService(key){
   currentSvc=key;focused=null;
   document.querySelectorAll('.menu-item').forEach(m=>m.classList.toggle('active',m.dataset.svc===key));
   const isDoc=DB[key].kind==='doc';
-  $('#svc-title').innerHTML=key+(isDoc?' <span class="doc-badge">HUJJAT — service emas</span>':'');
+  $('#svc-title').innerHTML=key
+    +(isDoc?' <span class="doc-badge">HUJJAT — service emas</span>':'')
+    +(DONE_SERVICES.has(key)?' <span class="done-badge">\u2713 YAKUNLANGAN</span>':'');
   $('#svc-desc').textContent=DB[key].desc;
   wrap.classList.toggle('doc-mode',isDoc);
   closeDrawer();
