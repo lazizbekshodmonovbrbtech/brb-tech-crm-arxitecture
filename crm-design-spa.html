@@ -6395,23 +6395,69 @@ function rteCode(){
   document.execCommand('insertHTML',false,'<code>'+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</code>&nbsp;');
   rteSync();
 }
-/* Panel tugmalari joriy holatni ko'rsatadi */
+/* Panel tugmalari joriy holatni ko'rsatadi \u2014 barcha formatlar uchun */
+function rteCmdOf(btn){
+  if(btn.dataset.cmd!==undefined)return btn.dataset.cmd;
+  var oc=btn.getAttribute('onclick')||'', c='';
+  var m=oc.match(/rte\('([a-zA-Z]+)'(?:,'([a-z0-9]+)')?\)/);
+  if(m)c = m[2] ? ('block:'+m[2]) : ('cmd:'+m[1]);
+  else if(oc.indexOf('rteCode')>-1)c='tag:CODE';
+  else if(oc.indexOf('rteLink')>-1)c='tag:A';
+  else if(oc.indexOf('annSpoiler')>-1)c='cls:tg-spoiler';
+  btn.dataset.cmd=c;
+  return c;
+}
+/* Kursor turgan joydagi teglar zanjiri */
+function rteTags(){
+  var out={},sel=document.getSelection();
+  if(!sel||!sel.anchorNode||!rteLast)return out;
+  var n=sel.anchorNode;
+  if(n.nodeType===3)n=n.parentNode;
+  while(n&&n!==rteLast&&n!==document.body){
+    if(n.tagName)out[n.tagName.toUpperCase()]=true;
+    if(n.className&&typeof n.className==='string'&&n.className.indexOf('tg-spoiler')>-1)
+      out['CLS:tg-spoiler']=true;
+    n=n.parentNode;
+  }
+  return out;
+}
 function rteSync(){
   if(!rteLast)return;
   var bar=rteLast.parentElement.querySelector('.rte-bar');
   if(!bar)return;
-  var map={'B':'bold','I':'italic','U':'underline','S':'strikeThrough'};
+  var tags=rteTags();
   var btns=bar.querySelectorAll('.rte-btn');
   for(var i=0;i<btns.length;i++){
-    var lbl=btns[i].textContent.trim();
-    var cmd=map[lbl];
-    if(cmd){
-      try{btns[i].classList.toggle('on',document.queryCommandState(cmd));}catch(e){}
+    var c=rteCmdOf(btns[i]), on=false;
+    if(!c){continue}
+    if(c.indexOf('cmd:')===0){
+      var name=c.slice(4);
+      if(name==='removeFormat'){btns[i].classList.remove('on');continue}
+      try{on=document.queryCommandState(name)}catch(e){on=false}
+      /* ro'yxatlar uchun ham teg zanjiri tekshiriladi */
+      if(!on&&name==='insertUnorderedList')on=!!tags['UL'];
+      if(!on&&name==='insertOrderedList')on=!!tags['OL'];
     }
+    else if(c.indexOf('block:')===0){
+      var b=c.slice(6).toUpperCase();
+      on = b==='P' ? (!tags['H2']&&!tags['H3']&&!tags['PRE']&&!tags['BLOCKQUOTE']) : !!tags[b];
+    }
+    else if(c.indexOf('tag:')===0)on=!!tags[c.slice(4)];
+    else if(c.indexOf('cls:')===0)on=!!tags['CLS:'+c.slice(4)];
+    btns[i].classList.toggle('on',on);
   }
 }
 document.addEventListener('selectionchange',function(){
   if(rteLast&&document.activeElement===rteLast)rteSync();
+});
+document.addEventListener('keyup',function(e){
+  if(e.target.classList&&e.target.classList.contains('rte-body'))rteSync();
+});
+document.addEventListener('mouseup',function(e){
+  if(e.target.closest&&e.target.closest('.rte-body'))setTimeout(rteSync,0);
+});
+document.addEventListener('focusin',function(e){
+  if(e.target.classList&&e.target.classList.contains('rte-body'))setTimeout(rteSync,0);
 });
 /* Panel tugmasi bosilganda matn belgisi yo'qolmasin */
 document.addEventListener('mousedown',function(e){
@@ -6892,7 +6938,7 @@ function annSpoiler(){
   var t=sel?sel.toString():'';
   if(!t){toast('Avval matnni belgilang');return}
   document.execCommand('insertHTML',false,'<span class="tg-spoiler">'+t+'</span>&nbsp;');
-  annSync();
+  annSync();rteSync();
 }
 /* Telegram HTML ga aylantirish \u2014 faqat qo'llab-quvvatlanadigan teglar */
 function toTgHtml(node){
