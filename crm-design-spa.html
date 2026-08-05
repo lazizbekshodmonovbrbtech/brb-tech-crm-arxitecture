@@ -445,6 +445,40 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   align-items:center;gap:6px;max-width:62%}
 .kv-value .mini-avatar{margin-right:0}
 
+/* Zanjir egaligi va e'lon */
+.thr{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9.5px;
+  font-weight:700;padding:1px 7px;border-radius:5px;margin-left:6px}
+.thr.mine{background:var(--m-pos-soft);color:var(--m-pos)}
+.thr.other{background:var(--m-warn-soft);color:var(--m-warn)}
+.thr.free{background:#eef1f5;color:#5c6e80;cursor:pointer}
+.thr.free:hover{background:var(--m-acc-soft);color:var(--m-acc)}
+.msg.locked{opacity:.85}
+.msg.announce{align-self:stretch;max-width:none;background:var(--m-warn-soft);
+  border:1px solid #f0d9a8;border-radius:12px}
+.msg.announce .m-who{color:var(--m-warn)}
+.ann-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
+  letter-spacing:.05em;color:var(--m-warn);margin-bottom:4px}
+.ann-tag .material-icons-outlined{font-size:14px}
+/* Yozish maydoni holatlari */
+.compose-lock{display:flex;align-items:center;gap:9px;padding:11px 16px;background:var(--msurface2);
+  border-top:1px solid var(--mline);font-size:12.5px;color:var(--ink-3)}
+.compose-lock .material-icons-outlined{font-size:17px;color:var(--ink-4)}
+.compose-lock b{color:var(--ink-1)}
+.compose-lock .take{margin-left:auto;height:30px;padding:0 14px;border:none;border-radius:8px;
+  background:var(--m-pos);color:#fff;font-family:var(--font-sans);font-size:12.5px;
+  font-weight:600;cursor:pointer}
+.compose-lock .take:hover{filter:brightness(1.07)}
+.compose-lock.warn{background:var(--m-warn-soft);color:var(--m-warn)}
+.compose-lock.warn .material-icons-outlined{color:var(--m-warn)}
+.compose-lock.warn b{color:#7a5c1a}
+.btn-ann{display:inline-flex;align-items:center;gap:6px;height:42px;padding:0 14px;
+  border:1px solid #f0d9a8;background:var(--m-warn-soft);color:var(--m-warn);border-radius:10px;
+  font-family:var(--font-sans);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn-ann:hover{background:#f5e7c8}
+.btn-ann .material-icons-outlined{font-size:17px}
+.typing{display:flex;align-items:center;gap:7px;padding:6px 16px;font-size:11.5px;
+  color:var(--m-acc);background:var(--m-acc-soft);border-top:1px solid #cfe0f2}
+
 /* Chat turi belgilari va yangi komponentlar */
 .ch-type{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);
   font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px}
@@ -3763,11 +3797,18 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span id="reply-to">Javob:</span>
         <span class="material-icons-outlined x" onclick="cancelReply()">close</span>
       </div>
-      <div class="ib-compose">
+      <div class="compose-lock" id="compose-lock" style="display:none">
+        <span class="material-icons-outlined" id="cl-icon">lock</span>
+        <span id="cl-text">Javob berish uchun xabarni tanlang</span>
+        <button class="take" id="cl-take" style="display:none" onclick="claimThread()">Olish</button>
+      </div>
+      <div class="ib-compose" id="ib-compose">
         <button class="tb-icon-btn" title="Fayl biriktirish" onclick="attachFile()">
           <span class="material-icons-outlined">attach_file</span></button>
         <input class="ib-input" id="ib-msg-input" placeholder="Javob yozing..."
           onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="btn-ann" id="btn-ann" onclick="openAnnounce()">
+          <span class="material-icons-outlined">campaign</span> E'lon</button>
         <button class="ib-send" onclick="sendMsg()"><span class="material-icons-outlined">send</span></button>
       </div>
     </div>
@@ -6408,20 +6449,27 @@ var CHATS=[
  {id:1,type:'SUPERGROUP',name:"Ipak Yo'li · MOB support",ini:'IY',c:'#4f7cd1',sub:"Guruh · 14 a'zo",
   cust:"Ipak Yo'li Bank",tgid:'-1001234567',unread:2,forum:true,mc:14,
   msgs:[
-   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'08:39',
+   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'08:39',uid:501,
     text:"To'lov sahifasida yana 502 xatolik chiqyapti. Skrinshot yubordim.",
-    file:{n:'error-502.png',s:'412 KB',ic:'image'}},
-   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'08:41',
+    file:{n:'error-502.png',s:'412 KB',ic:'image'},tk:'T-2214',own:'me'},
+   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'08:41',uid:501,
     text:"Bu ikkinchi marta shu hafta ichida. Mijozlar shikoyat qilishyapti.",
-    react:[{e:'👍',n:2}]},
+    react:[{e:'👍',n:2}],tk:'T-2214',own:'me'},
    {who:'S. Nazarova',dir:'out',t:'08:44',
     text:"Assalomu alaykum! Muammo qabul qilindi \u2014 T-2214 ticket ochildi, texnik jamoa ko'rmoqda.",
-    reply:{who:'Saboat Rasulova',txt:"Bu ikkinchi marta shu hafta ichida..."}},
+    reply:{who:'Saboat Rasulova',txt:"Bu ikkinchi marta shu hafta ichida..."},tk:'T-2214',own:'me'},
    {sys:true,text:"Mansur Bobojonov guruhga qo'shildi",t:'09:12'},
-   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'09:20',text:'Rahmat, kutamiz.'},
-   {who:'S. Nazarova',dir:'out',t:'09:22',text:'Eski xabar (tahrirlangan namuna)',edited:true},
-   {who:'Mansur Bobojonov',ini:'MB',c:'#3aa981',dir:'in',t:'09:31',
-    text:"Kecha yuborgan hisobotimda xatolik bor edi, e'tibor bermang",deleted:true}
+   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'09:20',uid:501,text:'Rahmat, kutamiz.',tk:'T-2214',own:'me'},
+   {who:'Alisher Bekmurodov',ini:'AB',c:'#4f7cd1',dir:'in',t:'09:25',uid:502,
+    text:"Hisobot eksportida ustunlar joyi almashib ketyapti, buni ham ko'rib bering",
+    tk:'T-2215',own:'other',owner:'B. Karimov'},
+   {who:'Dilshod Toshpulatov',ini:'DT',c:'#8a9a3a',dir:'in',t:'09:28',uid:503,
+    text:"Yangi filial uchun qo'shimcha login ochib berasizmi?",tk:null,own:'free'},
+   {who:'S. Nazarova',dir:'out',t:'09:22',text:'Skrinshotni ko\'rdik, tekshiryapmiz.',edited:true,tk:'T-2214',own:'me'},
+   {who:'Mansur Bobojonov',ini:'MB',c:'#3aa981',dir:'in',t:'09:31',uid:504,
+    text:"Kecha yuborgan hisobotimda xatolik bor edi, e'tibor bermang",deleted:true,tk:null,own:'free'},
+   {ann:true,who:'S. Nazarova',dir:'out',t:'09:35',
+    text:"Diqqat: 06.08 22:00\u201400:00 oralig'ida texnik ishlar bo'ladi, to'lov xizmati vaqtincha ishlamaydi."}
   ]},
  {id:2,type:'GROUP',name:'Agro Invest guruh',ini:'AG',c:'#3aa981',sub:"Guruh · 6 a'zo",
   cust:'Agro Invest MChJ',tgid:'-1009876543',unread:1,forum:false,mc:6,
@@ -6475,13 +6523,24 @@ function renderMsgs(){
   for(var i=0;i<c.msgs.length;i++){
     var m=c.msgs[i];
     if(m.sys){out+='<div class="msg system">'+m.text+' \u00b7 '+m.t+'</div>';continue}
-    out+='<div class="msg '+(m.dir==='in'?'in':'out')+(m.deleted?' deleted':'')+'">'
+    if(m.ann){
+      out+='<div class="msg out announce"><div class="ann-tag">'
+        +'<span class="material-icons-outlined">campaign</span>E\'LON \u2014 barcha a\'zolarga</div>'
+        +'<span class="m-body">'+m.text+'</span>'
+        +'<div class="m-meta">'+m.t+' \u00b7 '+m.who+'</div></div>';
+      continue;
+    }
+    var locked = m.own==='other';
+    out+='<div class="msg '+(m.dir==='in'?'in':'out')+(m.deleted?' deleted':'')+(locked?' locked':'')+'">'
       +'<div class="m-acts">'
-        +'<button title="Javob berish" onclick="startReply('+i+')"><span class="material-icons-outlined">reply</span></button>'
+        +(locked?'':'<button title="Javob berish" onclick="startReply('+i+')"><span class="material-icons-outlined">reply</span></button>')
         +'<button title="Reaksiya" onclick="addReact('+i+')"><span class="material-icons-outlined">add_reaction</span></button>'
-        +'<button title="Ticketga bog\'lash" onclick="toast(\'Xabar T-2214 ticketiga bog\\\'landi\')"><span class="material-icons-outlined">confirmation_number</span></button>'
       +'</div>';
-    if(m.dir==='in'&&m.who)out+='<div class="m-who">'+m.who+'</div>';
+    if(m.dir==='in'&&m.who)out+='<div class="m-who">'+m.who
+      +(m.tk?'<span class="thr '+(m.own==='me'?'mine':'other')+'">'+m.tk
+        +' \u00b7 '+(m.own==='me'?'siz':(m.owner||'band'))+'</span>'
+        :'<span class="thr free" onclick="claimMsg('+i+')">ticketsiz \u00b7 olish</span>')
+      +'</div>';
     if(m.reply)out+='<div class="msg-reply"><div class="r-who">'+m.reply.who+'</div>'
       +'<div class="r-txt">'+m.reply.txt+'</div></div>';
     out+='<span class="m-body">'+m.text+'</span>';
@@ -6502,7 +6561,69 @@ function renderMsgs(){
   }
   box.innerHTML=out;
   box.scrollTop=box.scrollHeight;
+  updateCompose();
 }
+
+/* Guruhda reply majburiy \u2014 yozish maydoni holati */
+function updateCompose(){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var isGroup=c.type!=='PRIVATE';
+  var lock=document.getElementById('compose-lock');
+  var comp=document.getElementById('ib-compose');
+  var take=document.getElementById('cl-take');
+  var ann=document.getElementById('btn-ann');
+  ann.style.display=isGroup?'':'none';
+  if(!isGroup){lock.style.display='none';comp.style.display='';return}
+  if(replyTo===null){
+    lock.style.display='flex';lock.className='compose-lock';
+    document.getElementById('cl-icon').textContent='reply';
+    document.getElementById('cl-text').innerHTML=
+      "Guruhda <b>reply majburiy</b> \u2014 javob berish uchun xabar ustiga bosing. "
+      +"Umumiy xabar uchun <b>E\'lon</b> tugmasidan foydalaning.";
+    take.style.display='none';
+    comp.style.display='none';
+    return;
+  }
+  var m=c.msgs[replyTo];
+  if(m.own==='other'){
+    lock.style.display='flex';lock.className='compose-lock warn';
+    document.getElementById('cl-icon').textContent='lock';
+    document.getElementById('cl-text').innerHTML='Bu zanjir <b>'+(m.owner||'boshqa operator')
+      +'</b> da \u2014 '+m.tk+'. Siz javob bera olmaysiz.';
+    take.style.display='none';comp.style.display='none';return;
+  }
+  if(m.own==='free'){
+    lock.style.display='flex';lock.className='compose-lock';
+    document.getElementById('cl-icon').textContent='person_add';
+    document.getElementById('cl-text').innerHTML='Bu savolda ticket yo\'q \u2014 javob berish uchun zanjirni oling';
+    take.style.display='';comp.style.display='none';return;
+  }
+  lock.style.display='none';comp.style.display='';
+}
+function claimThread(){if(replyTo!==null)claimMsg(replyTo)}
+function claimMsg(i){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var m=c.msgs[i];
+  var num='T-22'+(20+Math.floor(Math.random()*9));
+  var uid=m.uid;
+  for(var j=0;j<c.msgs.length;j++)
+    if(c.msgs[j].uid===uid&&!c.msgs[j].tk){c.msgs[j].tk=num;c.msgs[j].own='me'}
+  replyTo=i;
+  document.getElementById('reply-to').textContent='Javob: '+(m.who||'Siz')+' \u2014 '+(m.text||'').slice(0,40)+'...';
+  document.getElementById('reply-bar').classList.add('on');
+  renderMsgs();
+  toast(num+' ochildi va sizga biriktirildi \u2014 zanjir qulflandi');
+}
+function openAnnounce(){
+  var t=prompt("E'lon matni \u2014 barcha a'zolarga reply'siz yuboriladi:",
+    "Diqqat: ertaga 22:00\u201400:00 oralig'ida texnik ishlar bo'ladi.");
+  if(!t)return;
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  c.msgs.push({ann:true,who:'S. Nazarova',dir:'out',t:nowHM(),text:t});
+  renderMsgs();renderChatList();
+  toast("E'lon yuborildi \u2014 ticketga bog'lanmaydi, javob kutilmaydi");
+}
+
 function openChatItem(id){
   curChat=id;replyTo=null;
   var c=CHATS.filter(function(x){return x.id===id})[0];
@@ -6541,9 +6662,11 @@ function startReply(i){
   var m=c.msgs[i];
   document.getElementById('reply-to').textContent='Javob: '+(m.who||'Siz')+' \u2014 '+(m.text||'').slice(0,40)+'...';
   document.getElementById('reply-bar').classList.add('on');
-  document.getElementById('ib-msg-input').focus();
+  updateCompose();
+  var inp=document.getElementById('ib-msg-input');
+  if(inp.offsetParent)inp.focus();
 }
-function cancelReply(){replyTo=null;document.getElementById('reply-bar').classList.remove('on')}
+function cancelReply(){replyTo=null;document.getElementById('reply-bar').classList.remove('on');updateCompose()}
 function addReact(i){
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
   var m=c.msgs[i];
@@ -6575,6 +6698,7 @@ function sendMsg(){
   if(replyTo!==null){
     var rm=c.msgs[replyTo];
     msg.reply={who:rm.who||'Siz',txt:(rm.text||'').slice(0,50)};
+    msg.tk=rm.tk;msg.own='me';
   }
   c.msgs.push(msg);
   inp.value='';cancelReply();
