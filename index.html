@@ -551,7 +551,7 @@ const DB = {
   ["position","int","NN","","Tartib"]]},
  {name:"contacts",desc:"Mijozning aloqa shaxslari. Kim qaror qabul qiladi \u2014 sotuvda hal qiluvchi ma'lumot.",cols:[
   ["id","bigint","PK","","Identifikator"],
-  ["customer_id","bigint","NN","ext:customer-service.customers","Mijoz \u2014 mantiqiy ref (FKsiz, boshqa servis)"],
+  ["customer_id","bigint","FK,NN","customers.id","Mijoz \u2014 CASCADE: mijoz o'chirilsa bolalari ham"],
   ["full_name","varchar(255)","NN","","F.I.O"],
   ["position","varchar(100)","","","Lavozimi"],
   ["phone","varchar(20)","","","Telefon"],
@@ -562,7 +562,7 @@ const DB = {
   ["birthday","date","","","Tug'ilgan kun (tabrik avtomatizatsiyasi)"]]},
  {name:"customer_requisites",desc:"Bank rekvizitlari \u2014 shartnoma va hisob-fakturaga chiqadi. Bir mijozda bir nechta hisob bo'lishi mumkin.",cols:[
   ["id","bigint","PK","","Identifikator"],
-  ["customer_id","bigint","NN","ext:customer-service.customers","Mijoz \u2014 mantiqiy ref (FKsiz, boshqa servis)"],
+  ["customer_id","bigint","FK,NN","customers.id","Mijoz \u2014 CASCADE: mijoz o'chirilsa bolalari ham"],
   ["bank_name","varchar(255)","NN","","Bank nomi"],
   ["account_number","varchar(30)","NN","","Hisob raqami"],
   ["mfo","varchar(10)","","","MFO"],
@@ -570,14 +570,14 @@ const DB = {
   ["is_primary","boolean","NN","","Asosiy rekvizit"]]},
  {name:"customer_addresses",desc:"Manzillar (yuridik, faktik, yetkazib berish) \u2014 filiallar uchun bir nechta.",cols:[
   ["id","bigint","PK","","Identifikator"],
-  ["customer_id","bigint","NN","ext:customer-service.customers","Mijoz \u2014 mantiqiy ref (FKsiz, boshqa servis)"],
+  ["customer_id","bigint","FK,NN","customers.id","Mijoz \u2014 CASCADE: mijoz o'chirilsa bolalari ham"],
   ["address_type","enum","NN","","LEGAL / ACTUAL / DELIVERY / BRANCH"],
   ["region_id","bigint","","ext:global-reference.regions","Hudud"],
   ["address_line","text","NN","","Manzil matni"],
   ["is_primary","boolean","NN","","Asosiy manzil"]]},
  {name:"customer_notes",desc:"Mijoz bo'yicha eslatmalar va tarix \u2014 sotuvchi almashsa kontekst yo'qolmasin.",cols:[
   ["id","bigint","PK","","Identifikator"],
-  ["customer_id","bigint","NN","ext:customer-service.customers","Mijoz \u2014 mantiqiy ref (FKsiz, boshqa servis)"],
+  ["customer_id","bigint","FK,NN","customers.id","Mijoz \u2014 CASCADE: mijoz o'chirilsa bolalari ham"],
   ["author_assignment_id","bigint","","ext:hrm.assignment","Muallif"],
   ["content","text","NN","","Eslatma matni"],
   ["is_pinned","boolean","NN","","Yuqoriga mahkamlangan"]]},
