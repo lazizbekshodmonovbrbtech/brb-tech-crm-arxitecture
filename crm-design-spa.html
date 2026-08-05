@@ -596,6 +596,32 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .stage-prob{font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:var(--m-acc);
   background:var(--m-acc-soft);padding:1px 6px;border-radius:4px;margin-left:5px}
 
+/* Mijoz mos kelish taklifi */
+.match-box{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border-radius:11px;
+  background:var(--m-warn-soft);border:1px solid #f0d9a8;margin-bottom:14px}
+.match-ic{width:34px;height:34px;border-radius:9px;background:var(--m-warn);color:#fff;
+  display:grid;place-items:center;flex-shrink:0}
+.match-ic .material-icons-outlined{font-size:18px}
+.match-b{flex:1;min-width:0}
+.match-t{font-size:13px;font-weight:600;color:var(--m-warn);margin-bottom:3px}
+.match-d{font-size:12.5px;color:#7a5c1a;line-height:1.5}
+.match-d b{color:#5c4310}
+.match-why{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);
+  font-size:10px;font-weight:700;background:#f2e9d8;color:var(--m-warn);
+  padding:2px 8px;border-radius:5px;margin-top:6px}
+.match-act{display:flex;gap:8px;margin-top:10px}
+.match-btn{height:32px;padding:0 14px;border-radius:8px;font-family:var(--font-sans);
+  font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent}
+.match-btn.ok{background:var(--m-warn);color:#fff}
+.match-btn.ok:hover{filter:brightness(1.07)}
+.match-btn.no{background:var(--surface);color:var(--ink-2);border-color:var(--mline)}
+.match-btn.no:hover{background:#f3f4f6}
+.match-box.strong{background:var(--m-pos-soft);border-color:#b8ddc8}
+.match-box.strong .match-ic{background:var(--m-pos)}
+.match-box.strong .match-t{color:var(--m-pos)}
+.match-box.strong .match-d{color:#1c5e3d}
+.match-box.strong .match-why{background:#d5ebdf;color:var(--m-pos)}
+
 /* Lead pozitsiyalari (lead_items) */
 .li-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .li-tbl th{text-align:left;padding:8px 10px;font-size:11px;font-weight:700;letter-spacing:.05em;
@@ -5507,6 +5533,24 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       </div>
     </div>
     <div class="fm-body">
+      <!-- MIJOZ MOS KELISH TAKLIFI (match_confidence = WEAK) -->
+      <div class="match-box" id="match-box">
+        <span class="match-ic"><span class="material-icons-outlined">person_search</span></span>
+        <div class="match-b">
+          <div class="match-t">Ehtimoliy mavjud mijoz topildi</div>
+          <div class="match-d">Bu lead <b>Toshkent Parfum MChJ</b> (CUS-00216) mijoziga tegishli bo'lishi mumkin.
+            Biriktirilsa mijozning butun tarixi ochiladi: 2 shartnoma, 14 ticket, oxirgi aloqa 12.06.2026.</div>
+          <span class="match-why"><span class="material-icons-outlined" style="font-size:13px">link</span>
+            WEAK · email domeni mos (@tparfum.uz) · telefon boshqa</span>
+          <div class="match-act">
+            <button class="match-btn ok" onclick="matchConfirm()">
+              <span class="material-icons-outlined" style="font-size:15px;vertical-align:-3px">check</span>
+              Ha, shu mijoz</button>
+            <button class="match-btn no" onclick="matchReject()">Yo'q, yangi mijoz</button>
+            <button class="match-btn no" onclick="toast('Mijozlar ro\'yxatidan tanlash')">Boshqasini tanlash</button>
+          </div>
+        </div>
+      </div>
       <div class="id-grid">
         <div style="min-width:0">
           <!-- POZITSIYALAR -->
@@ -5606,7 +5650,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <div class="dc-head"><h3>Lead ma'lumotlari</h3></div>
             <div class="dc-body">
               <div class="kv"><span class="kv-label">Mijoz</span><span class="kv-dots"></span>
-                <span class="kv-value">Toshkent Parfum MChJ</span></div>
+                <span class="kv-value" id="match-cust"><span style="color:var(--m-warn)">biriktirilmagan</span></span></div>
               <div class="kv"><span class="kv-label">Aloqa</span><span class="kv-dots"></span>
                 <span class="kv-value mono">+998 90 123 45 67</span></div>
               <div class="kv"><span class="kv-label">Manba</span><span class="kv-dots"></span>
@@ -6391,6 +6435,27 @@ function projTab(name){
   for(var j=0;j<views.length;j++)
     views[j].classList.toggle('active',views[j].id==='pt-'+name);
   document.querySelector('.page').scrollTop=0;
+}
+
+/* Mijoz mos kelish taklifi */
+function matchConfirm(){
+  var b=document.getElementById('match-box');
+  b.classList.add('strong');
+  b.querySelector('.match-t').textContent='Mijoz biriktirildi';
+  b.querySelector('.match-d').innerHTML='Lead <b>Toshkent Parfum MChJ</b> (CUS-00216) mijoziga bog\'landi. '+
+    'Identifikator reyestriga yangi yozuv qo\'shildi: telefon +998 90 123 45 67.';
+  b.querySelector('.match-why').innerHTML='<span class="material-icons-outlined" style="font-size:13px">verified</span> CONFIRMED \u00b7 sotuvchi tasdiqladi';
+  b.querySelector('.match-act').style.display='none';
+  b.querySelector('.match-ic .material-icons-outlined').textContent='how_to_reg';
+  document.getElementById('match-cust').innerHTML='Toshkent Parfum MChJ';
+  toast('Mijoz biriktirildi \u2014 customer_identities yangilandi');
+}
+function matchReject(){
+  var b=document.getElementById('match-box');
+  b.style.display='none';
+  document.getElementById('match-cust').innerHTML=
+    '<span style="color:var(--ink-4)">yangi mijoz \u2014 yutilganda yaratiladi</span>';
+  toast('Taklif rad etildi \u2014 lead yopilganda yangi mijoz ochiladi');
 }
 
 /* Loyiha boti chatini ochish */
