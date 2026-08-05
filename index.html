@@ -523,7 +523,7 @@ const DB = {
 ]},
 
 "customer-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Mijozlar 360° \u2014 mustaqil aggregate root. Lead yopilgach ham yashaydi: shartnomalar, ticketlar, qo'ng'iroqlar va obunalar shu yozuvga tayanadi. ADR-004: customers lead-service'dan AJRATILDI \u2014 mijoz sotuv jarayonining bir qismi emas, kompaniyaning doimiy kontragenti.",
  tables:[
  {name:"ENUM_KATALOG",noaudit:true,desc:"CUSTOMER-SERVICE ENUMLARI. Saqlash: varchar(30) + CHECK constraint (Postgres native enum EMAS). Java: @Enumerated(EnumType.STRING). Yozilish: UPPER_SNAKE_CASE. Qiymatni O'CHIRISH taqiqlanadi \u2014 faqat yangi qo'shiladi.",cols:[
@@ -642,7 +642,7 @@ const DB = {
 ]},
 
 "lead-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Sotuv voronkasi: leadlar, pozitsiyalar (mahsulot katalogi bilan), kampaniyalar, follow-up vazifalari. Mijozlar customer-service'da \u2014 bu yerda faqat mantiqiy ref. Barcha enumlar ENUM_KATALOG blokida jamlangan.",
  tables:[
  {name:"ENUM_KATALOG",noaudit:true,desc:"LEAD-SERVICE ENUMLARI. Saqlash: varchar(30) + CHECK. Yozilish: UPPER_SNAKE_CASE. Qiymat o'chirilmaydi \u2014 faqat qo'shiladi (tarixiy yozuvlar buzilmasin).",cols:[
@@ -822,7 +822,7 @@ const DB = {
 ]},
 
 "social-integration-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Ijtimoiy tarmoq va messenjer integratsiyalari — webhook qabul qilish va lead-service'ga uzatish.",
  tables:[
  {name:"platforms",desc:"Qo'llab-quvvatlanadigan platformalar ro'yxati.",cols:[
@@ -861,7 +861,7 @@ const DB = {
 ]},
 
 "contract-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Shartnomalar, hujjatlar va to'lov jadvali boshqaruvi.",
  tables:[
  {name:"ENUM_KATALOG",noaudit:true,desc:"CONTRACT-SERVICE ENUMLARI. Saqlash: varchar(30) + CHECK. UPPER_SNAKE_CASE. Qiymat o'chirilmaydi.",cols:[
@@ -1039,7 +1039,7 @@ const DB = {
 ]},
 
 "project-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Loyiha, sprint va vazifalar. Har boardning O'Z rejimi (boards.mode). Servisning barcha enumlari ENUM_KATALOG blokida jamlangan (saqlash: varchar + CHECK, yozilish: UPPER_SNAKE_CASE), logika tayanadigan seed kodlar esa SEED_KODLAR blokida.",
  tables:[
  {name:"ENUM_KATALOG",noaudit:true,desc:"PROJECT-SERVICE ENUMLARI — bitta joyda. SAQLASH USULI: varchar(30) + CHECK constraint (Postgres native enum EMAS — yangi qiymat qo'shishda ALTER TYPE va replikatsiya muammolari bo'lmasin; Liquibase migration ham sodda). Java tomonda @Enumerated(EnumType.STRING). YOZILISH QOIDASI: barcha enum qiymatlari UPPER_SNAKE_CASE (avval aralash edi: scrum/kanban, planned/active — endi yagona standart). Enum qiymatini O'CHIRISH taqiqlanadi (tarixiy yozuvlar buziladi) — faqat yangi qiymat qo'shiladi.",cols:[
@@ -1241,7 +1241,7 @@ const DB = {
 ]},
 
 "support-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Loyihalar supporti — ticketlar, SLA va har bir loyihaning o'z Telegram boti orqali muloqot.",
  tables:[
  {name:"ticket_priorities",desc:"Service ichki lug'ati — migration'da seed qilinadi (low, medium, high, critical). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
@@ -1332,7 +1332,7 @@ const DB = {
 ]},
 
 "callcenter-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Telefoniya — PBX/SIP integratsiyasi, qo'ng'iroqlar va operator holati.",
  tables:[
  {name:"pbx_trunks",desc:"PBX trunk sozlamalari — telefoniya provayderiga ulanish.",cols:[
@@ -1381,7 +1381,7 @@ const DB = {
 ]},
 
 "notification-service":{
- group:"CRM yadro",
+ group:"CORE",
  desc:"Markazlashtirilgan xabarnomalar — email, SMS, push. Barcha servicelar event orqali foydalanadi.",
  tables:[
  {name:"channel_providers",desc:"Kanal provayderlari — qaysi kanal qaysi provayder orqali yuboriladi.",cols:[
@@ -1417,7 +1417,7 @@ const DB = {
 ]},
 
 "inventory-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Kompaniya jihozlari va ombor reyestri. MUHIM: xodimga bog'lanish employee_id orqali — lavozim o'zgarsa ham jihoz xodimda qoladi.",
  tables:[
  {name:"inventory_types",desc:"Service ichki lug'ati — migration'da seed qilinadi (equipment, appliance, consumable). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
@@ -1467,7 +1467,7 @@ const DB = {
 ]},
 
 "kpi-service":{
- group:"CRM yadro",
+ group:"WORK",
  desc:"Xodimlar KPI hisoblash — har bir lavozim uchun har xil kriteriyalar va vaznlar. Barcha servicelardan event orqali faktlar yig'iladi, davr yopilganda hisoblanadi. Intizom (turniket) hamma uchun majburiy kriteriya.",
  tables:[
  {name:"kpi_criteria",desc:"KPI kriteriyalari lug'ati — seed: TASK_COMPLETION (bajarilgan vazifalar), TICKET_RESOLUTION (yopilgan so'rovlar), CUSTOMER_FEEDBACK (mijoz baholari), CALL_QUALITY (AI qo'ng'iroq scoring), DISCIPLINE (turniket intizomi). UI'dan yangi kriteriya qo'shiladi.",cols:[
