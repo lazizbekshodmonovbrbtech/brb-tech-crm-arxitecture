@@ -3889,7 +3889,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <button class="btn-ann" style="margin-left:auto;height:38px" onclick="openBroadcast()">
       <span class="material-icons-outlined">podcasts</span> Ommaviy e'lon</button>
     <button class="btn-flat" style="border:1px solid var(--line-2);border-radius:9px;height:38px"
-      onclick="toast('Bot sozlamalari (prototip)')">
+      onclick="openBotSettings()">
       <span class="material-icons-outlined">settings</span> Bot sozlamalari</button>
   </div>
   <div class="inbox">
@@ -6009,6 +6009,201 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 </div>
 
 
+
+<!-- ════════════ BOT SOZLAMALARI MODALI ════════════ -->
+<div class="overlay" id="bot-overlay" onclick="if(event.target===this)closeOv('bot-overlay')">
+  <div class="modal" style="width:min(880px,95vw)">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">smart_toy</span></span>
+        <div class="mh-t"><h1>Bot sozlamalari</h1>
+          <div class="mh-id mono" id="bot-name">@mob_support_bot · Mobil ilova</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="head-chip"><span class="st-dot" style="background:#5bd49a;box-shadow:0 0 0 3px rgba(91,212,154,.25)"></span>Faol</span>
+        <button class="close-x" onclick="closeOv('bot-overlay')"><span class="material-icons-outlined">close</span></button>
+      </div>
+    </div>
+    <div class="fm-body">
+      <div class="set-wrap" style="grid-template-columns:190px 1fr">
+        <div class="set-nav">
+          <div class="set-nav-item on" onclick="botTab(this,'bs-conn')">
+            <span class="material-icons-outlined">link</span> Ulanish</div>
+          <div class="set-nav-item" onclick="botTab(this,'bs-ticket')">
+            <span class="material-icons-outlined">confirmation_number</span> Ticket qoidalari</div>
+          <div class="set-nav-item" onclick="botTab(this,'bs-msg')">
+            <span class="material-icons-outlined">chat</span> Xabar qoidalari</div>
+          <div class="set-nav-item" onclick="botTab(this,'bs-auto')">
+            <span class="material-icons-outlined">bolt</span> Avto-javoblar</div>
+          <div class="set-nav-item" onclick="botTab(this,'bs-team')">
+            <span class="material-icons-outlined">group</span> Operatorlar</div>
+        </div>
+
+        <div>
+          <!-- ULANISH -->
+          <div class="set-pane on" id="bs-conn">
+            <div class="set-card">
+              <div class="set-head"><h3>Bot ma'lumotlari</h3><span class="tbl">bots</span></div>
+              <div class="set-body">
+                <div class="set-row"><span class="lbl">Bot username<small>BotFather'da berilgan</small></span>
+                  <input type="text" value="@mob_support_bot" readonly
+                    style="background:var(--msurface2);color:#8b9aa9;flex:1">
+                  <span class="col-code">bot_username · UK</span></div>
+                <div class="set-row"><span class="lbl">Ko'rsatiladigan nom</span>
+                  <input type="text" value="Mobil ilova · Support" style="flex:1">
+                  <span class="col-code">display_name</span></div>
+                <div class="set-row"><span class="lbl">Tavsif<small>botlar ro'yxatida chiqadi</small></span>
+                  <input type="text" value="Ipak Yo'li Bank mijozlari uchun asosiy qo'llab-quvvatlash kanali" style="flex:1">
+                  <span class="col-code">description</span></div>
+                <div class="set-row"><span class="lbl">Loyiha</span>
+                  <select><option>Mobil ilova (MOB)</option><option>Ichki CRM (CRM)</option></select>
+                  <span class="col-code">project_id · UK</span></div>
+              </div>
+            </div>
+            <div class="set-card">
+              <div class="set-head"><h3>Token va webhook</h3><span class="tbl">bots</span></div>
+              <div class="set-body">
+                <div class="set-row"><span class="lbl">Bot tokeni<small>AES shifrlangan, logga yozilmaydi</small></span>
+                  <input type="password" value="7284915037:AAH..." style="flex:1">
+                  <button class="btn-flat" style="height:38px" onclick="toast('Token yangilandi va tekshirildi')">
+                    <span class="material-icons-outlined">refresh</span> Tekshirish</button></div>
+                <div class="set-row"><span class="lbl">Webhook manzili</span>
+                  <input type="text" value="https://crm.brb.uz/api/support/webhook/14" readonly
+                    style="background:var(--msurface2);color:#8b9aa9;flex:1">
+                  <span class="col-code">webhook_url</span></div>
+                <div class="set-row"><span class="lbl">Secret token<small>kelgan so'rov haqiqiyligini tekshiradi</small></span>
+                  <input type="password" value="wh_9f2c81ba44e7" style="flex:1">
+                  <span class="col-code">webhook_secret</span></div>
+                <div class="set-row"><span class="lbl">Holat</span>
+                  <span class="chip soft-pos"><span class="st-dot pos"></span>Webhook faol · oxirgi update 2 daqiqa oldin</span></div>
+              </div>
+              <div class="set-foot">
+                <button class="btn-flat" onclick="toast('Webhook qayta o\'rnatildi')">
+                  <span class="material-icons-outlined">sync</span> Webhook qayta o'rnatish</button>
+                <button class="btn-primary" onclick="toast('Saqlandi')">
+                  <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+            </div>
+          </div>
+
+          <!-- TICKET QOIDALARI -->
+          <div class="set-pane" id="bs-ticket">
+            <div class="set-card">
+              <div class="set-head"><h3>Avtomatik ticket</h3><span class="tbl">bots · tickets</span></div>
+              <div class="set-body">
+                <div class="set-row"><span class="lbl">Avto-ochish<small>har kelgan xabar ticket ochadi</small></span>
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span>
+                  <span class="col-code">auto_create_ticket</span></div>
+                <div class="set-row"><span class="lbl">Zanjir kaliti</span>
+                  <select><option>Foydalanuvchi bo'yicha (USER)</option>
+                    <option>Forum mavzusi bo'yicha (TOPIC)</option></select>
+                  <span class="col-code">thread_key</span></div>
+                <div class="set-row"><span class="lbl">Zanjir oynasi<small>shu vaqt ichida yangi xabar eski ticketga qo'shiladi</small></span>
+                  <input type="number" value="12" style="width:90px"> soat
+                  <span class="col-code">thread_window_hours</span></div>
+                <div class="set-row"><span class="lbl">Standart tur</span>
+                  <select><option>QUESTION</option><option>INCIDENT</option><option>BUG</option></select>
+                  <span class="col-code">ticket_types</span></div>
+                <div class="set-row"><span class="lbl">Standart SLA</span>
+                  <select><option>STANDARD — javob 30 min</option><option>PREMIUM — javob 15 min</option></select>
+                  <span class="col-code">sla_policies</span></div>
+              </div>
+              <div class="set-foot"><button class="btn-primary" onclick="toast('Ticket qoidalari saqlandi')">
+                <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+            </div>
+          </div>
+
+          <!-- XABAR QOIDALARI -->
+          <div class="set-pane" id="bs-msg">
+            <div class="set-card">
+              <div class="set-head"><h3>Guruhda yozish</h3><span class="tbl">bots</span></div>
+              <div class="set-body">
+                <div class="set-row"><span class="lbl">Reply majburiy<small>operator faqat javob sifatida yoza oladi</small></span>
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span>
+                  <span class="col-code">require_reply_in_group</span></div>
+                <div class="set-row"><span class="lbl">E'lon yubora oladigan rollar</span>
+                  <select><option>PM, TECH_LEAD</option><option>Barcha operatorlar</option></select>
+                  <span class="col-code">announce_roles</span></div>
+                <div class="set-row"><span class="lbl">Fayl qabul qilish<small>50 MB gacha</small></span>
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span></div>
+                <div class="set-row"><span class="lbl">O'chirilgan xabarlarni saqlash<small>mijoz o'chirsa ham CRM'da qoladi</small></span>
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span>
+                  <span class="col-code">deleted_at</span></div>
+              </div>
+              <div class="set-foot"><button class="btn-primary" onclick="toast('Xabar qoidalari saqlandi')">
+                <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+            </div>
+          </div>
+
+          <!-- AVTO-JAVOBLAR -->
+          <div class="set-pane" id="bs-auto">
+            <div class="set-card">
+              <div class="set-head"><h3>Avtomatik xabarlar</h3>
+                <button class="btn-flat" style="margin-left:auto;height:32px;font-size:12.5px"
+                  onclick="toast('Yangi avto-javob')"><span class="material-icons-outlined" style="font-size:17px">add</span> Qo'shish</button></div>
+              <div class="set-body">
+                <div class="set-row"><span class="lbl">Salomlashish<small>botga birinchi murojaatda</small></span>
+                  <input type="text" value="Assalomu alaykum! Savolingizni yozing, operator tez orada javob beradi." style="flex:1">
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span></div>
+                <div class="set-row"><span class="lbl">Ticket ochilganda</span>
+                  <input type="text" value="Murojaatingiz qabul qilindi. Raqam: {ticket_number}" style="flex:1">
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span></div>
+                <div class="set-row"><span class="lbl">Ish vaqtidan tashqari</span>
+                  <input type="text" value="Hozir ish vaqti emas (09:00—18:00). Ertalab javob beramiz." style="flex:1">
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span></div>
+                <div class="set-row"><span class="lbl">Ticket yopilganda<small>baho so'rovi</small></span>
+                  <input type="text" value="Murojaat yopildi. Xizmatimizni 1—5 ball bilan baholang." style="flex:1">
+                  <span class="sw on" onclick="this.classList.toggle('on')"></span></div>
+              </div>
+              <div class="set-foot">
+                <span style="font-size:11.5px;color:#8b9aa9;margin-right:auto">
+                  O'zgaruvchilar: {ticket_number} · {operator} · {customer} · {project}</span>
+                <button class="btn-primary" onclick="toast('Avto-javoblar saqlandi')">
+                  <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+            </div>
+          </div>
+
+          <!-- OPERATORLAR -->
+          <div class="set-pane" id="bs-team">
+            <div class="set-card">
+              <div class="set-head"><h3>Botga biriktirilgan operatorlar</h3>
+                <button class="btn-flat" style="margin-left:auto;height:32px;font-size:12.5px"
+                  onclick="openForm('Operator qo\'shish')"><span class="material-icons-outlined" style="font-size:17px">person_add</span> Qo'shish</button></div>
+              <div class="set-body" style="padding:8px 16px 14px">
+                <div class="mem-row"><span class="mini-avatar" style="background:#b56bb0">SN</span>
+                  S. Nazarova <span class="mem-role admin">ASOSIY</span>
+                  <span class="mono" style="font-size:11px;color:#8b9aa9;margin-left:10px">12 ochiq ticket</span></div>
+                <div class="mem-row"><span class="mini-avatar" style="background:#3aa981">BK</span>
+                  B. Karimov <span class="mem-role member">OPERATOR</span>
+                  <span class="mono" style="font-size:11px;color:#8b9aa9;margin-left:10px">7 ochiq ticket</span></div>
+                <div class="mem-row"><span class="mini-avatar" style="background:#c98a3d">AA</span>
+                  A. Abdullayev <span class="mem-role member">OPERATOR</span>
+                  <span class="mono" style="font-size:11px;color:#8b9aa9;margin-left:10px">4 ochiq ticket</span></div>
+                <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--mline2)">
+                  <div class="set-row" style="border:none;padding:6px 0">
+                    <span class="lbl">Yangi ticket taqsimoti</span>
+                    <select><option>Navbat bo'yicha (round-robin)</option>
+                      <option>Eng kam yuklangan operatorga</option>
+                      <option>Qo'lda olish (avtomatik emas)</option></select></div>
+                  <div class="set-row" style="border:none;padding:6px 0">
+                    <span class="lbl">Avto-bo'shatish<small>operator javob bermasa chat navbatga qaytadi</small></span>
+                    <input type="number" value="30" style="width:80px"> daqiqa
+                    <span class="col-code">auto_release_minutes</span></div>
+                </div>
+              </div>
+              <div class="set-foot"><button class="btn-primary" onclick="toast('Operatorlar sozlamasi saqlandi')">
+                <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fm-foot">
+      <button class="btn-del-text" style="margin-right:auto" onclick="toast('Bot o\'chirildi (soft delete)')">
+        Botni o'chirish</button>
+      <button class="btn-flat" onclick="closeOv('bot-overlay')">Yopish</button>
+    </div>
+  </div>
+</div>
 <!-- ════════════ QABUL QILUVCHILAR MODALI ════════════ -->
 <div class="overlay" id="rec-overlay" onclick="if(event.target===this)closeOv('rec-overlay')">
   <div class="modal" style="width:min(560px,95vw)">
@@ -7383,6 +7578,22 @@ function sendMsg(){
     c.msgs.push({sys:true,text:'Telegram: yetkazildi',t:nowHM()});
     renderMsgs();
   },600);
+}
+function openBotSettings(){
+  document.getElementById('bot-name').textContent=
+    document.getElementById('chat-bot').textContent+' \u00b7 '+document.getElementById('chat-proj').textContent;
+  var items=document.querySelectorAll('#bot-overlay .set-nav-item');
+  for(var i=0;i<items.length;i++)items[i].classList.toggle('on',i===0);
+  var panes=document.querySelectorAll('#bot-overlay .set-pane');
+  for(var j=0;j<panes.length;j++)panes[j].classList.toggle('on',j===0);
+  document.getElementById('bot-overlay').classList.add('open');
+}
+function botTab(el,pane){
+  var items=el.parentElement.querySelectorAll('.set-nav-item');
+  for(var i=0;i<items.length;i++)items[i].classList.remove('on');
+  el.classList.add('on');
+  var panes=document.querySelectorAll('#bot-overlay .set-pane');
+  for(var j=0;j<panes.length;j++)panes[j].classList.toggle('on',panes[j].id===pane);
 }
 function openIssueTicket(no){show('tickets');toast(no+' ticketi ochildi')}
 function closeTicket(no){
