@@ -487,8 +487,17 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .ch-type.chan{background:#efe6f7;color:#6b3fa0}
 .ib-badges{display:flex;align-items:center;gap:5px;margin-top:3px}
 /* Javob (reply) bloki */
-.msg-reply{border-left:2.5px solid var(--m-acc);padding:3px 0 3px 8px;margin-bottom:6px;
-  background:rgba(31,102,168,.05);border-radius:0 6px 6px 0}
+.msg-reply{border-left:2.5px solid var(--m-acc);padding:4px 8px 4px 9px;margin-bottom:6px;
+  background:rgba(31,102,168,.06);border-radius:0 7px 7px 0;cursor:pointer;
+  transition:background .15s}
+.msg-reply:hover{background:rgba(31,102,168,.14)}
+.msg-reply .r-jump{float:right;font-size:13px;color:var(--m-acc);opacity:.5}
+.msg-reply:hover .r-jump{opacity:1}
+@keyframes flashMsg{
+  0%{background:rgba(31,102,168,.28);box-shadow:0 0 0 4px rgba(31,102,168,.18)}
+  100%{background:inherit;box-shadow:none}
+}
+.msg.flash{animation:flashMsg 1.4s ease-out}
 .msg-reply .r-who{font-size:10.5px;font-weight:700;color:var(--m-acc)}
 .msg-reply .r-txt{font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;max-width:260px}
@@ -6460,7 +6469,7 @@ var CHATS=[
     react:[{e:'👍',n:2}],tk:'T-2214',own:'me'},
    {who:'S. Nazarova',dir:'out',t:'08:44',
     text:"Assalomu alaykum! Muammo qabul qilindi \u2014 T-2214 ticket ochildi, texnik jamoa ko'rmoqda.",
-    reply:{who:'Saboat Rasulova',txt:"Bu ikkinchi marta shu hafta ichida..."},tk:'T-2214',own:'me'},
+    reply:{who:'Saboat Rasulova',txt:"Bu ikkinchi marta shu hafta ichida...",idx:1},tk:'T-2214',own:'me'},
    {sys:true,text:"Mansur Bobojonov guruhga qo'shildi",t:'09:12'},
    {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'09:20',uid:501,text:'Rahmat, kutamiz.',tk:'T-2214',own:'me'},
    {who:'Alisher Bekmurodov',ini:'AB',c:'#4f7cd1',dir:'in',t:'09:25',uid:502,
@@ -6561,7 +6570,10 @@ function renderMsgs(){
         +' \u00b7 '+(m.own==='me'?'siz':(m.owner||'band'))+'</span>'
         :'<span class="thr free" onclick="claimMsg('+i+')">ticketsiz \u00b7 olish</span>')
       +'</div>';
-    if(m.reply)out+='<div class="msg-reply"><div class="r-who">'+m.reply.who+'</div>'
+    if(m.reply)out+='<div class="msg-reply" title="Asl xabarga o\'tish"'
+      +(m.reply.idx!==undefined?' onclick="jumpToMsg('+m.reply.idx+')"':'')+'>'
+      +'<span class="material-icons-outlined r-jump">north</span>'
+      +'<div class="r-who">'+m.reply.who+'</div>'
       +'<div class="r-txt">'+m.reply.txt+'</div></div>';
     out+='<span class="m-body">'+m.text+'</span>';
     if(m.file)out+='<div class="m-file"><span class="fi"><span class="material-icons-outlined">'
@@ -6582,6 +6594,19 @@ function renderMsgs(){
   box.innerHTML=out;
   box.scrollTop=box.scrollHeight;
   updateCompose();
+}
+
+/* Reply blokiga bosilganda asl xabarga o'tish */
+function jumpToMsg(idx){
+  var el=document.getElementById('msg-'+idx);
+  if(!el){toast('Asl xabar topilmadi');return}
+  var box=document.getElementById('msg-list');
+  var top=el.offsetTop-box.clientHeight/2+el.offsetHeight/2;
+  box.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+  el.classList.remove('flash');
+  void el.offsetWidth;          // animatsiyani qayta ishga tushirish
+  el.classList.add('flash');
+  setTimeout(function(){el.classList.remove('flash')},1500);
 }
 
 /* Guruhda reply majburiy \u2014 yozish maydoni holati */
@@ -6755,7 +6780,7 @@ function sendMsg(){
   var msg={who:'S. Nazarova',dir:'out',t:nowHM(),text:txt};
   if(replyTo!==null){
     var rm=c.msgs[replyTo];
-    msg.reply={who:rm.who||'Siz',txt:(rm.text||'').slice(0,50)};
+    msg.reply={who:rm.who||'Siz',txt:(rm.text||'').slice(0,50),idx:replyTo};
     msg.tk=rm.tk;msg.own='me';
   }
   c.msgs.push(msg);
