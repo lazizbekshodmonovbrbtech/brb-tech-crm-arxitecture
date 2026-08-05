@@ -445,6 +445,78 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   align-items:center;gap:6px;max-width:62%}
 .kv-value .mini-avatar{margin-right:0}
 
+/* Chat turi belgilari va yangi komponentlar */
+.ch-type{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);
+  font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px}
+.ch-type.priv{background:#eef1f5;color:#5c6e80}
+.ch-type.grp{background:var(--m-acc-soft);color:var(--m-acc)}
+.ch-type.chan{background:#efe6f7;color:#6b3fa0}
+.ib-badges{display:flex;align-items:center;gap:5px;margin-top:3px}
+/* Javob (reply) bloki */
+.msg-reply{border-left:2.5px solid var(--m-acc);padding:3px 0 3px 8px;margin-bottom:6px;
+  background:rgba(31,102,168,.05);border-radius:0 6px 6px 0}
+.msg-reply .r-who{font-size:10.5px;font-weight:700;color:var(--m-acc)}
+.msg-reply .r-txt{font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;max-width:260px}
+/* Xabar meta belgilari */
+.m-flags{display:inline-flex;align-items:center;gap:5px;margin-left:6px}
+.m-flag{font-size:9.5px;font-family:var(--font-mono);color:var(--ink-4);
+  background:#eef1f5;padding:0 5px;border-radius:4px}
+.msg.deleted{opacity:.55;font-style:italic}
+.msg.deleted .m-body{text-decoration:line-through;color:var(--ink-4)}
+/* Fayl kartasi */
+.m-file{display:flex;align-items:center;gap:9px;padding:8px 10px;margin-top:6px;
+  background:var(--msurface2);border:1px solid var(--mline2);border-radius:9px}
+.m-file .fi{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;
+  background:var(--m-acc-soft);color:var(--m-acc);flex-shrink:0}
+.m-file .fn{font-size:12px;font-weight:600;color:#182634}
+.m-file .fs{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9}
+.m-file .dl{margin-left:auto;color:var(--m-acc);cursor:pointer}
+/* Reaksiyalar */
+.m-react{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.rx{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--mline);font-size:11.5px;cursor:pointer}
+.rx:hover{border-color:var(--m-acc)}
+.rx.mine{background:var(--m-acc-soft);border-color:var(--m-acc);color:var(--m-acc)}
+.rx .c{font-family:var(--font-mono);font-size:10px;font-weight:600}
+/* Xabar amallari (hover) */
+.msg{position:relative}
+.m-acts{position:absolute;top:-10px;right:8px;display:none;gap:2px;
+  background:var(--surface);border:1px solid var(--mline);border-radius:8px;padding:2px;
+  box-shadow:0 4px 12px rgba(15,23,42,.12)}
+.msg:hover .m-acts{display:flex}
+.m-acts button{width:26px;height:26px;border:none;background:transparent;border-radius:6px;
+  color:var(--ink-3);cursor:pointer;display:grid;place-items:center}
+.m-acts button:hover{background:#f3f4f6;color:var(--ink-1)}
+.m-acts button .material-icons-outlined{font-size:15px}
+/* Javob yozish paneli */
+.reply-bar{display:none;align-items:center;gap:9px;padding:8px 16px;background:var(--m-acc-soft);
+  border-top:1px solid #cfe0f2;font-size:12px;color:var(--m-acc)}
+.reply-bar.on{display:flex}
+.reply-bar .x{margin-left:auto;cursor:pointer;font-size:16px}
+/* A'zolar paneli */
+.mem-row{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:12.5px}
+.mem-row+.mem-row{border-top:1px solid var(--mline2)}
+.mem-row .mini-avatar{margin:0}
+.mem-role{margin-left:auto;font-family:var(--font-mono);font-size:9.5px;font-weight:700;
+  padding:1px 7px;border-radius:4px}
+.mem-role.creator{background:var(--m-warn-soft);color:var(--m-warn)}
+.mem-role.admin{background:var(--m-acc-soft);color:var(--m-acc)}
+.mem-role.member{background:#eef1f5;color:#5c6e80}
+/* Mavzular */
+.topic-row{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:12.5px;cursor:pointer}
+.topic-row+.topic-row{border-top:1px solid var(--mline2)}
+.topic-row:hover{color:var(--m-acc)}
+.topic-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+/* Guruh hodisalari */
+.gev{display:flex;gap:8px;padding:6px 0;font-size:11.5px;color:#8b9aa9;line-height:1.45}
+.gev+.gev{border-top:1px solid var(--mline2)}
+.gev .material-icons-outlined{font-size:14px;color:#b6c2d1;flex-shrink:0}
+.gev b{color:var(--ink-2);font-weight:600}
+/* Tizim xabari */
+.msg.system{align-self:center;background:var(--msurface2);border:1px dashed var(--mline);
+  font-size:11.5px;color:#8b9aa9;padding:5px 12px;border-radius:999px;max-width:none}
+
 /* ═══════ TELEGRAM INBOX (3 panel) ═══════ */
 .inbox{display:flex;height:calc(100vh - 142px);background:var(--surface);border-radius:12px;
   box-shadow:0 2px 6px rgba(0,0,0,.05);overflow:hidden}
@@ -3658,106 +3730,133 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">settings</span> Bot sozlamalari</button>
   </div>
   <div class="inbox">
+    <!-- CHAP: chatlar (guruh + shaxsiy bitta ro'yxatda) -->
     <div class="ib-left">
       <div class="ib-search"><div class="search-box" style="width:100%">
-        <span class="material-icons-outlined">search</span><input placeholder="Chat qidirish..."></div></div>
+        <span class="material-icons-outlined">search</span>
+        <input placeholder="Chat qidirish..." oninput="chatFilter(this.value)"></div></div>
       <div class="ib-tabs">
-        <button class="ib-tab active">Hammasi</button>
-        <button class="ib-tab">Guruhlar</button>
-        <button class="ib-tab">Shaxsiy</button>
-        <button class="ib-tab">Javobsiz</button>
+        <button class="ib-tab active" onclick="chatTab(this,'all')">Hammasi</button>
+        <button class="ib-tab" onclick="chatTab(this,'group')">Guruhlar</button>
+        <button class="ib-tab" onclick="chatTab(this,'private')">Shaxsiy</button>
+        <button class="ib-tab" onclick="chatTab(this,'unread')">Javobsiz</button>
       </div>
-      <div class="ib-chats">
-        <div class="ib-chat active">
-          <span class="ib-ava" style="background:#4f7cd1">IY</span>
-          <div class="ib-chat-info">
-            <div class="ib-name">Ipak Yo'li · MOB support <span class="t">08:41</span></div>
-            <div class="ib-last">Rasulova: To'lov sahifasida yana 502...</div>
-          </div><span class="ib-unread">2</span>
-        </div>
-        <div class="ib-chat">
-          <span class="ib-ava" style="background:#3aa981">AG</span>
-          <div class="ib-chat-info">
-            <div class="ib-name">Agro Invest guruh <span class="t">08:12</span></div>
-            <div class="ib-last">Eksport funksiyasi qachon tayyor bo'ladi?</div>
-          </div><span class="ib-unread">1</span>
-        </div>
-        <div class="ib-chat">
-          <span class="ib-ava" style="background:#b56bb0">NK</span>
-          <div class="ib-chat-info">
-            <div class="ib-name">Nodira Karimova <span class="t">kecha</span></div>
-            <div class="ib-last">Rahmat, hammasi ishladi!</div>
-          </div>
-        </div>
-        <div class="ib-chat">
-          <span class="ib-ava" style="background:#c98a3d">TC</span>
-          <div class="ib-chat-info">
-            <div class="ib-name">Trans Cargo · LOG <span class="t">kecha</span></div>
-            <div class="ib-last">Siz: Muammo eskalatsiya qilindi, 24 soat...</div>
-          </div>
-        </div>
-      </div>
+      <div class="ib-chats" id="chat-list"></div>
     </div>
+
+    <!-- O'RTA: yozishma -->
     <div class="ib-mid">
       <div class="ib-head">
-        <span class="ib-ava" style="background:#4f7cd1;width:36px;height:36px;font-size:12px">IY</span>
-        <div><div class="ib-head-name">Ipak Yo'li · MOB support</div>
-          <div class="ib-head-sub">Guruh · 14 a'zo · Mobil ilova loyihasi</div></div>
-        <span class="chip soft-info" style="margin-left:auto">MOB</span>
-        <button class="btn-flat" style="color:var(--primary)" onclick="openForm('Yangi ticket — Ipak Yo\'li chatidan')">
-          <span class="material-icons-outlined">confirmation_number</span> Ticket ochish</button>
+        <span class="ib-ava" id="hd-ava" style="background:#4f7cd1;width:36px;height:36px;font-size:12px">IY</span>
+        <div><div class="ib-head-name" id="hd-name">Ipak Yo'li · MOB support</div>
+          <div class="ib-head-sub" id="hd-sub">Guruh · 14 a'zo</div></div>
+        <span class="ch-type grp" id="hd-type" style="margin-left:6px">SUPERGROUP</span>
+        <button class="btn-flat" style="margin-left:auto" onclick="toast('Ticket ochildi \u2014 T-2215')">
+          <span class="material-icons-outlined">confirmation_number</span> Ticket</button>
+        <button class="tb-icon-btn" title="Sinxronizatsiya" onclick="syncChat()">
+          <span class="material-icons-outlined">sync</span></button>
       </div>
-      <div class="ib-msgs">
-        <div class="msg in"><div class="m-who">Saboat Rasulova</div>
-          To'lov sahifasida yana 502 xatolik chiqyapti. Skrinshot yubordim.
-          <div class="m-meta">08:39</div></div>
-        <div class="msg in"><div class="m-who">Saboat Rasulova</div>
-          Bu ikkinchi marta shu hafta ichida. Mijozlar shikoyat qilishyapti.
-          <div class="m-meta">08:41</div></div>
-        <div class="msg out">Assalomu alaykum! Muammo qabul qilindi — T-2214 ticket ochildi,
-          texnik jamoa hozir ko'rib chiqmoqda. 30 daqiqa ichida qaytamiz.
-          <div class="m-meta">08:44 · S. Nazarova</div></div>
-        <div class="msg in"><div class="m-who">Saboat Rasulova</div>
-          Rahmat, kutamiz.
-          <div class="m-meta">08:45</div></div>
+      <div class="ib-msgs" id="msg-list"></div>
+      <div class="reply-bar" id="reply-bar">
+        <span class="material-icons-outlined" style="font-size:16px">reply</span>
+        <span id="reply-to">Javob:</span>
+        <span class="material-icons-outlined x" onclick="cancelReply()">close</span>
       </div>
       <div class="ib-compose">
-        <button class="tb-icon-btn"><span class="material-icons-outlined">attach_file</span></button>
+        <button class="tb-icon-btn" title="Fayl biriktirish" onclick="attachFile()">
+          <span class="material-icons-outlined">attach_file</span></button>
         <input class="ib-input" id="ib-msg-input" placeholder="Javob yozing..."
           onkeydown="if(event.key==='Enter')sendMsg()">
         <button class="ib-send" onclick="sendMsg()"><span class="material-icons-outlined">send</span></button>
       </div>
     </div>
+
+    <!-- O'NG: chat konteksti -->
     <div class="ib-right">
-      <div class="desc-card">
-        <div class="dc-head"><h3>Kontekst</h3></div>
-        <div class="dc-body">
-          <div class="kv"><span class="kv-label">Mijoz</span><span class="kv-dots"></span>
-            <span class="kv-value">Ipak Yo'li Bank</span></div>
-          <div class="kv"><span class="kv-label">Loyiha</span><span class="kv-dots"></span>
-            <span class="kv-value mono">MOB</span></div>
-          <div class="kv"><span class="kv-label">Bot</span><span class="kv-dots"></span>
-            <span class="kv-value">@mob_support_bot</span></div>
-          <div class="kv"><span class="kv-label">SLA rejasi</span><span class="kv-dots"></span>
-            <span class="kv-value">Premium · 30 min</span></div>
+      <div class="board-tabs" style="margin-bottom:12px;width:100%">
+        <button class="board-tab active" style="flex:1;justify-content:center" onclick="ctxTab(this,'ctx-info')">Ma'lumot</button>
+        <button class="board-tab" style="flex:1;justify-content:center" onclick="ctxTab(this,'ctx-mem')">A'zolar</button>
+        <button class="board-tab" style="flex:1;justify-content:center" onclick="ctxTab(this,'ctx-ev')">Hodisalar</button>
+      </div>
+
+      <div id="ctx-info">
+        <div class="desc-card">
+          <div class="dc-head"><h3>Chat</h3><span class="dc-note mono" id="ctx-chatid">-1001234567</span></div>
+          <div class="dc-body">
+            <div class="kv"><span class="kv-label">Turi</span><span class="kv-dots"></span>
+              <span class="kv-value" id="ctx-type">Supergroup · forum</span></div>
+            <div class="kv"><span class="kv-label">Mijoz</span><span class="kv-dots"></span>
+              <span class="kv-value" id="ctx-cust">Ipak Yo'li Bank</span></div>
+            <div class="kv"><span class="kv-label">Loyiha</span><span class="kv-dots"></span>
+              <span class="kv-value mono">MOB</span></div>
+            <div class="kv"><span class="kv-label">Operator</span><span class="kv-dots"></span>
+              <span class="kv-value"><span class="mini-avatar" style="background:#b56bb0">SN</span>S. Nazarova</span></div>
+            <div class="kv"><span class="kv-label">A'zolar</span><span class="kv-dots"></span>
+              <span class="kv-value mono" id="ctx-mc">14</span></div>
+            <div class="kv"><span class="kv-label">Oxirgi sinx.</span><span class="kv-dots"></span>
+              <span class="kv-value mono" id="ctx-sync">bugun 08:40</span></div>
+          </div>
+        </div>
+        <div class="desc-card" id="ctx-topics">
+          <div class="dc-head"><h3>Mavzular</h3><span class="dc-note">forum</span></div>
+          <div class="dc-body" style="padding:8px 16px 12px">
+            <div class="topic-row" onclick="toast('Mavzu ochildi: Xatoliklar')">
+              <span class="topic-dot" style="background:#e0564a"></span>Xatoliklar
+              <span class="chip soft-warn" style="margin-left:auto;font-size:10px">T-2214</span></div>
+            <div class="topic-row" onclick="toast('Mavzu ochildi: Yangi talablar')">
+              <span class="topic-dot" style="background:#2563eb"></span>Yangi talablar</div>
+            <div class="topic-row" onclick="toast('Mavzu ochildi: Umumiy')">
+              <span class="topic-dot" style="background:#94a3b8"></span>Umumiy</div>
+          </div>
+        </div>
+        <div class="desc-card">
+          <div class="dc-head"><h3>Bog'langan ticketlar</h3></div>
+          <div class="dc-body">
+            <div class="kv"><span class="kv-value mono" style="max-width:none">T-2214</span>
+              <span class="kv-dots"></span><span class="chip soft-info" style="font-size:10.5px">In Progress</span></div>
+            <div class="kv"><span class="kv-value mono" style="max-width:none">T-2168</span>
+              <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Closed</span></div>
+          </div>
         </div>
       </div>
-      <div class="desc-card">
-        <div class="dc-head"><h3>Bog'langan ticketlar</h3></div>
-        <div class="dc-body">
-          <div class="kv"><span class="kv-value mono" style="max-width:none">T-2214</span>
-            <span class="kv-dots"></span><span class="chip soft-info" style="font-size:10.5px">In Progress</span></div>
-          <div class="kv"><span class="kv-value mono" style="max-width:none">T-2168</span>
-            <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Closed</span></div>
-          <div class="kv"><span class="kv-value mono" style="max-width:none">T-2101</span>
-            <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Closed</span></div>
+
+      <div id="ctx-mem" style="display:none">
+        <div class="desc-card">
+          <div class="dc-head"><h3>A'zolar</h3><span class="dc-note">14</span></div>
+          <div class="dc-body" style="padding:8px 16px 12px">
+            <div class="mem-row"><span class="mini-avatar" style="background:#c98a3d">SR</span>
+              Saboat Rasulova <span class="mem-role creator">CREATOR</span></div>
+            <div class="mem-row"><span class="mini-avatar" style="background:#4f7cd1">AB</span>
+              Alisher Bekmurodov <span class="mem-role admin">ADMIN</span></div>
+            <div class="mem-row"><span class="mini-avatar" style="background:#b56bb0">SN</span>
+              S. Nazarova (biz) <span class="mem-role admin">ADMIN</span></div>
+            <div class="mem-row"><span class="mini-avatar" style="background:#3aa981">MB</span>
+              Mansur Bobojonov <span class="mem-role member">MEMBER</span></div>
+            <div class="mem-row"><span class="mini-avatar" style="background:#8a9a3a">DT</span>
+              Dilshod Toshpulatov <span class="mem-role member">MEMBER</span></div>
+            <div class="mem-row" style="opacity:.55"><span class="mini-avatar" style="background:#94a3b8">NK</span>
+              Nodir Kamolov <span class="mem-role member">LEFT</span></div>
+            <div style="margin-top:8px;font-size:11.5px;color:#8b9aa9">
+              +8 a'zo · <a href="#" onclick="toast('To\'liq ro\'yxat');return false">hammasi</a></div>
+          </div>
         </div>
       </div>
-      <div class="desc-card">
-        <div class="dc-head"><h3>Oxirgi feedback</h3><span class="dc-note">T-2168</span></div>
-        <div class="dc-body" style="padding:12px 16px">
-          <span style="color:var(--gold);font-size:18px;letter-spacing:2px">★★★★★</span>
-          <div style="font-size:12.5px;color:#5c6e80;margin-top:5px">"Tez va aniq hal qilishdi, rahmat"</div>
+
+      <div id="ctx-ev" style="display:none">
+        <div class="desc-card">
+          <div class="dc-head"><h3>Guruh hodisalari</h3><span class="dc-note">group_events</span></div>
+          <div class="dc-body" style="padding:10px 16px 12px">
+            <div class="gev"><span class="material-icons-outlined">person_add</span>
+              <span><b>Mansur Bobojonov</b> guruhga qo'shildi<br><span class="mono" style="font-size:10px">bugun 09:12</span></span></div>
+            <div class="gev"><span class="material-icons-outlined">shield</span>
+              <span><b>Alisher Bekmurodov</b> admin qilindi<br><span class="mono" style="font-size:10px">kecha 16:40</span></span></div>
+            <div class="gev"><span class="material-icons-outlined">edit</span>
+              <span>Guruh nomi o'zgardi: <b>MOB support</b> → <b>Ipak Yo'li · MOB support</b><br><span class="mono" style="font-size:10px">02.08 11:20</span></span></div>
+            <div class="gev"><span class="material-icons-outlined">person_remove</span>
+              <span><b>Nodir Kamolov</b> guruhdan chiqdi<br><span class="mono" style="font-size:10px">28.07 14:05</span></span></div>
+            <div class="gev"><span class="material-icons-outlined">smart_toy</span>
+              <span>Bot guruhga qo'shildi va sinxronizatsiya qilindi<br><span class="mono" style="font-size:10px">15.03 10:00</span></span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -6303,20 +6402,191 @@ function readAllNotif(e){
   updateNotifBadge();
 }
 
-/* Inbox: xabar yuborish */
+/* ═══════ CHAT DVIGATELI (demo) ═══════ */
+var CHATS=[
+ {id:1,type:'SUPERGROUP',name:"Ipak Yo'li · MOB support",ini:'IY',c:'#4f7cd1',sub:"Guruh · 14 a'zo",
+  cust:"Ipak Yo'li Bank",tgid:'-1001234567',unread:2,forum:true,mc:14,
+  msgs:[
+   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'08:39',
+    text:"To'lov sahifasida yana 502 xatolik chiqyapti. Skrinshot yubordim.",
+    file:{n:'error-502.png',s:'412 KB',ic:'image'}},
+   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'08:41',
+    text:"Bu ikkinchi marta shu hafta ichida. Mijozlar shikoyat qilishyapti.",
+    react:[{e:'👍',n:2}]},
+   {who:'S. Nazarova',dir:'out',t:'08:44',
+    text:"Assalomu alaykum! Muammo qabul qilindi \u2014 T-2214 ticket ochildi, texnik jamoa ko'rmoqda.",
+    reply:{who:'Saboat Rasulova',txt:"Bu ikkinchi marta shu hafta ichida..."}},
+   {sys:true,text:"Mansur Bobojonov guruhga qo'shildi",t:'09:12'},
+   {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'09:20',text:'Rahmat, kutamiz.'},
+   {who:'S. Nazarova',dir:'out',t:'09:22',text:'Eski xabar (tahrirlangan namuna)',edited:true},
+   {who:'Mansur Bobojonov',ini:'MB',c:'#3aa981',dir:'in',t:'09:31',
+    text:"Bu xabar o'chirilgan",deleted:true}
+  ]},
+ {id:2,type:'GROUP',name:'Agro Invest guruh',ini:'AG',c:'#3aa981',sub:"Guruh · 6 a'zo",
+  cust:'Agro Invest MChJ',tgid:'-1009876543',unread:1,forum:false,mc:6,
+  msgs:[
+   {who:'Jasur Ergashev',ini:'JE',c:'#8a9a3a',dir:'in',t:'08:12',
+    text:'Eksport funksiyasi qachon tayyor bo\'ladi?'},
+   {who:'B. Karimov',dir:'out',t:'08:30',text:'Ertaga test muhitida ko\'rsatamiz.'}
+  ]},
+ {id:3,type:'PRIVATE',name:'Nodira Karimova',ini:'NK',c:'#b56bb0',sub:'Shaxsiy chat · @nodira_k',
+  cust:'Nodira Karimova',tgid:'482913004',unread:0,forum:false,mc:1,
+  msgs:[
+   {who:'Nodira Karimova',ini:'NK',c:'#b56bb0',dir:'in',t:'kecha',text:'Rahmat, hammasi ishladi!',
+    react:[{e:'❤️',n:1,mine:true}]}
+  ]},
+ {id:4,type:'SUPERGROUP',name:'Trans Cargo · LOG',ini:'TC',c:'#c98a3d',sub:"Guruh · 9 a'zo",
+  cust:'Trans Cargo Group',tgid:'-1005554443',unread:0,forum:false,mc:9,
+  msgs:[
+   {who:'S. Nazarova',dir:'out',t:'kecha',text:'Muammo eskalatsiya qilindi, 24 soat ichida javob beramiz.'}
+  ]}
+];
+var curChat=1, chatFilterVal='', chatTabVal='all', replyTo=null;
+
+function chatIcon(t){return t==='PRIVATE'?'person':(t==='CHANNEL'?'campaign':'groups')}
+function chatTypeCls(t){return t==='PRIVATE'?'priv':(t==='CHANNEL'?'chan':'grp')}
+
+function renderChatList(){
+  var box=document.getElementById('chat-list');
+  var out='';
+  for(var i=0;i<CHATS.length;i++){
+    var c=CHATS[i];
+    if(chatTabVal==='group'&&c.type==='PRIVATE')continue;
+    if(chatTabVal==='private'&&c.type!=='PRIVATE')continue;
+    if(chatTabVal==='unread'&&!c.unread)continue;
+    if(chatFilterVal&&c.name.toLowerCase().indexOf(chatFilterVal)===-1)continue;
+    var last=c.msgs[c.msgs.length-1]||{text:''};
+    var lt=(last.sys?'':(last.dir==='out'?'Siz: ':(last.who?last.who.split(' ')[0]+': ':'')))+(last.text||'');
+    out+='<div class="ib-chat'+(c.id===curChat?' active':'')+'" onclick="openChatItem('+c.id+')">'
+      +'<span class="ib-ava" style="background:'+c.c+'">'+c.ini+'</span>'
+      +'<div class="ib-chat-info"><div class="ib-name">'+c.name
+      +'<span class="t">'+(last.t||'')+'</span></div>'
+      +'<div class="ib-last">'+lt+'</div>'
+      +'<div class="ib-badges"><span class="ch-type '+chatTypeCls(c.type)+'">'+c.type+'</span>'
+      +(c.forum?'<span class="ch-type grp">FORUM</span>':'')+'</div></div>'
+      +(c.unread?'<span class="ib-unread">'+c.unread+'</span>':'')+'</div>';
+  }
+  box.innerHTML=out||'<div style="padding:20px;text-align:center;font-size:12.5px;color:var(--ink-4)">Topilmadi</div>';
+}
+function renderMsgs(){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var box=document.getElementById('msg-list'), out='';
+  for(var i=0;i<c.msgs.length;i++){
+    var m=c.msgs[i];
+    if(m.sys){out+='<div class="msg system">'+m.text+' \u00b7 '+m.t+'</div>';continue}
+    out+='<div class="msg '+(m.dir==='in'?'in':'out')+(m.deleted?' deleted':'')+'">'
+      +'<div class="m-acts">'
+        +'<button title="Javob berish" onclick="startReply('+i+')"><span class="material-icons-outlined">reply</span></button>'
+        +'<button title="Reaksiya" onclick="addReact('+i+')"><span class="material-icons-outlined">add_reaction</span></button>'
+        +'<button title="Ticketga bog\'lash" onclick="toast(\'Xabar T-2214 ticketiga bog\\\'landi\')"><span class="material-icons-outlined">confirmation_number</span></button>'
+      +'</div>';
+    if(m.dir==='in'&&m.who)out+='<div class="m-who">'+m.who+'</div>';
+    if(m.reply)out+='<div class="msg-reply"><div class="r-who">'+m.reply.who+'</div>'
+      +'<div class="r-txt">'+m.reply.txt+'</div></div>';
+    out+='<span class="m-body">'+m.text+'</span>';
+    if(m.file)out+='<div class="m-file"><span class="fi"><span class="material-icons-outlined">'
+      +m.file.ic+'</span></span><div><div class="fn">'+m.file.n+'</div>'
+      +'<div class="fs">'+m.file.s+'</div></div>'
+      +'<span class="material-icons-outlined dl" onclick="toast(\'Fayl yuklab olindi\')">download</span></div>';
+    if(m.react&&m.react.length){
+      out+='<div class="m-react">';
+      for(var r=0;r<m.react.length;r++)
+        out+='<span class="rx'+(m.react[r].mine?' mine':'')+'" onclick="toggleReact('+i+','+r+')">'
+          +m.react[r].e+'<span class="c">'+m.react[r].n+'</span></span>';
+      out+='</div>';
+    }
+    out+='<div class="m-meta">'+m.t+(m.dir==='out'?' \u00b7 S. Nazarova':'')
+      +'<span class="m-flags">'+(m.edited?'<span class="m-flag">tahrirlangan</span>':'')
+      +(m.deleted?'<span class="m-flag">o\'chirilgan</span>':'')+'</span></div></div>';
+  }
+  box.innerHTML=out;
+  box.scrollTop=box.scrollHeight;
+}
+function openChatItem(id){
+  curChat=id;replyTo=null;
+  var c=CHATS.filter(function(x){return x.id===id})[0];
+  c.unread=0;
+  document.getElementById('hd-ava').textContent=c.ini;
+  document.getElementById('hd-ava').style.background=c.c;
+  document.getElementById('hd-name').textContent=c.name;
+  document.getElementById('hd-sub').textContent=c.sub;
+  var ht=document.getElementById('hd-type');
+  ht.textContent=c.type;ht.className='ch-type '+chatTypeCls(c.type);
+  document.getElementById('ctx-chatid').textContent=c.tgid;
+  document.getElementById('ctx-type').textContent=c.type.toLowerCase()+(c.forum?' \u00b7 forum':'');
+  document.getElementById('ctx-cust').textContent=c.cust;
+  document.getElementById('ctx-mc').textContent=c.mc;
+  document.getElementById('ctx-topics').style.display=c.forum?'':'none';
+  document.getElementById('reply-bar').classList.remove('on');
+  renderChatList();renderMsgs();
+}
+function chatTab(btn,v){
+  var s=btn.parentElement.querySelectorAll('.ib-tab');
+  for(var i=0;i<s.length;i++)s[i].classList.remove('active');
+  btn.classList.add('active');chatTabVal=v;renderChatList();
+}
+function chatFilter(v){chatFilterVal=(v||'').toLowerCase();renderChatList()}
+function ctxTab(btn,id){
+  var s=btn.parentElement.querySelectorAll('.board-tab');
+  for(var i=0;i<s.length;i++)s[i].classList.remove('active');
+  btn.classList.add('active');
+  var ids=['ctx-info','ctx-mem','ctx-ev'];
+  for(var j=0;j<ids.length;j++)
+    document.getElementById(ids[j]).style.display = ids[j]===id?'block':'none';
+}
+function startReply(i){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  replyTo=i;
+  var m=c.msgs[i];
+  document.getElementById('reply-to').textContent='Javob: '+(m.who||'Siz')+' \u2014 '+(m.text||'').slice(0,40)+'...';
+  document.getElementById('reply-bar').classList.add('on');
+  document.getElementById('ib-msg-input').focus();
+}
+function cancelReply(){replyTo=null;document.getElementById('reply-bar').classList.remove('on')}
+function addReact(i){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var m=c.msgs[i];
+  m.react=m.react||[];
+  var f=m.react.filter(function(r){return r.e==='👍'})[0];
+  if(f){f.n++;f.mine=true}else m.react.push({e:'👍',n:1,mine:true});
+  renderMsgs();toast('Reaksiya qo\'shildi');
+}
+function toggleReact(i,r){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var rx=c.msgs[i].react[r];
+  if(rx.mine){rx.n--;rx.mine=false;if(rx.n<=0)c.msgs[i].react.splice(r,1)}
+  else{rx.n++;rx.mine=true}
+  renderMsgs();
+}
+function attachFile(){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  c.msgs.push({who:'S. Nazarova',dir:'out',t:nowHM(),text:'Hujjat yubordim',
+    file:{n:'instruksiya.pdf',s:'88 KB',ic:'description'}});
+  renderMsgs();renderChatList();toast('Fayl yuborildi \u2014 file-service\'ga saqlandi');
+}
+function nowHM(){var d=new Date();function p(x){return x<10?'0'+x:x}return p(d.getHours())+':'+p(d.getMinutes())}
 function sendMsg(){
   var inp=document.getElementById('ib-msg-input');
   var txt=inp.value.trim();
   if(!txt)return;
-  var wrap=document.querySelector('.ib-msgs');
-  var d=document.createElement('div');
-  d.className='msg out';
-  var now=new Date();
-  function p(x){return x<10?'0'+x:x}
-  d.innerHTML=txt+'<div class="m-meta">'+p(now.getHours())+':'+p(now.getMinutes())+' · D. Salimov</div>';
-  wrap.appendChild(d);
-  wrap.scrollTop=wrap.scrollHeight;
-  inp.value='';
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var msg={who:'S. Nazarova',dir:'out',t:nowHM(),text:txt};
+  if(replyTo!==null){
+    var rm=c.msgs[replyTo];
+    msg.reply={who:rm.who||'Siz',txt:(rm.text||'').slice(0,50)};
+  }
+  c.msgs.push(msg);
+  inp.value='';cancelReply();
+  renderMsgs();renderChatList();
+  setTimeout(function(){
+    c.msgs.push({sys:true,text:'Telegram: yetkazildi',t:nowHM()});
+    renderMsgs();
+  },600);
+}
+function syncChat(){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  document.getElementById('ctx-sync').textContent='hozir';
+  toast(c.name+' sinxronlandi \u2014 a\'zolar, avatar va mavzular yangilandi');
 }
 
 /* ═══ Umumiy delegatsiya: act-btn, tab guruhlar, pagination, chatlar, notif ═══ */
@@ -6462,6 +6732,7 @@ function matchReject(){
 
 /* Loyiha boti chatini ochish */
 function openChat(proj,bot,color){
+  setTimeout(function(){renderChatList();openChatItem(curChat)},0);
   document.getElementById('chat-proj').textContent=proj;
   document.getElementById('chat-bot').textContent=bot;
   document.getElementById('chat-ic').style.background=color;
