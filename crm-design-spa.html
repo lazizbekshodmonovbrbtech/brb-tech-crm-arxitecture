@@ -483,8 +483,35 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .tg-bubble blockquote{margin:6px 0;padding:4px 11px;border-left:3px solid var(--m-acc);
   background:rgba(31,102,168,.06);border-radius:0 6px 6px 0}
 .tg-bubble a{color:#2481cc;text-decoration:none}
-.tg-spoiler{background:#8b9aa9;color:transparent;border-radius:3px;cursor:pointer}
-.tg-spoiler.open{background:transparent;color:inherit}
+/* Telegram spoiler \u2014 zarrachalar ortida yashirilgan matn */
+.tg-bubble .tg-spoiler{
+  position:relative;display:inline;border-radius:4px;cursor:pointer;
+  color:transparent;background-color:#c3ccd6;
+  background-image:
+    radial-gradient(circle at 15% 30%,rgba(90,110,130,.85) 0 1.1px,transparent 1.2px),
+    radial-gradient(circle at 65% 20%,rgba(90,110,130,.75) 0 1px,transparent 1.1px),
+    radial-gradient(circle at 40% 70%,rgba(90,110,130,.80) 0 1.2px,transparent 1.3px),
+    radial-gradient(circle at 85% 60%,rgba(90,110,130,.70) 0 1px,transparent 1.1px),
+    radial-gradient(circle at 25% 85%,rgba(90,110,130,.75) 0 1.1px,transparent 1.2px);
+  background-size:14px 12px,11px 9px,17px 14px,9px 11px,13px 10px;
+  animation:tgNoise 1.1s steps(6) infinite;
+  transition:color .3s ease,background-color .3s ease;
+  text-shadow:none;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+  padding:0 2px}
+@keyframes tgNoise{
+  0%  {background-position:0 0,   4px 2px, 2px 5px, 7px 1px, 3px 6px}
+  20% {background-position:3px 2px,1px 6px, 6px 1px, 2px 4px, 7px 2px}
+  40% {background-position:6px 5px,7px 3px, 1px 7px, 5px 6px, 1px 4px}
+  60% {background-position:2px 7px,5px 1px, 8px 3px, 1px 2px, 6px 7px}
+  80% {background-position:7px 3px,2px 7px, 4px 6px, 6px 5px, 2px 1px}
+  100%{background-position:0 0,   4px 2px, 2px 5px, 7px 1px, 3px 6px}
+}
+.tg-bubble .tg-spoiler.open{
+  color:inherit;background-color:transparent;background-image:none;animation:none}
+/* Muharrirda: matn ko'rinadi, lekin belgilangan (yozuvchi o'z matnini ko'rishi kerak) */
+.rte-body .tg-spoiler{
+  background:repeating-linear-gradient(135deg,#dfe6ee 0 4px,#eef2f7 4px 8px);
+  border-bottom:1.5px dotted #8b9aa9;border-radius:3px;padding:0 2px}
 
 /* Zanjir egaligi va e'lon */
 .thr{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9.5px;
@@ -6971,7 +6998,8 @@ function annSync(){
     prev.style.color='#8b9aa9';prev.innerHTML="E'lon matni shu yerda ko'rinadi...";
   }else{
     prev.style.color='';
-    prev.innerHTML=tg.replace(/\n/g,'<br>');
+    prev.innerHTML=tg.replace(/\n/g,'<br>')
+      .replace(/<span class="tg-spoiler">/g,'<span class="tg-spoiler" title="Ochish uchun bosing">');
   }
 }
 function annSend(){
@@ -7002,7 +7030,8 @@ function annSend(){
 }
 /* Spoiler'ni bosib ochish */
 document.addEventListener('click',function(e){
-  if(e.target.classList&&e.target.classList.contains('tg-spoiler'))
+  if(e.target.classList&&e.target.classList.contains('tg-spoiler')
+     &&e.target.closest('.tg-bubble'))
     e.target.classList.toggle('open');
 });
 
