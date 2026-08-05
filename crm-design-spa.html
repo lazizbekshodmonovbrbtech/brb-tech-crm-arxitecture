@@ -105,7 +105,7 @@ a{color:var(--primary);text-decoration:none}
 .nav-item{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;
   border-radius:8px;font-size:14.5px;font-weight:500;color:#4b5563;cursor:pointer;
   margin-bottom:3px;border:1px solid transparent}
-.nav-item .material-icons-outlined{color:#64748b;font-size:20px}
+.nav-item .material-icons-outlined{color:#64748b;font-size:20px;width:20px;text-align:center;flex-shrink:0}
 .nav-item:hover{background:#f3f4f6;color:#1f2937}
 .nav-item.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
 .nav-item.active .material-icons-outlined{color:var(--primary)}
@@ -118,7 +118,7 @@ a{color:var(--primary);text-decoration:none}
 .nav-children.open{display:block}
 .nav-child{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 10px;
   border-radius:7px;font-size:13.5px;font-weight:500;color:#64748b;cursor:pointer;margin-bottom:2px}
-.nav-child .material-icons-outlined{font-size:18px;color:#94a3b8}
+.nav-child .material-icons-outlined{font-size:18px;color:#94a3b8;width:18px;text-align:center;flex-shrink:0}
 .nav-child:hover{background:#f3f4f6;color:#1f2937}
 .nav-child.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
 .nav-child.active .material-icons-outlined{color:var(--primary)}
@@ -1057,7 +1057,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">campaign</span> Marketing
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-mkt-children">
-      <div class="nav-child" data-page="mktmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
+      <div class="nav-child" data-page="mktmon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="leads"><span class="material-icons-outlined">filter_alt</span> Leadlar</div>
       <div class="nav-child" data-page="products"><span class="material-icons-outlined">inventory</span> Mahsulot katalogi</div>
       <div class="nav-child" data-page="sources"><span class="material-icons-outlined">hub</span> Lead manbalari</div>
@@ -1070,7 +1070,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">description</span> Shartnomalar
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-contr-children">
-      <div class="nav-child" data-page="contrmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
+      <div class="nav-child" data-page="contrmon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="contracts"><span class="material-icons-outlined">article</span> Shartnomalar</div>
       <div class="nav-child" data-page="contrtypes"><span class="material-icons-outlined">category</span> Shartnoma turlari</div>
       <div class="nav-child" data-page="paysched"><span class="material-icons-outlined">event_note</span> To'lov grafiklari</div>
@@ -1082,7 +1082,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">task_alt</span> Vazifalar boshqaruvi
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children open" id="nav-tasks-children">
-      <div class="nav-child" data-page="taskmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
+      <div class="nav-child" data-page="taskmon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="projects"><span class="material-icons-outlined">folder</span> Loyihalar</div>
       <div class="nav-child" data-page="handover"><span class="material-icons-outlined">swap_horiz</span> Handover
         <span class="menu-badge">6</span></div>
@@ -1092,7 +1092,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">headset_mic</span> Support
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-support-children">
-      <div class="nav-child" data-page="supmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
+      <div class="nav-child" data-page="supmon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="tickets"><span class="material-icons-outlined">confirmation_number</span> Ticketlar</div>
       <div class="nav-child" data-page="botlist"><span class="material-icons-outlined">forum</span> Mijoz chatlari</div>
       <div class="nav-child" data-page="calls"><span class="material-icons-outlined">support_agent</span> Call center</div>
@@ -1102,7 +1102,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">inventory_2</span> Inventar
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-inv-children">
-      <div class="nav-child" data-page="invmon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
+      <div class="nav-child" data-page="invmon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="inventory"><span class="material-icons-outlined">devices</span> Jihozlar</div>
       <div class="nav-child" data-page="invcats"><span class="material-icons-outlined">category</span> Kategoriyalar</div>
       <div class="nav-child" data-page="invassign"><span class="material-icons-outlined">assignment_ind</span> Biriktirish tarixi</div>
@@ -1114,7 +1114,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <span class="material-icons-outlined">insights</span> KPI
       <span class="material-icons-outlined chev">chevron_right</span></div>
     <div class="nav-children" id="nav-kpi-children">
-      <div class="nav-child" data-page="kpimon"><span class="material-icons-outlined">monitoring</span> Monitoring</div>
+      <div class="nav-child" data-page="kpimon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="kpi"><span class="material-icons-outlined">leaderboard</span> Natijalar</div>
       <div class="nav-child" data-page="kpiprofiles"><span class="material-icons-outlined">tune</span> Profillar</div>
       <div class="nav-child" data-page="kpicrit"><span class="material-icons-outlined">checklist</span> Kriteriyalar</div>
