@@ -1193,9 +1193,10 @@ const DB = {
   ["new_value","text","","","Yangi qiymat"],
   ["changed_by","bigint","EXT,NN","ext:hrm.assignment.id","Kim o'zgartirdi"],
   ["changed_at","timestamptz","NN","","Vaqti"]]},
- {name:"issue_watchers",desc:"Kuzatuvchilar — vazifa o'zgarishlaridan notification-service orqali xabardor bo'ladi.",cols:[
-  ["issue_id","bigint","PK,FK","issues.id","Qaysi vazifa"],
-  ["assignment_id","bigint","PK,EXT","ext:hrm.assignment.id","Kuzatuvchi xodim"]]},
+ {name:"issue_watchers",desc:"Vazifa kuzatuvchilari \u2014 status o'zgarishi va izohlar haqida xabar oladi.",cols:[
+  ["id","bigint","PK","","Identifikator \u2014 platforma standarti (bigint + SEQ)"],
+  ["issue_id","bigint","FK,UK,NN","issues.id","Vazifa \u2014 UK: (issue_id, assignment_id, status)"],
+  ["assignment_id","bigint","UK,NN,EXT","ext:hrm.assignment.id","Kuzatuvchi xodim tayinlovi"]]},
  {name:"issue_attachments",desc:"Vazifaga biriktirilgan fayllar — file-service'da saqlanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["issue_id","bigint","FK,NN","issues.id","Qaysi vazifaga"],
@@ -1207,9 +1208,10 @@ const DB = {
   ["project_id","bigint","FK,NN","projects.id","Qaysi loyihaga tegishli"],
   ["name","varchar(50)","NN","","Teg nomi"],
   ["color","varchar(7)","NN","","Rang (hex)"]]},
- {name:"issue_labels",desc:"Vazifa–teg bog'lanishi (many-to-many).",cols:[
-  ["issue_id","bigint","PK,FK","issues.id","Vazifa"],
-  ["label_id","bigint","PK,FK","labels.id","Teg"]]},
+ {name:"issue_labels",desc:"Vazifa \u2194 teg bog'lanishi (N:M).",cols:[
+  ["id","bigint","PK","","Identifikator \u2014 platforma standarti (bigint + SEQ)"],
+  ["issue_id","bigint","FK,UK,NN","issues.id","Vazifa \u2014 UK: (issue_id, label_id, status)"],
+  ["label_id","bigint","FK,UK,NN","labels.id","Teg"]]},
  {name:"issue_blockers",desc:"Bloklash yozuvi — BLOCK kategoriyali status bilan juft ishlaydi: vazifa shunday statusga o'tkazilganda SABAB majburiy (shu yozuv ochiladi), status holatni, bu table SABAB va TARIXNI saqlaydi. Muammo alohida issue ochilib mas'ulga biriktirilishi mumkin (blocking_issue_id) — u DONE bo'lganda bloklangan vazifa egasi va watcherlarga notification. BLOCK'dan chiqishda faol blockerlar resolved qilinadi va vazifa blocked_from_status'ga qaytishi taklif etiladi. Blok davri cycle time tahlilida o'lchanadi.",cols:[
   ["id","bigint","PK","","Yozuv identifikatori"],
   ["issue_id","bigint","FK,NN","issues.id","Bloklangan vazifa"],
