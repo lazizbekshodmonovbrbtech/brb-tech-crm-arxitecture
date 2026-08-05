@@ -547,7 +547,7 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","INDIVIDUAL / LEGAL / GOVERNMENT / PARTNER \u2014 seed, UPDATE taqiqlangan"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["requires_tax_id","boolean","NN","","Yuridik shaxsda INN majburiy \u2014 validatsiya shu ustunga qaraydi"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
  {name:"customer_segments",desc:"Segmentatsiya (A/B/C, VIP, strategik) \u2014 sotuv siyosati va SLA darajasi shunga bog'lanadi.",cols:[
   ["id","long","PK","","Identifikator"],
@@ -555,7 +555,7 @@ const DB = {
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["default_sla_policy_ref","varchar(30)","","use:support.sla_policies.short_code","Standart SLA \u2014 mantiqiy ref (FKsiz, boshqa servis)"],
   ["discount_percent","numeric(5,2)","","","Segment bo'yicha standart chegirma"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
  {name:"customers",desc:"MIJOZ AGGREGATE ROOT. Lead yutilganda yaratiladi yoki mavjudi topiladi (tax_id/phone bo'yicha). Bir mijozda ko'p lead, shartnoma, ticket bo'lishi mumkin.",cols:[
   ["id","long","PK","","Mijoz identifikatori"],
@@ -579,13 +579,13 @@ const DB = {
   ["id","long","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","BANKING / RETAIL / LOGISTICS / MANUFACTURING / GOV"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
  {name:"contacts",desc:"Mijozning aloqa shaxslari. Kim qaror qabul qiladi \u2014 sotuvda hal qiluvchi ma'lumot.",cols:[
   ["id","long","PK","","Identifikator"],
   ["customer_id","long","FK,NN","customers.id","Mijoz \u2014 CASCADE: mijoz o'chirilsa bolalari ham"],
   ["full_name","varchar(255)","NN","","F.I.O"],
-  ["position","varchar(100)","","","Lavozimi"],
+  ["job_title","varchar(100)","","","Lavozimi (direktor, IT rahbari...) \u2014 nomi ataylab job_title: position endi standart tartib ustuni"],
   ["phone","varchar(20)","","","Telefon"],
   ["email","varchar(255)","","","Email"],
   ["telegram_username","varchar(64)","","","Telegram \u2014 social-integration bilan bog'lash uchun"],
@@ -681,7 +681,7 @@ const DB = {
   ["pipeline_id","long","FK,NN","pipelines.id","Qaysi voronkaga tegishli"],
   ["name","varchar(255)","NN","","Bosqich nomi (erkin: 'Taklif yuborildi', 'Tender komissiyasi')"],
   ["category","enum","NN","","StageCategory: OPEN / WON / LOST \u2014 PLATFORMA enumi, kengaytirilmaydi"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["probability","int","NN","","Yopilish ehtimolligi % \u2014 vaznlangan prognoz shunga ko'paytiriladi"],
   ["max_days","int","","","Bosqichda maksimal turish (kun) \u2014 oshsa ogohlantirish"],
   ["is_system","boolean","NN","","Tizim bosqichi (WON/LOST) \u2014 o'chirilmaydi"],,
@@ -690,7 +690,7 @@ const DB = {
   ["id","long","PK","","Yozuv identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
 
@@ -700,7 +700,7 @@ const DB = {
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["channel_type_id","long","FK,NN","channel_types.id","Kanal turi"],
   ["integration_service","varchar(30)","","","Qaysi service orqali keladi: social-integration / callcenter / API / MANUAL"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
 
 
@@ -747,7 +747,7 @@ const DB = {
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
   ["reason_group","enum","NN","","ReasonGroup: COMMERCIAL / FINANCIAL / TECHNICAL / COMMUNICATION"],
   ["requires_comment","boolean","NN","","Izoh majburiymi \u2014 narx va raqobatchi holatlarida true"],
-  ["position","int","NN","","Tartib"],,
+  ["sort_order","int","NN","","Tartib"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"products",desc:"MAHSULOT VA XIZMATLAR KATALOGI. IT kompaniyada tayyor mahsulot ham, buyurtma ishlanma ham, obuna xizmati ham sotiladi \u2014 hammasi shu yerda. Lead va shartnoma pozitsiyalari shunga tayanadi.",cols:[
   ["id","long","PK","","Identifikator"],
@@ -773,7 +773,7 @@ const DB = {
   ["discount_percent","numeric(5,2)","","","Chegirma %"],
   ["billing_model","enum","NN","","Pozitsiya darajasida (katalogdan nusxa) \u2014 keyin katalog o'zgarsa tarix buzilmaydi"],
   ["total_amount","numeric(18,2)","NN","","quantity \u00d7 unit_price \u2212 chegirma"],
-  ["position","int","NN","","Tartib"]]},
+  ["sort_order","int","NN","","Tartib"]]},
  {name:"lead_stage_history",desc:"Bosqichlar bo'ylab harakat tarixi. 'Muzokara bosqichida o'rtacha 9 kun' kabi ko'rsatkichlar SHU JADVALDAN \u2014 voronkaning tiqilgan joyini topish uchun.",cols:[
   ["id","long","PK","","Identifikator"],
   ["lead_id","long","FK,NN","leads.id","Lead"],
@@ -886,21 +886,21 @@ const DB = {
   ["id","long","PK","","Yozuv identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"payment_methods",desc:"Service ichki lug'ati — migration'da seed qilinadi (bank, cash, card). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
   ["id","long","PK","","Yozuv identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"contract_statuses",desc:"Migration'da seed qilinadigan statuslar (draft, signed, active, closed, cancelled). short_code o'zgartirilmaydi, is_system=true yozuvlar o'chirilmaydi; UI'dan faqat nom/tartib boshqariladi va yangi status qo'shiladi.",cols:[
   ["id","long","PK","","Status identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi (event, trigger) shunga qurilgan, UPDATE taqiqlangan"],
   ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"contracts",desc:"Shartnomalar — yutilgan leaddan yaratiladi. Imzolanganda project-service'ga event chiqaradi. Rekvizit va imzolovchi IMZOLASH PAYTIDA snapshot sifatida muzlatiladi \u2014 keyingi o'zgarishlar tarixni buzmaydi (KPI davri muhrlangani kabi).",cols:[
@@ -932,7 +932,7 @@ const DB = {
   ["discount_percent","numeric(5,2)","","","Chegirma %"],
   ["total_amount","numeric(18,2)","NN","","quantity \u00d7 unit_price \u2212 chegirma. contracts.amount = SUM(contract_items.total_amount)"],
   ["billing_model","enum","NN","","BillingModel: ONE_TIME / SUBSCRIPTION / PER_USER_MONTH / USAGE \u2014 SUBSCRIPTION bo'lsa shartnoma faollashganda subscriptions yozuvi OCHILADI"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
  {name:"subscriptions",desc:"OBUNALAR \u2014 takrorlanuvchi daromad (MRR/ARR) manbai. contract_items'dagi SUBSCRIPTION va PER_USER_MONTH pozitsiyalaridan avtomatik ochiladi. next_invoice_date kelganda scheduler hisob-faktura yaratadi.",cols:[
   ["id","long","PK","","Identifikator"],
@@ -994,7 +994,7 @@ const DB = {
   ["quantity","numeric(12,2)","NN","","Miqdor"],
   ["unit_price","numeric(18,2)","NN","","Birlik narxi"],
   ["total_amount","numeric(18,2)","NN","","Satr summasi"],
-  ["position","int","NN","","Tartib"]]},
+  ["sort_order","int","NN","","Tartib"]]},
  {name:"contract_documents",desc:"Shartnomaga biriktirilgan hujjatlar. Fayl file-service'da saqlanadi.",cols:[
   ["id","long","PK","","Yozuv identifikatori"],
   ["contract_id","long","FK,NN","contracts.id","Qaysi shartnomaga tegishli"],
@@ -1088,7 +1088,7 @@ const DB = {
   ["id","long","PK","","Amal identifikatori"],
   ["short_code","varchar(50)","UK,NN","","Amal kodi — seed, logika shunga tayanadi"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["is_system","boolean","NN","","Seed yozuvimi"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"project_role_permissions",desc:"Rol × amal ruxsati — HRM'dagi permission naqshi. UK: (role_id, action_id). Jsonb o'rniga normallashtirilgan: so'rov qilinadi, indekslanadi, validatsiya DB darajasida.",cols:[
@@ -1119,7 +1119,7 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","Barqaror kod (UK: project_id + short_code) — seed, UPDATE taqiqlangan"],
   ["name","varchar(50)","NN","","Bosqich nomi — erkin, UI'da boshqariladi (Code Review, QA Testing, Deploy kutilmoqda...)"],
   ["category","enum","NN","","StatusCategory (ENUM_KATALOG): TO_DO / IN_PROGRESS / IN_REVIEW / BLOCK / DONE — platforma enumi (CHECK). TIZIM LOGIKASI FAQAT SHUNGA QURILGAN, status nomiga emas"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"priorities",desc:"Muhimlik darajalari — UI'dan boshqariladi (qo'shish, rang, tartib). short_code ustuni logika uchun barqaror qoladi.",cols:[
@@ -1127,7 +1127,7 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","Barqaror kod (low, medium, high, critical) — seed, tizim logikasi shunga qurilgan, o'zgartirish taqiqlangan"],
   ["name","varchar(50)","NN","","Ko'rsatiladigan nomi — UI'dan o'zgartiriladi"],
   ["color","varchar(7)","NN","","Rang (hex)"],
-  ["position","int","NN","","Tartib raqami"],,
+  ["sort_order","int","NN","","Tartib raqami"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"issue_types",desc:"Vazifa turlari — Epic, Story, Task, Bug, Subtask. UI'dan yangi tur qo'shish mumkin. Ierarxiya darajasini belgilaydi.",cols:[
   ["id","long","PK","","Tur identifikatori"],
@@ -1153,7 +1153,7 @@ const DB = {
   ["name","varchar(100)","NN","","Board nomi (Development, Maintenance...)"],
   ["mode","enum","NN","","BoardMode (ENUM_KATALOG): SCRUM / KANBAN — CHECK — REJIM SHU YERDA va u baholash usulini ham belgilaydi: scrum = sprint + velocity + point (oldindan); kanban = doimiy oqim + wip_limit + estimate (yopishda)"],
   
-  ["position","int","NN","","Tab tartibida ko'rsatilish o'rni"]]},
+  ["sort_order","int","NN","","Tab tartibida ko'rsatilish o'rni"]]},
  {name:"board_settings",desc:"Board sozlamalari (1:1). Baholash usuli ALOHIDA TANLANMAYDI — rejimdan kelib chiqadi (ADR): scrum → point (sprint planning'da OLDINDAN), kanban → estimate daqiqa (vazifa YOPILAYOTGANDA — bug/oqim ishi vaqtini oldindan bilib bo'lmaydi).",cols:[
   ["id","long","PK","","Yozuv identifikatori"],
   ["board_id","long","FK,UK,NN","boards.id","Qaysi board (1:1)"],
@@ -1164,7 +1164,7 @@ const DB = {
   ["board_id","long","FK,NN","boards.id","Qaysi boardga tegishli"],
   ["status_id","long","FK,NN","project_statuses.id","Qaysi statusga mos (UK: board_id + status_id) — har bosqich alohida yozuv bo'lgani uchun Code Review va QA Testing alohida ustunlar bo'la oladi"],
   ["name","varchar(50)","","","Ustun ko'rinish nomi (bo'sh = status nomi olinadi) — boardga xos override"],
-  ["position","int","NN","","Ustun tartibi"],
+  ["sort_order","int","NN","","Ustun tartibi"],
   ["wip_limit","int","","","Work-In-Progress limiti (null = cheksiz) — kanban boardda ishlaydi"]]},
  {name:"sprints",desc:"Sprintlar — faqat scrum rejimidagi boardlar ishlatadi. Kanban boardlarda vazifa sprint'siz yuradi (issues.sprint_id NULL).",cols:[
   ["id","long","PK","","Sprint identifikatori"],
@@ -1273,7 +1273,7 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
   ["color","varchar(7)","NN","","Rang (hex)"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"ticket_statuses",desc:"Ticket statuslari. ADR (loyiha statuslari va lead bosqichlaridagi kabi naqsh): NOM ERKIN, KATEGORIYA QAT'IY. SLA soati aynan kategoriyaga qarab to'xtaydi \u2014 PENDING_CUSTOMER bo'lsa hisob pauzada.",cols:[
@@ -1281,7 +1281,7 @@ const DB = {
   ["short_code","varchar(30)","UK,NN","","OPEN / IN_PROGRESS / PENDING_CUSTOMER / RESOLVED / CLOSED \u2014 seed, UPDATE taqiqlangan"],
   ["name","varchar(50)","NN","","Ko'rsatiladigan nomi \u2014 UI'da o'zgartiriladi"],
   ["category","enum","NN","","TicketCategory: OPEN / IN_PROGRESS / PENDING_CUSTOMER / RESOLVED / CLOSED \u2014 PLATFORMA enumi. Tizim logikasi FAQAT shunga tayanadi: SLA pauzasi = PENDING_CUSTOMER, feedback so'rash = RESOLVED, KPI fakti = CLOSED"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi \u2014 o'chirish taqiqlangan"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
  {name:"sla_policies",desc:"SLA siyosatlari \u2014 javob va hal qilish muddatlari. Priority + mijoz segmenti kesimida: VIP mijozning HIGH tiketiga qat'iyroq muddat. Ish vaqti kalendari hisobga olinadi (18:00 dan keyin kelgan ticket ertalabdan sanaladi).",cols:[
@@ -1615,7 +1615,7 @@ const DB = {
   ["id","long","PK","","Yozuv identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi, UPDATE taqiqlangan"],
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi — UI'da o'zgartiriladi"],
-  ["position","int","NN","","Tartib raqami"],
+  ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"item_categories",desc:"Jihoz/mahsulot kategoriyalari — ierarxik (mebel → stol, texnika → kompyuter).",cols:[
@@ -1667,7 +1667,7 @@ const DB = {
   ["name","varchar(100)","NN","","Ko'rsatiladigan nomi"],
   ["source_service","varchar(50)","NN","","Fakt manbasi: project / support / callcenter / turnstile"],
   ["unit","varchar(20)","NN","","O'lchov: count / minutes / rating / score / percent"],
-  ["position","int","NN","","Tartib"],
+  ["sort_order","int","NN","","Tartib"],
   ["is_system","boolean","NN","","Seed yozuvimi — o'chirish taqiqlangan"],,
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \\u2014 is_active o'rniga standart. INACTIVE: ro'yxatda ko'rsatilmaydi, mavjud yozuvlarda saqlanadi"]]},
  {name:"kpi_profiles",desc:"KPI profili — qaysi lavozim qanday baholanishini belgilaydi (dasturchi, support operatori, sotuvchi...). Lavozimga bog'lanadi: yangi xodim tayinlanganda profili avtomatik aniqlanadi.",cols:[
@@ -1949,6 +1949,11 @@ const DB = {
    - is_active boolean ISHLATILMAYDI — ikkinchi mexanizm chalkashlik keltiradi
    - BIZNES holati alohida NOMLANGAN ustunda: project_status, sprint_status, call_status, item_status...
      ("status" nomi faqat RecordStatus uchun band) */
+/* NOMLASH STANDARTI: tartib ustuni HAR DOIM "sort_order" (int)
+   - "position" nomi ISHLATILMAYDI \u2014 u ikki xil ma'noda tushuniladi (tartib / lavozim / joylashuv)
+   - Lavozim uchun: job_title \u00b7 Koordinata uchun: pos_x, pos_y
+   - Standart tartiblash: ORDER BY sort_order, id */
+
 /* TUR STANDARTI: hujjatda JAVA turlari ko'rsatiladi, DDL'da Postgres turlariga o'giriladi
    long → BIGINT · int → INTEGER · enum → VARCHAR(30) + CHECK
    varchar(n) → VARCHAR(n) · text → TEXT · jsonb → JSONB
