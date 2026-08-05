@@ -485,11 +485,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .tg-bubble a{color:#2481cc;text-decoration:none}
 .tg-spoiler{background:#8b9aa9;color:transparent;border-radius:3px;cursor:pointer}
 .tg-spoiler.open{background:transparent;color:inherit}
-.tg-html{font-family:var(--font-mono);font-size:11px;line-height:1.55;color:#5c6e80;
-  background:var(--msurface2);border:1px solid var(--mline2);border-radius:9px;
-  padding:10px 12px;margin-top:12px;white-space:pre-wrap;word-break:break-all;max-height:110px;
-  overflow-y:auto}
-.tg-html b{color:var(--m-acc)}
 
 /* Zanjir egaligi va e'lon */
 .thr{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9.5px;
@@ -5979,7 +5974,6 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           Telegramda qanday ko'rinadi</div>
         <div class="tg-bubble" id="ann-preview" style="color:#8b9aa9">E'lon matni shu yerda ko'rinadi...</div>
       </div>
-      <div class="tg-html" id="ann-html">parse_mode=HTML → <b>text:</b> ""</div>
     </div>
     <div class="fm-foot">
       <span style="font-size:12px;color:#8b9aa9;margin-right:auto">
@@ -6979,8 +6973,6 @@ function annSync(){
     prev.style.color='';
     prev.innerHTML=tg.replace(/\n/g,'<br>');
   }
-  document.getElementById('ann-html').innerHTML='parse_mode=HTML \u2192 <b>text:</b> "'
-    +tg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'\\n')+'"';
 }
 function annSend(){
   var body=document.getElementById('ann-body');
