@@ -1126,10 +1126,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="nav-children" id="nav-inv-children">
       <div class="nav-child" data-page="invmon"><span class="material-icons-outlined">bar_chart</span> Monitoring</div>
       <div class="nav-child" data-page="inventory"><span class="material-icons-outlined">devices</span> Jihozlar</div>
-      <div class="nav-child" data-page="invcats"><span class="material-icons-outlined">category</span> Kategoriyalar</div>
-      <div class="nav-child" data-page="invassign"><span class="material-icons-outlined">assignment_ind</span> Biriktirish tarixi</div>
       <div class="nav-child" data-page="invwh"><span class="material-icons-outlined">warehouse</span> Omborlar</div>
       <div class="nav-child" data-page="invmove"><span class="material-icons-outlined">swap_vert</span> Ombor harakati</div>
+      <div class="nav-child" data-page="invassign"><span class="material-icons-outlined">assignment_ind</span> Biriktirishlar</div>
+      <div class="nav-child" data-page="invrepair"><span class="material-icons-outlined">build</span> Ta'mir</div>
+      <div class="nav-child" data-page="invaudit"><span class="material-icons-outlined">fact_check</span> Inventarizatsiya</div>
     </div>
 
     <div class="nav-item group" id="nav-kpi" onclick="toggleGroup('kpi')">
@@ -4233,11 +4234,17 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   <div class="table-card">
     <div class="table-toolbar">
       <h1 class="table-title">Jihozlar</h1>
+      <div class="board-tabs">
+        <button class="board-tab active" onclick="invSub(this,'iv-all')">Barchasi</button>
+        <button class="board-tab" onclick="invSub(this,'iv-cats')">Kategoriyalar</button>
+        <button class="board-tab" onclick="invSub(this,'iv-brands')">Brendlar</button>
+      </div>
       <div class="search-box"><span class="material-icons-outlined">search</span>
         <input placeholder="Inventar № yoki nom..."></div>
       <button class="tb-icon-btn"><span class="material-icons-outlined">refresh</span></button>
       <button class="btn-primary"><span class="material-icons-outlined">add_circle</span> YARATISH</button>
     </div>
+    <div id="iv-all">
     <div class="table-wrap">
       <table class="dt">
         <thead><tr>
@@ -4274,6 +4281,85 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="table-footer"><span class="mono">1-10 dan 214</span>
       <div class="pager"><button class="page-btn active">1</button><button class="page-btn">2</button>
         <button class="page-btn">…</button><button class="page-btn">22</button></div>
+    </div>
+    </div><!-- /iv-all -->
+
+    <!-- KATEGORIYALAR -->
+    <div id="iv-cats" style="display:none">
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>Kod</th><th>Nomi</th><th>Ota kategoriya</th><th>Jihozlar</th>
+          <th>Amortizatsiya (oy)</th><th>Status</th><th class="sticky-r">Amallar</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">TECH</td><td style="font-weight:600">Texnika</td>
+            <td style="color:var(--ink-4)">— (ildiz)</td><td class="mono num">168</td><td class="mono num">—</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">LAPTOP</td><td style="font-weight:600">Noutbuk</td>
+            <td>Texnika</td><td class="mono num">64</td><td class="mono num">48</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">MONITOR</td><td style="font-weight:600">Monitor</td>
+            <td>Texnika</td><td class="mono num">52</td><td class="mono num">60</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">PHONE</td><td style="font-weight:600">Telefon</td>
+            <td>Texnika</td><td class="mono num">23</td><td class="mono num">36</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">FURNIT</td><td style="font-weight:600">Mebel</td>
+            <td style="color:var(--ink-4)">— (ildiz)</td><td class="mono num">46</td><td class="mono num">84</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span class="mono">1-8 dan 8</span></div>
+    </div>
+
+    <!-- BRENDLAR -->
+    <div id="iv-brands" style="display:none">
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>Kod</th><th>Brend</th><th>Kategoriyalar</th><th>Jihozlar</th>
+          <th>Kafolat (oy)</th><th>Servis markazi</th><th>Ta'mirlar (yil)</th><th>Status</th><th class="sticky-r">Amallar</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">APPLE</td><td style="font-weight:600">Apple</td>
+            <td>Noutbuk · Telefon</td><td class="mono num">38</td><td class="mono num">12</td>
+            <td>iSpace Toshkent</td><td class="mono num">3</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">DELL</td><td style="font-weight:600">Dell</td>
+            <td>Noutbuk · Monitor</td><td class="mono num">67</td><td class="mono num">36</td>
+            <td>Dell Service UZ</td><td class="mono num">5</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr class="actioned"><td class="mono">LOGITECH</td><td style="font-weight:600">Logitech</td>
+            <td>Aksessuar</td><td class="mono num">29</td><td class="mono num">24</td>
+            <td style="color:var(--ink-4)">— almashtiriladi</td><td class="mono num">8</td>
+            <td><span class="chip soft-warn"><span class="st-dot warn"></span>Ko'p buziladi</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">HP</td><td style="font-weight:600">HP</td>
+            <td>Printer · Noutbuk</td><td class="mono num">21</td><td class="mono num">24</td>
+            <td>HP Center</td><td class="mono num">2</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+          <tr><td class="mono">SAMSUNG</td><td style="font-weight:600">Samsung</td>
+            <td>Monitor · Telefon</td><td class="mono num">18</td><td class="mono num">24</td>
+            <td>Samsung Plaza</td><td class="mono num">1</td>
+            <td><span class="chip soft-pos"><span class="st-dot pos"></span>Faol</span></td>
+            <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+              <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span style="font-size:12px;color:#8b9aa9;margin-right:auto">
+      Kafolat muddati va servis markazi brendga bog'lanadi — ta'mir yaratishda avtomatik to'ldiriladi</span>
+      <span class="mono">1-9 dan 9</span></div>
     </div>
   </div>
 </section>
@@ -4577,6 +4663,257 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
             <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TA'MIR ════════════ -->
+<section class="page-view" id="pv-invrepair">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">build</span>Ochiq ta'mirlar</div>
+      <div class="stat-value">6</div><div class="stat-sub">2 kafolat ostida</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">schedule</span>O'rtacha muddat</div>
+      <div class="stat-value">8 kun</div><div class="stat-sub">topshirish → qaytish</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">payments</span>Xarajat (yil)</div>
+      <div class="stat-value">18.4</div><div class="stat-sub">mln UZS · 34 ta ta'mir</div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">warning</span>Muddati cho'zilgan</div>
+      <div class="stat-value">2</div><div class="stat-sub">14 kundan ortiq</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Ta'mir va xizmat</h1>
+      <div class="board-tabs">
+        <button class="board-tab active" onclick="repView(this,'rp-list')">
+          <span class="material-icons-outlined">list</span> Ro'yxat</button>
+        <button class="board-tab" onclick="repView(this,'rp-board')">
+          <span class="material-icons-outlined">view_kanban</span> Doska</button>
+      </div>
+      <div class="search-box"><span class="material-icons-outlined">search</span>
+        <input placeholder="Inventar № yoki brend..."></div>
+      <button class="btn-primary" onclick="openForm(&quot;Ta'mirga topshirish&quot;)">
+        <span class="material-icons-outlined">add_circle</span> TOPSHIRISH</button>
+    </div>
+
+    <div id="rp-list">
+      <div class="table-wrap">
+        <table class="dt">
+          <thead><tr><th>№</th><th>Jihoz</th><th>Brend</th><th>Muammo</th><th>Servis markazi</th>
+            <th>Kafolat</th><th>Topshirilgan</th><th>Xarajat</th><th>Holat</th><th class="sticky-r">Amallar</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">REP-0142</td>
+              <td><span class="mono">INV-00175</span> iPhone 15</td><td>Apple</td>
+              <td>Ekran sinishi</td><td>iSpace Toshkent</td>
+              <td><span class="chip neutral">Tugagan</span></td><td class="mono">03.07.2026</td>
+              <td class="mono num">2,400,000</td>
+              <td><span class="chip soft-warn"><span class="st-dot warn"></span>Servisda</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+            <tr><td class="mono">REP-0141</td>
+              <td><span class="mono">INV-00208</span> Dell Latitude</td><td>Dell</td>
+              <td>Klaviatura ishlamayapti</td><td>Dell Service UZ</td>
+              <td><span class="chip soft-pos">Amal qiladi</span></td><td class="mono">18.07.2026</td>
+              <td class="mono num" style="color:var(--m-pos)">0 · kafolat</td>
+              <td><span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>Diagnostika</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+            <tr class="actioned"><td class="mono">REP-0138</td>
+              <td><span class="mono">INV-00142</span> Logitech MX Keys</td><td>Logitech</td>
+              <td>Bir nechta tugma ishlamaydi</td><td style="color:var(--ink-4)">— almashtiriladi</td>
+              <td><span class="chip neutral">Tugagan</span></td>
+              <td class="mono" style="color:var(--m-neg);font-weight:600">08.07.2026 · 28 kun</td>
+              <td class="mono num">—</td>
+              <td><span class="chip soft-neg"><span class="st-dot neg"></span>Hisobdan chiqarish</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+            <tr><td class="mono">REP-0136</td>
+              <td><span class="mono">INV-00191</span> HP LaserJet</td><td>HP</td>
+              <td>Qog'oz tortmayapti</td><td>HP Center</td>
+              <td><span class="chip neutral">Tugagan</span></td><td class="mono">28.06.2026</td>
+              <td class="mono num">680,000</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Qaytdi</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span class="mono">1-10 dan 34</span>
+        <div class="pager"><button class="page-btn active">1</button><button class="page-btn">2</button>
+          <button class="page-btn">…</button><button class="page-btn">4</button></div></div>
+    </div>
+
+    <div id="rp-board" style="display:none;padding:14px 16px">
+      <div class="board">
+        <div class="bcol">
+          <div class="bcol-h"><span class="bcol-dot" style="background:#94a3b8"></span>
+            <span class="bcol-name">Topshirildi</span><span class="bcol-count">2</span></div>
+          <div class="bcol-body">
+            <div class="bcard"><div class="bcard-top">
+              <span class="material-icons-outlined" style="font-size:15px;color:#64748b">smartphone</span>
+              <span class="bcard-key">REP-0143</span></div>
+              <div class="bcard-title">Samsung monitor — rang buzilishi</div>
+              <div class="bcard-foot"><span class="prio md">O'rta</span>
+                <span class="mono" style="font-size:10.5px;color:var(--ink-4);margin-left:auto">INV-00223</span></div></div>
+            <div class="bcard"><div class="bcard-top">
+              <span class="material-icons-outlined" style="font-size:15px;color:#64748b">keyboard</span>
+              <span class="bcard-key">REP-0144</span></div>
+              <div class="bcard-title">Logitech sichqoncha — g'ildirak</div>
+              <div class="bcard-foot"><span class="prio lo">Past</span>
+                <span class="mono" style="font-size:10.5px;color:var(--ink-4);margin-left:auto">INV-00251</span></div></div>
+          </div>
+        </div>
+        <div class="bcol">
+          <div class="bcol-h"><span class="bcol-dot" style="background:#3b82f6"></span>
+            <span class="bcol-name">Diagnostika</span><span class="bcol-count">1</span></div>
+          <div class="bcol-body">
+            <div class="bcard"><div class="bcard-top">
+              <span class="material-icons-outlined" style="font-size:15px;color:#64748b">laptop</span>
+              <span class="bcard-key">REP-0141</span><span class="bcard-est">kafolat</span></div>
+              <div class="bcard-title">Dell Latitude — klaviatura</div>
+              <div class="bcard-foot"><span class="prio hi">Yuqori</span>
+                <span class="mono" style="font-size:10.5px;color:var(--ink-4);margin-left:auto">INV-00208</span></div></div>
+          </div>
+        </div>
+        <div class="bcol">
+          <div class="bcol-h"><span class="bcol-dot" style="background:#f59e0b"></span>
+            <span class="bcol-name">Servisda</span><span class="bcol-count">1</span></div>
+          <div class="bcol-body">
+            <div class="bcard"><div class="bcard-top">
+              <span class="material-icons-outlined" style="font-size:15px;color:#64748b">smartphone</span>
+              <span class="bcard-key">REP-0142</span><span class="bcard-est">2.4 mln</span></div>
+              <div class="bcard-title">iPhone 15 — ekran almashtirish</div>
+              <div class="bcard-foot"><span class="prio hi">Yuqori</span>
+                <span class="mono" style="font-size:10.5px;color:var(--ink-4);margin-left:auto">INV-00175</span></div></div>
+          </div>
+        </div>
+        <div class="bcol done">
+          <div class="bcol-h"><span class="bcol-dot" style="background:#22c55e"></span>
+            <span class="bcol-name">Qaytdi</span><span class="bcol-count">1</span></div>
+          <div class="bcol-body">
+            <div class="bcard"><div class="bcard-top">
+              <span class="material-icons-outlined" style="font-size:15px;color:#64748b">print</span>
+              <span class="bcard-key">REP-0136</span><span class="bcard-est">680K</span></div>
+              <div class="bcard-title">HP LaserJet — rolik almashtirildi</div>
+              <div class="bcard-foot"><span class="prio md">O'rta</span>
+                <span class="mono" style="font-size:10.5px;color:var(--ink-4);margin-left:auto">INV-00191</span></div></div>
+          </div>
+        </div>
+        <div class="bcol block">
+          <div class="bcol-h"><span class="bcol-dot" style="background:#e0564a"></span>
+            <span class="bcol-name">Hisobdan chiqarish</span><span class="bcol-count">1</span></div>
+          <div class="bcol-body">
+            <div class="bcard"><div class="bcard-top">
+              <span class="material-icons-outlined" style="font-size:15px;color:#64748b">keyboard</span>
+              <span class="bcard-key">REP-0138</span></div>
+              <div class="bcard-title">Logitech MX Keys — ta'mir foydasiz</div>
+              <div class="blocked-note"><span class="material-icons-outlined">info</span>
+                <span>Ta'mir narxi qoldiq qiymatdan yuqori</span></div>
+              <div class="bcard-foot"><span class="prio lo">Past</span>
+                <span class="mono" style="font-size:10.5px;color:var(--ink-4);margin-left:auto">INV-00142</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ INVENTARIZATSIYA ════════════ -->
+<section class="page-view" id="pv-invaudit">
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">fact_check</span>Joriy inventarizatsiya</div>
+      <div class="stat-value">AUD-08</div><div class="stat-sub">01.08 — 10.08.2026 · davom etmoqda</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">qr_code_scanner</span>Skanerlandi</div>
+      <div class="stat-value">168</div><div class="stat-sub">214 dan · 78%</div>
+      <div class="stat-bar"><i style="width:78%"></i></div></div>
+    <div class="stat neg"><div class="stat-top"><span class="material-icons-outlined">error_outline</span>Kamomad</div>
+      <div class="stat-value">4</div><div class="stat-sub">topilmagan jihoz</div></div>
+    <div class="stat"><div class="stat-top"><span class="material-icons-outlined">add_box</span>Ortiqcha</div>
+      <div class="stat-value">2</div><div class="stat-sub">hisobda yo'q, mavjud</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h1 class="table-title">Inventarizatsiya — AUD-08</h1>
+      <div class="board-tabs">
+        <button class="board-tab active" onclick="audView(this,'au-items')">Natijalar</button>
+        <button class="board-tab" onclick="audView(this,'au-hist')">Tarix</button>
+      </div>
+      <button class="btn-flat"><span class="material-icons-outlined">qr_code_scanner</span> Skanerlash</button>
+      <button class="btn-flat"><span class="material-icons-outlined">download</span> Akt (PDF)</button>
+      <button class="btn-primary" onclick="toast('Inventarizatsiya yakunlandi — akt shakllantirildi')">
+        <span class="material-icons-outlined">check_circle</span> YAKUNLASH</button>
+    </div>
+
+    <div id="au-items">
+      <div class="table-wrap">
+        <table class="dt">
+          <thead><tr><th>Inventar №</th><th>Jihoz</th><th>Ombor / joylashuv</th><th>Kutilgan holat</th>
+            <th>Skanerlandi</th><th>Sana</th><th>Kim</th><th>Farq</th><th class="sticky-r">Amallar</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">INV-00214</td><td>MacBook Pro 14 M3</td>
+              <td>D. Salimov · Development</td><td>Biriktirilgan</td>
+              <td><span class="chip soft-pos">Ha</span></td><td class="mono">02.08 09:14</td>
+              <td><span class="mini-avatar" style="background:#8a9a3a">JT</span>J. Toshev</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Mos</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+            <tr><td class="mono">INV-00198</td><td>Dell UltraSharp 27"</td>
+              <td>Asosiy ombor</td><td>Omborda</td>
+              <td><span class="chip soft-pos">Ha</span></td><td class="mono">02.08 10:02</td>
+              <td><span class="mini-avatar" style="background:#8a9a3a">JT</span>J. Toshev</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Mos</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+            <tr class="actioned"><td class="mono">INV-00161</td><td>HP LaserJet Pro</td>
+              <td>G. Kamolova · Buxgalteriya</td><td>Biriktirilgan</td>
+              <td><span class="chip soft-neg">Yo'q</span></td><td class="mono" style="color:var(--ink-4)">—</td>
+              <td style="color:var(--ink-4)">—</td>
+              <td><span class="chip soft-neg"><span class="st-dot neg"></span>Kamomad</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">search</span></button>
+                <button class="act-btn"><span class="material-icons-outlined">edit</span></button></td></tr>
+            <tr><td class="mono">INV-00247</td><td>Samsung monitor 24"</td>
+              <td style="color:var(--ink-4)">— hisobda yo'q</td><td style="color:var(--ink-4)">—</td>
+              <td><span class="chip soft-pos">Ha</span></td><td class="mono">03.08 14:28</td>
+              <td><span class="mini-avatar" style="background:#5b7cc9">SR</span>S. Raxmonov</td>
+              <td><span class="chip soft-warn"><span class="st-dot warn"></span>Ortiqcha</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">add_circle</span></button></td></tr>
+            <tr><td class="mono">INV-00175</td><td>iPhone 15 (test)</td>
+              <td>iSpace Toshkent</td><td>Ta'mirda</td>
+              <td><span class="chip neutral">Tegishli emas</span></td><td class="mono" style="color:var(--ink-4)">—</td>
+              <td style="color:var(--ink-4)">—</td>
+              <td><span class="chip neutral"><span class="st-dot neutral"></span>Hisobga olinmaydi</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span style="font-size:12px;color:#8b9aa9;margin-right:auto">
+        Kutilgan holat inventarizatsiya boshlanganda muzlatiladi — keyingi harakatlar natijaga ta'sir qilmaydi</span>
+        <span class="mono">1-10 dan 214</span></div>
+    </div>
+
+    <div id="au-hist" style="display:none">
+      <div class="table-wrap">
+        <table class="dt">
+          <thead><tr><th>Kod</th><th>Davr</th><th>Qamrov</th><th>Jihozlar</th><th>Kamomad</th>
+            <th>Ortiqcha</th><th>Mas'ul</th><th>Holat</th><th class="sticky-r">Amallar</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">AUD-08</td><td class="mono">01.08 — 10.08.2026</td><td>To'liq</td>
+              <td class="mono num">214</td><td class="mono num" style="color:var(--m-neg)">4</td>
+              <td class="mono num">2</td>
+              <td><span class="mini-avatar" style="background:#8a9a3a">JT</span>J. Toshev</td>
+              <td><span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>Davom etmoqda</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button></td></tr>
+            <tr><td class="mono">AUD-07</td><td class="mono">01.02 — 08.02.2026</td><td>To'liq</td>
+              <td class="mono num">196</td><td class="mono num" style="color:var(--m-neg)">2</td>
+              <td class="mono num">1</td>
+              <td><span class="mini-avatar" style="background:#8a9a3a">JT</span>J. Toshev</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Yakunlangan · akt</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                <button class="act-btn"><span class="material-icons-outlined">download</span></button></td></tr>
+            <tr><td class="mono">AUD-06</td><td class="mono">05.11 — 09.11.2025</td><td>Faqat Development</td>
+              <td class="mono num">84</td><td class="mono num">0</td><td class="mono num">0</td>
+              <td><span class="mini-avatar" style="background:#5b7cc9">SR</span>S. Raxmonov</td>
+              <td><span class="chip soft-pos"><span class="st-dot pos"></span>Yakunlangan · akt</span></td>
+              <td class="sticky-r"><button class="act-btn"><span class="material-icons-outlined">visibility</span></button>
+                <button class="act-btn"><span class="material-icons-outlined">download</span></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span class="mono">1-8 dan 8</span></div>
     </div>
   </div>
 </section>
@@ -5487,7 +5824,7 @@ var TITLES={home:'Mening profilim',
   projects:'Loyihalar',project:'Mobil ilova',board:'Mobil ilova · Board',handover:'Handover',
   tickets:'Ticketlar',botlist:'Mijoz chatlari',inbox:'Chat',calls:'Call center',inventory:'Inventar',
   kpi:'Natijalar',kpiprofiles:'Profillar',
-  invcats:'Kategoriyalar',invassign:'Biriktirish tarixi',invwh:'Omborlar',
+  invrepair:"Ta'mir",invaudit:'Inventarizatsiya',invcats:'Kategoriyalar',invassign:'Biriktirish tarixi',invwh:'Omborlar',
   invmove:'Ombor harakati',kpicrit:'Kriteriyalar',kpiperiods:'Davrlar',
   contrtypes:'Shartnoma turlari',subs:'Obunalar',paysched:"To'lov grafiklari",payments:"To'lovlar",
   paymethods:"To'lov usullari"};
@@ -5523,8 +5860,10 @@ var TRAIL={
   inbox:[['Support',null],['Mijoz chatlari','botlist'],['Mobil ilova',null]],
   calls:[['Support',null],['Call center',null]],
   inventory:[['Inventar',null],['Jihozlar',null]],
+  invrepair:[['Inventar',null],["Ta'mir",null]],
+  invaudit:[['Inventar',null],['Inventarizatsiya',null]],
   invcats:[['Inventar',null],['Kategoriyalar',null]],
-  invassign:[['Inventar',null],['Biriktirish tarixi',null]],
+  invassign:[['Inventar',null],['Biriktirishlar',null]],
   invwh:[['Inventar',null],['Omborlar',null]],
   invmove:[['Inventar',null],['Ombor harakati',null]],
   kpi:[['KPI',null],['Natijalar',null]],
@@ -5621,6 +5960,35 @@ function boardTab(name){
   requestAnimationFrame(fitBoards);
 }
 
+
+/* Ta'mir va inventarizatsiya ko'rinishlari */
+function repView(btn,id){
+  var s=btn.parentElement.querySelectorAll('.board-tab');
+  for(var i=0;i<s.length;i++)s[i].classList.remove('active');
+  btn.classList.add('active');
+  document.getElementById('rp-list').style.display = id==='rp-list'?'block':'none';
+  document.getElementById('rp-board').style.display = id==='rp-board'?'block':'none';
+  requestAnimationFrame(fitBoards);
+}
+function audView(btn,id){
+  var s=btn.parentElement.querySelectorAll('.board-tab');
+  for(var i=0;i<s.length;i++)s[i].classList.remove('active');
+  btn.classList.add('active');
+  document.getElementById('au-items').style.display = id==='au-items'?'block':'none';
+  document.getElementById('au-hist').style.display = id==='au-hist'?'block':'none';
+}
+
+/* Jihozlar sahifasi ichki tablari */
+function invSub(btn,id){
+  var sibs=btn.parentElement.querySelectorAll('.board-tab');
+  for(var i=0;i<sibs.length;i++)sibs[i].classList.remove('active');
+  btn.classList.add('active');
+  var ids=['iv-all','iv-cats','iv-brands'];
+  for(var j=0;j<ids.length;j++){
+    var el=document.getElementById(ids[j]);
+    if(el)el.style.display = ids[j]===id?'block':'none';
+  }
+}
 
 /* Toast */
 var toastTimer=null;
