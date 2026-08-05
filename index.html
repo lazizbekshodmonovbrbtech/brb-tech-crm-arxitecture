@@ -1794,6 +1794,12 @@ let currentSvc=null,focused=null;
 
 /* Yakunlangan (to'liq loyihalangan) servislar — enum katalogi, outbox va status standarti bajarilgan */
 const DONE_SERVICES = new Set([
+  /* Mavjud tizimlar — ishlab turibdi, arxitekturasi tayyor */
+  "hrm-service",
+  "settings-service",
+  "global-reference-service",
+  "file-service",
+  /* Yangi loyihalangan servislar — enum katalogi, outbox va status standarti bajarilgan */
   "customer-service",
   "lead-service",
   "contract-service",
@@ -1811,7 +1817,9 @@ const DONE_SERVICES = new Set([
       const isDoc=DB[k].kind==='doc';
       const isDone=DONE_SERVICES.has(k);
       el.className='menu-item'+(isDoc?' doc':'')+(isDone?' done':'');el.dataset.svc=k;
-      if(isDone)el.title='Yakunlangan: enum katalogi, outbox va status standarti bajarilgan';
+      if(isDone)el.title = DB[k].group==='Mavjud tizim'
+        ? 'Mavjud tizim \u2014 ishlab turibdi, arxitekturasi tayyor'
+        : 'Yakunlangan: enum katalogi, outbox va status standarti bajarilgan';
       el.innerHTML=`<span class="dot">${isDoc?'§':''}</span>${k}<span class="cnt">${isDoc?'doc':DB[k].tables.length}</span>`;
       el.onclick=()=>{selectService(k);if(innerWidth<=820)$('#sidebar').classList.remove('open')};
       menu.appendChild(el);
@@ -1826,7 +1834,9 @@ function selectService(key){
   const isDoc=DB[key].kind==='doc';
   $('#svc-title').innerHTML=key
     +(isDoc?' <span class="doc-badge">HUJJAT — service emas</span>':'')
-    +(DONE_SERVICES.has(key)?' <span class="done-badge">\u2713 YAKUNLANGAN</span>':'');
+    +(DONE_SERVICES.has(key)
+        ? ' <span class="done-badge">\u2713 '+(DB[key].group==='Mavjud tizim'?'MAVJUD \u2014 TAYYOR':'YAKUNLANGAN')+'</span>'
+        : '');
   $('#svc-desc').textContent=DB[key].desc;
   wrap.classList.toggle('doc-mode',isDoc);
   closeDrawer();
