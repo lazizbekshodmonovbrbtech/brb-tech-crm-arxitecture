@@ -445,6 +445,34 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   align-items:center;gap:6px;max-width:62%}
 .kv-value .mini-avatar{margin-right:0}
 
+/* E'lon modali — Telegram formatlash */
+.tg-hint{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border-radius:9px;
+  background:var(--m-acc-soft);color:var(--m-acc);font-size:11.5px;line-height:1.5;margin-bottom:12px}
+.tg-hint .material-icons-outlined{font-size:16px;flex-shrink:0}
+.rte-btn.tg{font-family:var(--font-mono);font-size:11px;font-weight:700}
+.tg-prev{border:1px solid var(--mline);border-radius:10px;overflow:hidden;background:#eef3f9}
+.tg-prev-h{padding:7px 12px;background:var(--msurface2);border-bottom:1px solid var(--mline2);
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8b9aa9;
+  display:flex;align-items:center;gap:6px}
+.tg-bubble{margin:12px;padding:9px 13px;background:#fff;border-radius:12px 12px 12px 4px;
+  font-size:13.5px;line-height:1.55;color:#182634;box-shadow:0 1px 3px rgba(15,23,42,.08);
+  max-width:82%}
+.tg-bubble b{font-weight:700}
+.tg-bubble code{font-family:var(--font-mono);font-size:12px;background:#eef1f5;
+  padding:1px 5px;border-radius:4px;color:#b83d2e}
+.tg-bubble pre{font-family:var(--font-mono);font-size:12px;background:#182634;color:#e6edf5;
+  padding:9px 12px;border-radius:8px;overflow-x:auto;margin:7px 0}
+.tg-bubble blockquote{margin:6px 0;padding:4px 11px;border-left:3px solid var(--m-acc);
+  background:rgba(31,102,168,.06);border-radius:0 6px 6px 0}
+.tg-bubble a{color:#2481cc;text-decoration:none}
+.tg-spoiler{background:#8b9aa9;color:transparent;border-radius:3px;cursor:pointer}
+.tg-spoiler.open{background:transparent;color:inherit}
+.tg-html{font-family:var(--font-mono);font-size:11px;line-height:1.55;color:#5c6e80;
+  background:var(--msurface2);border:1px solid var(--mline2);border-radius:9px;
+  padding:10px 12px;margin-top:12px;white-space:pre-wrap;word-break:break-all;max-height:110px;
+  overflow-y:auto}
+.tg-html b{color:var(--m-acc)}
+
 /* Zanjir egaligi va e'lon */
 .thr{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9.5px;
   font-weight:700;padding:1px 7px;border-radius:5px;margin-left:6px}
@@ -5846,6 +5874,84 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     </div>
   </div>
 </div>
+
+<!-- ════════════ E'LON MODALI ════════════ -->
+<div class="overlay" id="ann-overlay" onclick="if(event.target===this)closeOv('ann-overlay')">
+  <div class="modal" style="width:min(760px,95vw)">
+    <div class="fm-head" style="background:var(--m-warn)">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">campaign</span></span>
+        <div class="mh-t"><h1>E'lon yuborish</h1>
+          <div class="mh-id" id="ann-target">Ipak Yo'li · MOB support — 14 a'zoga</div></div>
+      </div>
+      <button class="close-x" onclick="closeOv('ann-overlay')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body" style="background:var(--surface)">
+      <div class="tg-hint"><span class="material-icons-outlined">info</span>
+        <span>Telegram <b>parse_mode=HTML</b> qo'llab-quvvatlaydigan teglar bilan ishlaydi:
+        qalin, kursiv, tagchizilgan, chizilgan, <b>spoiler</b>, kod, kod bloki, iqtibos va havola.
+        Boshqa formatlash Telegram tomonidan qabul qilinmaydi.</span></div>
+
+      <div class="fld"><label>E'lon matni <b>*</b></label>
+        <div class="rte">
+          <div class="rte-bar">
+            <button class="rte-btn" title="Qalin — <b>" onclick="rte('bold');annSync()"><b>B</b></button>
+            <button class="rte-btn" title="Kursiv — <i>" onclick="rte('italic');annSync()"><i>I</i></button>
+            <button class="rte-btn" title="Tagchizilgan — <u>" onclick="rte('underline');annSync()"><u>U</u></button>
+            <button class="rte-btn" title="Chizilgan — <s>" onclick="rte('strikeThrough');annSync()"><s>S</s></button>
+            <span class="rte-sep"></span>
+            <button class="rte-btn tg" title="Spoiler — tg-spoiler" onclick="annSpoiler()">SPOIL</button>
+            <button class="rte-btn" title="Kod — <code>" onclick="rteCode();annSync()">
+              <span class="material-icons-outlined">code</span></button>
+            <button class="rte-btn" title="Kod bloki — <pre>" onclick="rte('formatBlock','pre');annSync()">
+              <span class="material-icons-outlined">data_object</span></button>
+            <button class="rte-btn" title="Iqtibos — <blockquote>" onclick="rte('formatBlock','blockquote');annSync()">
+              <span class="material-icons-outlined">format_quote</span></button>
+            <span class="rte-sep"></span>
+            <button class="rte-btn" title="Havola — <a href>" onclick="rteLink();annSync()">
+              <span class="material-icons-outlined">link</span></button>
+            <button class="rte-btn" title="Formatni tozalash" onclick="rte('removeFormat');annSync()">
+              <span class="material-icons-outlined">format_clear</span></button>
+          </div>
+          <div class="rte-body" id="ann-body" contenteditable="true" oninput="annSync()"
+            data-ph="E'lon matnini yozing..." style="min-height:120px"></div>
+          <div class="rte-foot">Telegram cheklovi: 4096 belgi ·
+            <span class="mono" id="ann-count">0</span>/4096</div>
+        </div>
+      </div>
+
+      <div class="fgrid c2">
+        <div class="fld"><label>Qayerga</label>
+          <select id="ann-scope" onchange="annTargetSync()">
+            <option value="all">Butun guruhga</option>
+            <option value="topic">Faqat mavzuga: Xatoliklar</option>
+            <option value="topic2">Faqat mavzuga: Umumiy</option>
+          </select></div>
+        <div class="fld"><label>Qo'shimcha</label>
+          <div style="display:flex;align-items:center;gap:16px;height:46px">
+            <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--ink-1);cursor:pointer">
+              <span class="sw" id="ann-pin" onclick="this.classList.toggle('on')"></span> Mahkamlash</label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--ink-1);cursor:pointer">
+              <span class="sw on" id="ann-notify" onclick="this.classList.toggle('on')"></span> Bildirishnoma</label>
+          </div></div>
+      </div>
+
+      <div class="tg-prev">
+        <div class="tg-prev-h"><span class="material-icons-outlined" style="font-size:15px">smartphone</span>
+          Telegramda qanday ko'rinadi</div>
+        <div class="tg-bubble" id="ann-preview" style="color:#8b9aa9">E'lon matni shu yerda ko'rinadi...</div>
+      </div>
+      <div class="tg-html" id="ann-html">parse_mode=HTML → <b>text:</b> ""</div>
+    </div>
+    <div class="fm-foot">
+      <span style="font-size:12px;color:#8b9aa9;margin-right:auto">
+        E'lon ticketga bog'lanmaydi va javob kutilmaydi</span>
+      <button class="btn-flat" onclick="closeOv('ann-overlay')">Bekor qilish</button>
+      <button class="btn-edit" style="background:var(--m-warn)" onclick="annSend()">
+        <span class="material-icons-outlined" style="font-size:18px">send</span> Yuborish</button>
+    </div>
+  </div>
+</div>
 <!-- ════════════ GENERIK FORM MODALI ════════════ -->
 <div class="overlay" id="form-overlay" onclick="if(event.target===this)closeOv('form-overlay')">
   <div class="modal" style="width:min(680px,94vw)">
@@ -6690,14 +6796,89 @@ function claimMsg(i){
   toast(num+' ochildi va sizga biriktirildi \u2014 zanjir qulflandi');
 }
 function openAnnounce(){
-  var t=prompt("E'lon matni \u2014 barcha a'zolarga reply'siz yuboriladi:",
-    "Diqqat: ertaga 22:00\u201400:00 oralig'ida texnik ishlar bo'ladi.");
-  if(!t)return;
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
-  c.msgs.push({ann:true,who:'S. Nazarova',dir:'out',t:nowHM(),text:t});
-  renderMsgs();renderChatList();
-  toast("E'lon yuborildi \u2014 ticketga bog'lanmaydi, javob kutilmaydi");
+  document.getElementById('ann-body').innerHTML='';
+  document.getElementById('ann-scope').selectedIndex=0;
+  annTargetSync();annSync();
+  document.getElementById('ann-overlay').classList.add('open');
+  setTimeout(function(){document.getElementById('ann-body').focus()},60);
 }
+function annTargetSync(){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var sc=document.getElementById('ann-scope');
+  var extra=sc.value==='all'?(c.mc+" a'zoga"):('mavzu: '+sc.options[sc.selectedIndex].text.replace('Faqat mavzuga: ',''));
+  document.getElementById('ann-target').textContent=c.name+' \u2014 '+extra;
+}
+/* Spoiler \u2014 Telegram tg-spoiler tegi */
+function annSpoiler(){
+  rteFocus();
+  var sel=document.getSelection();
+  var t=sel?sel.toString():'';
+  if(!t){toast('Avval matnni belgilang');return}
+  document.execCommand('insertHTML',false,'<span class="tg-spoiler">'+t+'</span>&nbsp;');
+  annSync();
+}
+/* Telegram HTML ga aylantirish \u2014 faqat qo'llab-quvvatlanadigan teglar */
+function toTgHtml(node){
+  var out='';
+  for(var i=0;i<node.childNodes.length;i++){
+    var n=node.childNodes[i];
+    if(n.nodeType===3){
+      out+=n.textContent.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      continue;
+    }
+    if(n.nodeType!==1)continue;
+    var tag=n.tagName.toLowerCase(), inner=toTgHtml(n);
+    if(tag==='b'||tag==='strong')out+='<b>'+inner+'</b>';
+    else if(tag==='i'||tag==='em')out+='<i>'+inner+'</i>';
+    else if(tag==='u')out+='<u>'+inner+'</u>';
+    else if(tag==='s'||tag==='strike'||tag==='del')out+='<s>'+inner+'</s>';
+    else if(tag==='code')out+='<code>'+inner+'</code>';
+    else if(tag==='pre')out+='<pre>'+inner+'</pre>';
+    else if(tag==='blockquote')out+='<blockquote>'+inner+'</blockquote>';
+    else if(tag==='a')out+='<a href="'+(n.getAttribute('href')||'')+'">'+inner+'</a>';
+    else if(tag==='span'&&n.className.indexOf('tg-spoiler')>-1)
+      out+='<span class="tg-spoiler">'+inner+'</span>';
+    else if(tag==='br')out+='\n';
+    else if(tag==='div'||tag==='p')out+=(out&&!/\n$/.test(out)?'\n':'')+inner;
+    else out+=inner;   // qolgan teglar tashlanadi (Telegram qabul qilmaydi)
+  }
+  return out;
+}
+function annSync(){
+  var body=document.getElementById('ann-body');
+  var tg=toTgHtml(body);
+  var plain=tg.replace(/<[^>]+>/g,'');
+  document.getElementById('ann-count').textContent=plain.length;
+  var prev=document.getElementById('ann-preview');
+  if(!plain.trim()){
+    prev.style.color='#8b9aa9';prev.innerHTML="E'lon matni shu yerda ko'rinadi...";
+  }else{
+    prev.style.color='';
+    prev.innerHTML=tg.replace(/\n/g,'<br>');
+  }
+  document.getElementById('ann-html').innerHTML='parse_mode=HTML \u2192 <b>text:</b> "'
+    +tg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'\\n')+'"';
+}
+function annSend(){
+  var body=document.getElementById('ann-body');
+  var tg=toTgHtml(body);
+  var plain=tg.replace(/<[^>]+>/g,'').trim();
+  if(!plain){toast("E'lon matni bo'sh");return}
+  if(plain.length>4096){toast('Telegram cheklovi: 4096 belgi');return}
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  var pin=document.getElementById('ann-pin').classList.contains('on');
+  c.msgs.push({ann:true,who:'S. Nazarova',dir:'out',t:nowHM(),
+    text:tg.replace(/\n/g,'<br>'),pinned:pin});
+  closeOv('ann-overlay');
+  renderMsgs();renderChatList();
+  toast("E'lon yuborildi"+(pin?' va mahkamlandi':'')+" \u2014 ticketga bog'lanmaydi");
+}
+/* Spoiler'ni bosib ochish */
+document.addEventListener('click',function(e){
+  if(e.target.classList&&e.target.classList.contains('tg-spoiler'))
+    e.target.classList.toggle('open');
+});
 
 function openChatItem(id){
   curChat=id;replyTo=null;
