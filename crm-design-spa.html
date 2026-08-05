@@ -462,8 +462,9 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .m-flags{display:inline-flex;align-items:center;gap:5px;margin-left:6px}
 .m-flag{font-size:9.5px;font-family:var(--font-mono);color:var(--ink-4);
   background:#eef1f5;padding:0 5px;border-radius:4px}
-.msg.deleted{opacity:.55;font-style:italic}
-.msg.deleted .m-body{text-decoration:line-through;color:var(--ink-4)}
+.msg.deleted{border-style:dashed}
+.msg.deleted .m-body{color:var(--ink-2)}
+.m-flag.del{background:#fde8e8;color:#c81e1e;font-weight:600}
 /* Fayl kartasi */
 .m-file{display:flex;align-items:center;gap:9px;padding:8px 10px;margin-top:6px;
   background:var(--msurface2);border:1px solid var(--mline2);border-radius:9px}
@@ -6420,7 +6421,7 @@ var CHATS=[
    {who:'Saboat Rasulova',ini:'SR',c:'#c98a3d',dir:'in',t:'09:20',text:'Rahmat, kutamiz.'},
    {who:'S. Nazarova',dir:'out',t:'09:22',text:'Eski xabar (tahrirlangan namuna)',edited:true},
    {who:'Mansur Bobojonov',ini:'MB',c:'#3aa981',dir:'in',t:'09:31',
-    text:"Bu xabar o'chirilgan",deleted:true}
+    text:"Kecha yuborgan hisobotimda xatolik bor edi, e'tibor bermang",deleted:true}
   ]},
  {id:2,type:'GROUP',name:'Agro Invest guruh',ini:'AG',c:'#3aa981',sub:"Guruh · 6 a'zo",
   cust:'Agro Invest MChJ',tgid:'-1009876543',unread:1,forum:false,mc:6,
@@ -6497,7 +6498,7 @@ function renderMsgs(){
     }
     out+='<div class="m-meta">'+m.t+(m.dir==='out'?' \u00b7 S. Nazarova':'')
       +'<span class="m-flags">'+(m.edited?'<span class="m-flag">tahrirlangan</span>':'')
-      +(m.deleted?'<span class="m-flag">o\'chirilgan</span>':'')+'</span></div></div>';
+      +(m.deleted?'<span class="m-flag del">Telegram&#39;da o&#39;chirilgan</span>':'')+'</span></div></div>';
   }
   box.innerHTML=out;
   box.scrollTop=box.scrollHeight;
