@@ -445,6 +445,25 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   align-items:center;gap:6px;max-width:62%}
 .kv-value .mini-avatar{margin-right:0}
 
+/* Chat panelidagi ticket kartalari */
+.tk-row{display:flex;gap:10px;padding:10px 0}
+.tk-row+.tk-row{border-top:1px solid var(--mline2)}
+.tk-main{flex:1;min-width:0}
+.tk-top{display:flex;align-items:center;gap:7px}
+.tk-no{font-size:12px;font-weight:700;color:var(--m-acc)}
+.tk-sub{font-size:12.5px;color:#182634;margin-top:3px;line-height:1.4}
+.tk-meta{display:flex;gap:12px;margin-top:5px;font-size:11px;color:#8b9aa9}
+.tk-meta span{display:inline-flex;align-items:center;gap:4px}
+.tk-meta .material-icons-outlined{font-size:13px}
+.tk-acts{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.tk-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:28px;
+  padding:0 9px;border:1px solid var(--mline);background:var(--surface);border-radius:7px;
+  font-family:var(--font-sans);font-size:11.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.tk-btn:hover{border-color:var(--m-acc);color:var(--m-acc)}
+.tk-btn .material-icons-outlined{font-size:15px}
+.tk-btn.close{background:var(--m-pos);border-color:var(--m-pos);color:#fff}
+.tk-btn.close:hover{filter:brightness(1.07);color:#fff}
+
 /* Fayl yuklash */
 .up-zone{display:none;padding:10px 16px;background:var(--msurface2);border-top:1px solid var(--mline)}
 .up-zone.on{display:block}
@@ -658,7 +677,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 /* ═══════ TELEGRAM INBOX (3 panel) ═══════ */
 .inbox{display:flex;height:calc(100vh - 142px);background:var(--surface);border-radius:12px;
   box-shadow:0 2px 6px rgba(0,0,0,.05);overflow:hidden}
-.ib-left{width:280px;flex-shrink:0;border-right:1px solid var(--line-2);display:flex;flex-direction:column}
+.ib-left{width:266px;flex-shrink:0;border-right:1px solid var(--line-2);display:flex;flex-direction:column}
 .ib-search{padding:12px 12px 8px}
 .ib-tabs{display:flex;gap:4px;padding:0 12px 10px;border-bottom:1px solid var(--line-2)}
 .ib-tab{border:none;background:transparent;font-family:var(--font-sans);font-size:12px;
@@ -696,7 +715,7 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .ib-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
 .ib-send{width:42px;height:42px;border:none;border-radius:10px;background:var(--primary);
   color:#fff;cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 12px rgba(37,99,235,.3)}
-.ib-right{width:300px;flex-shrink:0;border-left:1px solid var(--line-2);overflow-y:auto;
+.ib-right{width:368px;flex-shrink:0;border-left:1px solid var(--line-2);overflow-y:auto;
   padding:14px;scrollbar-width:thin;background:var(--msurface2)}
 
 /* ═══════ CALL DRAWER ═══════ */
@@ -3978,12 +3997,45 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           </div>
         </div>
         <div class="desc-card">
-          <div class="dc-head"><h3>Bog'langan ticketlar</h3></div>
-          <div class="dc-body">
-            <div class="kv"><span class="kv-value mono" style="max-width:none">T-2214</span>
-              <span class="kv-dots"></span><span class="chip soft-info" style="font-size:10.5px">In Progress</span></div>
-            <div class="kv"><span class="kv-value mono" style="max-width:none">T-2168</span>
-              <span class="kv-dots"></span><span class="chip soft-pos" style="font-size:10.5px">Closed</span></div>
+          <div class="dc-head"><h3>Bog'langan ticketlar</h3><span class="dc-note">2 ta</span></div>
+          <div class="dc-body" style="padding:10px 14px 12px">
+            <div class="tk-row">
+              <div class="tk-main">
+                <div class="tk-top"><span class="mono tk-no">T-2214</span>
+                  <span class="chip soft-info" style="font-size:10px">In Progress</span></div>
+                <div class="tk-sub">To'lov sahifasida 502 xatolik</div>
+                <div class="tk-meta">
+                  <span><span class="material-icons-outlined">person</span>S. Nazarova</span>
+                  <span><span class="material-icons-outlined">schedule</span>SLA: 18 min</span>
+                </div>
+              </div>
+              <div class="tk-acts">
+                <button class="tk-btn" title="Ticketni ochish" onclick="openIssueTicket('T-2214')">
+                  <span class="material-icons-outlined">open_in_new</span></button>
+                <button class="tk-btn close" title="Ticketni yopish" onclick="closeTicket('T-2214')">
+                  <span class="material-icons-outlined">task_alt</span> Yopish</button>
+              </div>
+            </div>
+            <div class="tk-row">
+              <div class="tk-main">
+                <div class="tk-top"><span class="mono tk-no">T-2168</span>
+                  <span class="chip soft-pos" style="font-size:10px">Closed</span></div>
+                <div class="tk-sub">Hisobot eksporti sekin ishlaydi</div>
+                <div class="tk-meta">
+                  <span><span class="material-icons-outlined">person</span>B. Karimov</span>
+                  <span><span class="material-icons-outlined">star</span>Baho: 5</span>
+                </div>
+              </div>
+              <div class="tk-acts">
+                <button class="tk-btn" title="Ticketni ochish" onclick="openIssueTicket('T-2168')">
+                  <span class="material-icons-outlined">open_in_new</span></button>
+                <button class="tk-btn" title="Qayta ochish" onclick="toast('T-2168 qayta ochildi \u2014 reopen_count +1')">
+                  <span class="material-icons-outlined">refresh</span></button>
+              </div>
+            </div>
+            <button class="btn-flat" style="width:100%;justify-content:center;margin-top:8px;height:34px;font-size:12.5px"
+              onclick="toast('Yangi ticket ochildi \u2014 T-2216')">
+              <span class="material-icons-outlined" style="font-size:17px">add_circle</span> Yangi ticket</button>
           </div>
         </div>
       </div>
@@ -7332,6 +7384,13 @@ function sendMsg(){
     c.msgs.push({sys:true,text:'Telegram: yetkazildi',t:nowHM()});
     renderMsgs();
   },600);
+}
+function openIssueTicket(no){show('tickets');toast(no+' ticketi ochildi')}
+function closeTicket(no){
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  c.msgs.push({sys:true,text:no+" yopildi \u2014 mijozdan baho so'raldi",t:nowHM()});
+  renderMsgs();
+  toast(no+" yopildi \u2014 status CLOSED, feedback so'rovi yuborildi");
 }
 function syncChat(){
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
