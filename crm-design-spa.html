@@ -5962,9 +5962,10 @@ function show(page){
   renderCrumbs(page);
   document.querySelector('.page').scrollTop=0;
   document.getElementById('call-drawer').classList.remove('open');
-  if(location.hash.slice(1)!==page){
-    history.replaceState(null,'','#'+page);
-  }
+  // manzilga yozish — sandbox/iframe muhitida taqiqlangan bo'lishi mumkin
+  try{
+    if(location.hash.slice(1)!==page)history.replaceState(null,'','#'+page);
+  }catch(e){/* about:srcdoc yoki cross-origin: hash routing o'chadi, SPA ishlayveradi */}
   requestAnimationFrame(fitBoards);
 }
 function toggleGroup(key){
@@ -5977,7 +5978,8 @@ for(var k=0;k<navItems.length;k++){
 }
 /* Manzildagi #sahifa bo'yicha ochish (arxitektura hujjatidan kelgan havolalar) */
 function routeFromHash(){
-  var k=location.hash.replace('#','');
+  var k='';
+  try{k=location.hash.replace('#','');}catch(e){}
   if(k && document.getElementById('pv-'+k))show(k);
   else show('home');
 }
