@@ -513,6 +513,17 @@ const DB = {
  group:"CRM yadro",
  desc:"Mijozlar 360° \u2014 mustaqil aggregate root. Lead yopilgach ham yashaydi: shartnomalar, ticketlar, qo'ng'iroqlar va obunalar shu yozuvga tayanadi. ADR-004: customers lead-service'dan AJRATILDI \u2014 mijoz sotuv jarayonining bir qismi emas, kompaniyaning doimiy kontragenti.",
  tables:[
+ {name:"ENUM_KATALOG",noaudit:true,desc:"CUSTOMER-SERVICE ENUMLARI. Saqlash: varchar(30) + CHECK constraint (Postgres native enum EMAS). Java: @Enumerated(EnumType.STRING). Yozilish: UPPER_SNAKE_CASE. Qiymatni O'CHIRISH taqiqlanadi \u2014 faqat yangi qo'shiladi.",cols:[
+  ["ContactRole","enum","NN","use:contacts.role_type","SIGNATORY / TECHNICAL / FINANCE / GENERAL \u2014 xabar va hujjat kimga yuborilishini belgilaydi: ticket \u2192 TECHNICAL, hisob-faktura \u2192 FINANCE, shartnoma \u2192 SIGNATORY"],
+  ["AddressType","enum","NN","use:customer_addresses.address_type","LEGAL / ACTUAL / DELIVERY / BRANCH \u2014 shartnomaga LEGAL, yetkazishga DELIVERY chiqadi"],
+  ["IdentityType","enum","NN","use:customer_identities.identity_type","PHONE / EMAIL / TELEGRAM_ID / TELEGRAM_USERNAME / INSTAGRAM_ID / TAX_ID / CALLER_NUMBER \u2014 identity reyestri kalitlari. Ishonchlilik tartibi: TAX_ID > PHONE > TELEGRAM_ID > EMAIL > USERNAME (o'zgaruvchan)"],
+  ["MatchConfidence","enum","","use:lead-service.leads.match_confidence","STRONG / WEAK / NONE \u2014 /identities/resolve javobi. STRONG'da avtomatik biriktiriladi, WEAK'da sotuvchiga taklif ko'rsatiladi"],
+  ["RecordStatus","enum","NN","use:barcha jadvallardagi status ustuni","ACTIVE / INACTIVE / DELETED. INACTIVE mijozda \u2014 dublikat yoki faol emas: ro'yxatda ko'rinmaydi, havolalar buzilmaydi. INACTIVE kontaktda \u2014 xodim ishdan ketgan"],
+  ["PublishStatus","enum","NN","use:outbox_events.status","NEW / PUBLISHED / FAILED \u2014 outbox poller shu bo'yicha ishlaydi, retry_count limitdan oshsa DLQ"]]},
+ {name:"SEED_KODLAR",noaudit:true,desc:"Jadvalda saqlanadi, lekin tizim logikasi shu kodlarga tayanadi. Yangi yozuv qo'shish mumkin, seed kodni o'zgartirish \u2014 yo'q.",cols:[
+  ["customer_types.short_code","seed","UK","use:customers.type_id","INDIVIDUAL / LEGAL / GOVERNMENT / PARTNER \u2014 LEGAL'da requires_tax_id=true, INN validatsiyasi yoqiladi"],
+  ["customer_segments.short_code","seed","UK","use:customers.segment_id","VIP / STRATEGIC / STANDARD / SMALL \u2014 SLA darajasi va standart chegirma shunga bog'liq"],
+  ["industries.short_code","seed","UK","use:customers.industry_id","BANKING / RETAIL / LOGISTICS / MANUFACTURING / GOV"]]},
  {name:"customer_types",noaudit:false,desc:"Mijoz turlari ma'lumotnomasi \u2014 jismoniy/yuridik/davlat va h.k. short_code seed qilinadi.",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","INDIVIDUAL / LEGAL / GOVERNMENT / PARTNER \u2014 seed, UPDATE taqiqlangan"],
@@ -619,8 +630,27 @@ const DB = {
 
 "lead-service":{
  group:"CRM yadro",
- desc:"Sotuv voronkasi: leadlar, pozitsiyalar (mahsulot katalogi bilan), kampaniyalar, follow-up vazifalari. Mijozlar customer-service'da \u2014 bu yerda faqat mantiqiy ref.",
+ desc:"Sotuv voronkasi: leadlar, pozitsiyalar (mahsulot katalogi bilan), kampaniyalar, follow-up vazifalari. Mijozlar customer-service'da \u2014 bu yerda faqat mantiqiy ref. Barcha enumlar ENUM_KATALOG blokida jamlangan.",
  tables:[
+ {name:"ENUM_KATALOG",noaudit:true,desc:"LEAD-SERVICE ENUMLARI. Saqlash: varchar(30) + CHECK. Yozilish: UPPER_SNAKE_CASE. Qiymat o'chirilmaydi \u2014 faqat qo'shiladi (tarixiy yozuvlar buzilmasin).",cols:[
+  ["StageCategory","enum","NN","use:pipeline_stages.category \u2192 leads.stage_id orqali butun logika","OPEN / WON / LOST \u2014 PLATFORMA ENUMI, kengaytirilmaydi. Bosqich NOMI erkin, KATEGORIYA qat'iy: WON \u2192 shartnoma yaratiladi, LOST \u2192 lost_reason_id majburiy, konversiya OPEN\u2192WON nisbatidan"],
+  ["ProductType","enum","NN","use:products.type","READY_PRODUCT (tayyor mahsulot) / CUSTOM_DEV (buyurtma ishlanma, narx kelishuv bo'yicha) / SERVICE / LICENSE"],
+  ["BillingModel","enum","NN","use:products.billing_model, lead_items.billing_model","ONE_TIME / SUBSCRIPTION / PER_USER_MONTH / USAGE. Obuna modellarida shartnoma yopilganda contract-service'da subscriptions yozuvi ochiladi (MRR hisobi)"],
+  ["BillingPeriod","enum","","use:products.billing_period","MONTH / QUARTER / YEAR \u2014 faqat SUBSCRIPTION va PER_USER_MONTH modellarida to'ldiriladi"],
+  ["MatchConfidence","enum","","use:leads.match_confidence","STRONG / WEAK / NONE \u2014 customer-service /identities/resolve javobi. WEAK'da customer_id AVTOMATIK QO'YILMAYDI, match_suggestion_id ga yoziladi"],
+  ["ActivityType","enum","NN","use:lead_activities.type","CALL / MEETING / EMAIL / MESSAGE / NOTE / STAGE_CHANGE / TASK_DONE"],
+  ["ActivityDirection","enum","","use:lead_activities.direction","INBOUND / OUTBOUND \u2014 qo'ng'iroq va xatlarda"],
+  ["TaskType","enum","NN","use:lead_tasks.type","CALL / MEETING / EMAIL / DEMO / FOLLOW_UP / DOCUMENT"],
+  ["TaskStatus","enum","NN","use:lead_tasks.status","PENDING / DONE / CANCELLED / OVERDUE \u2014 due_at o'tsa scheduler OVERDUE qiladi va notification yuboradi"],
+  ["CampaignStatus","enum","NN","use:campaigns.status","PLANNED / ACTIVE / COMPLETED / CANCELLED"],
+  ["ReasonGroup","enum","NN","use:lead_lost_reasons.reason_group","COMMERCIAL / FINANCIAL / TECHNICAL / COMMUNICATION \u2014 yo'qotish tahlilini guruhlash uchun"],
+  ["DocType","enum","","use:lead_attachments.doc_type","OFFER / SPECIFICATION / PRESENTATION / CONTRACT_DRAFT / OTHER"],
+  ["RecordStatus","enum","NN","use:ma'lumotnoma jadvallari (pipeline_stages, lead_sources, products, lead_lost_reasons, channel_types)","ACTIVE / INACTIVE / DELETED \u2014 is_active o'rniga standart"]]},
+ {name:"SEED_KODLAR",noaudit:true,desc:"Logika tayanadigan seed kodlar \u2014 jadval yozuvi, lekin short_code muzlatilgan.",cols:[
+  ["pipeline_stages.short_code","seed","UK","use:leads.stage_id, lead_stage_history","NEW / CONTACTED / PROPOSAL / NEGOTIATION / WON / LOST \u2014 WON va LOST is_system=true, o'chirilmaydi"],
+  ["lead_sources.short_code","seed","UK","use:leads.source_id, campaigns.source_id","INSTAGRAM / TELEGRAM / REFERRAL / WEBSITE / CALL / EXPO"],
+  ["lead_lost_reasons.short_code","seed","UK","use:leads.lost_reason_id","PRICE / COMPETITOR / NO_BUDGET / NO_RESPONSE / NOT_FIT \u2014 requires_comment=true bo'lsa izoh majburiy"],
+  ["products.short_code","seed","UK","use:lead_items.product_id, contract_items","WAREHOUSE_SYS / CRM_BOX / MOBILE_DEV / SUPPORT_SLA \u2014 shartnoma va hisob-faktura shu kodga tayanadi"]]},
  {name:"pipelines",desc:"Sotuv voronkalari — turli yo'nalishlar uchun alohida pipeline bo'lishi mumkin.",cols:[
   ["id","bigint","PK","","Pipeline identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
