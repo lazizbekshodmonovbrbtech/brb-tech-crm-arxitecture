@@ -445,6 +445,24 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   align-items:center;gap:6px;max-width:62%}
 .kv-value .mini-avatar{margin-right:0}
 
+/* Ommaviy e'lon — qabul qiluvchilar */
+.bc-list{border:1px solid var(--mline);border-radius:10px;max-height:190px;overflow-y:auto;
+  background:var(--surface)}
+.bc-row{display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13px;cursor:pointer}
+.bc-row+.bc-row{border-top:1px solid var(--mline2)}
+.bc-row:hover{background:#f7f9fc}
+.bc-row .cb{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--mline);
+  display:grid;place-items:center;flex-shrink:0;background:var(--surface)}
+.bc-row.on .cb{background:var(--m-warn);border-color:var(--m-warn)}
+.bc-row.on .cb::after{content:'\2713';color:#fff;font-size:12px;font-weight:700;line-height:1}
+.bc-row .ib-ava{width:28px;height:28px;font-size:10px}
+.bc-head{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--msurface2);
+  border-bottom:1px solid var(--mline2);font-size:12px;color:#8b9aa9}
+.bc-head a{font-weight:600;cursor:pointer}
+.bc-sum{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:12.5px;color:var(--m-warn);
+  background:var(--m-warn-soft);border-radius:8px;padding:8px 12px}
+.bc-sum .material-icons-outlined{font-size:16px}
+
 /* E'lon modali — Telegram formatlash */
 .tg-hint{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border-radius:9px;
   background:var(--m-acc-soft);color:var(--m-acc);font-size:11.5px;line-height:1.5;margin-bottom:12px}
@@ -3796,9 +3814,15 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <span class="bot-ic" id="chat-ic" style="background:#2563eb;width:36px;height:36px;border-radius:10px">
       <span class="material-icons-outlined" style="font-size:19px">smart_toy</span></span>
     <div><h1 class="table-title" style="margin:0;font-size:16px" id="chat-proj">Mobil ilova</h1>
-      <div class="bot-user" id="chat-bot" style="margin-top:1px">@mob_support_bot</div></div>
-    <span class="chip soft-info"><span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>3 ta javobsiz</span>
-    <button class="btn-flat" style="margin-left:auto" onclick="toast('Bot sozlamalari (prototip)')">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+        <span class="bot-user" id="chat-bot">@mob_support_bot</span>
+        <span class="chip soft-info" style="font-size:10.5px;padding:2px 9px">
+          <span class="st-dot" style="background:#4fa3f7;box-shadow:0 0 0 3px rgba(79,163,247,.2)"></span>3 ta javobsiz</span>
+      </div></div>
+    <button class="btn-ann" style="margin-left:auto;height:38px" onclick="openBroadcast()">
+      <span class="material-icons-outlined">podcasts</span> Ommaviy e'lon</button>
+    <button class="btn-flat" style="border:1px solid var(--line-2);border-radius:9px;height:38px"
+      onclick="toast('Bot sozlamalari (prototip)')">
       <span class="material-icons-outlined">settings</span> Bot sozlamalari</button>
   </div>
   <div class="inbox">
@@ -5895,20 +5919,20 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
       <div class="fld"><label>E'lon matni <b>*</b></label>
         <div class="rte">
           <div class="rte-bar">
-            <button class="rte-btn" title="Qalin — <b>" onclick="rte('bold');annSync()"><b>B</b></button>
-            <button class="rte-btn" title="Kursiv — <i>" onclick="rte('italic');annSync()"><i>I</i></button>
-            <button class="rte-btn" title="Tagchizilgan — <u>" onclick="rte('underline');annSync()"><u>U</u></button>
-            <button class="rte-btn" title="Chizilgan — <s>" onclick="rte('strikeThrough');annSync()"><s>S</s></button>
+            <button class="rte-btn" title="Qalin &mdash; &lt;b&gt;" onclick="rte('bold');annSync()"><b>B</b></button>
+            <button class="rte-btn" title="Kursiv &mdash; &lt;i&gt;" onclick="rte('italic');annSync()"><i>I</i></button>
+            <button class="rte-btn" title="Tagchizilgan &mdash; &lt;u&gt;" onclick="rte('underline');annSync()"><u>U</u></button>
+            <button class="rte-btn" title="Chizilgan &mdash; &lt;s&gt;" onclick="rte('strikeThrough');annSync()"><s>S</s></button>
             <span class="rte-sep"></span>
             <button class="rte-btn tg" title="Spoiler — tg-spoiler" onclick="annSpoiler()">SPOIL</button>
-            <button class="rte-btn" title="Kod — <code>" onclick="rteCode();annSync()">
+            <button class="rte-btn" title="Kod &mdash; &lt;code&gt;" onclick="rteCode();annSync()">
               <span class="material-icons-outlined">code</span></button>
-            <button class="rte-btn" title="Kod bloki — <pre>" onclick="rte('formatBlock','pre');annSync()">
+            <button class="rte-btn" title="Kod bloki &mdash; &lt;pre&gt;" onclick="rte('formatBlock','pre');annSync()">
               <span class="material-icons-outlined">data_object</span></button>
-            <button class="rte-btn" title="Iqtibos — <blockquote>" onclick="rte('formatBlock','blockquote');annSync()">
+            <button class="rte-btn" title="Iqtibos &mdash; &lt;blockquote&gt;" onclick="rte('formatBlock','blockquote');annSync()">
               <span class="material-icons-outlined">format_quote</span></button>
             <span class="rte-sep"></span>
-            <button class="rte-btn" title="Havola — <a href>" onclick="rteLink();annSync()">
+            <button class="rte-btn" title="Havola &mdash; &lt;a href&gt;" onclick="rteLink();annSync()">
               <span class="material-icons-outlined">link</span></button>
             <button class="rte-btn" title="Formatni tozalash" onclick="rte('removeFormat');annSync()">
               <span class="material-icons-outlined">format_clear</span></button>
@@ -5920,7 +5944,21 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         </div>
       </div>
 
-      <div class="fgrid c2">
+      <!-- Ommaviy rejimda: qabul qiluvchilar -->
+      <div class="fld" id="bc-block" style="display:none">
+        <label>Qabul qiluvchilar <b>*</b></label>
+        <div class="bc-list">
+          <div class="bc-head">
+            <span id="bc-count">0 ta tanlandi</span>
+            <a style="margin-left:auto" onclick="bcAll(true)">Hammasini tanlash</a>
+            <a onclick="bcAll(false)">tozalash</a>
+          </div>
+          <div id="bc-rows"></div>
+        </div>
+        <div class="bc-sum"><span class="material-icons-outlined">info</span>
+          <span id="bc-sum-text">Har chatga alohida yuboriladi \u2014 Telegram limiti: soniyasiga 30 xabar</span></div>
+      </div>
+      <div class="fgrid c2" id="ann-scope-block">
         <div class="fld"><label>Qayerga</label>
           <select id="ann-scope" onchange="annTargetSync()">
             <option value="all">Butun guruhga</option>
@@ -6795,7 +6833,45 @@ function claimMsg(i){
   renderMsgs();
   toast(num+' ochildi va sizga biriktirildi \u2014 zanjir qulflandi');
 }
+var bcMode=false, bcSel={};
+function openBroadcast(){
+  bcMode=true;
+  document.getElementById('ann-body').innerHTML='';
+  document.getElementById('bc-block').style.display='';
+  document.getElementById('ann-scope-block').style.display='none';
+  bcSel={};
+  for(var i=0;i<CHATS.length;i++)bcSel[CHATS[i].id]=true;
+  bcRender();
+  document.getElementById('ann-target').textContent='Ommaviy \u2014 barcha chatlarga';
+  document.querySelector('#ann-overlay .mh-t h1').textContent="Ommaviy e'lon";
+  annSync();
+  document.getElementById('ann-overlay').classList.add('open');
+  setTimeout(function(){document.getElementById('ann-body').focus()},60);
+}
+function bcRender(){
+  var out='',n=0;
+  for(var i=0;i<CHATS.length;i++){
+    var c=CHATS[i], on=!!bcSel[c.id];
+    if(on)n++;
+    out+='<div class="bc-row'+(on?' on':'')+'" onclick="bcToggle('+c.id+')">'
+      +'<span class="cb"></span>'
+      +'<span class="ib-ava" style="background:'+c.c+'">'+c.ini+'</span>'
+      +'<span style="flex:1;min-width:0">'+c.name+'</span>'
+      +'<span class="ch-type '+chatTypeCls(c.type)+'">'+c.type+'</span></div>';
+  }
+  document.getElementById('bc-rows').innerHTML=out;
+  document.getElementById('bc-count').textContent=n+' ta tanlandi';
+  document.getElementById('bc-sum-text').textContent=
+    n+' ta chatga alohida yuboriladi \u2014 Telegram limiti: soniyasiga 30 xabar';
+}
+function bcToggle(id){bcSel[id]=!bcSel[id];bcRender()}
+function bcAll(v){for(var i=0;i<CHATS.length;i++)bcSel[CHATS[i].id]=v;bcRender()}
+
 function openAnnounce(){
+  bcMode=false;
+  document.getElementById('bc-block').style.display='none';
+  document.getElementById('ann-scope-block').style.display='';
+  document.querySelector('#ann-overlay .mh-t h1').textContent="E'lon yuborish";
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
   document.getElementById('ann-body').innerHTML='';
   document.getElementById('ann-scope').selectedIndex=0;
@@ -6866,10 +6942,22 @@ function annSend(){
   var plain=tg.replace(/<[^>]+>/g,'').trim();
   if(!plain){toast("E'lon matni bo'sh");return}
   if(plain.length>4096){toast('Telegram cheklovi: 4096 belgi');return}
-  var c=CHATS.filter(function(x){return x.id===curChat})[0];
   var pin=document.getElementById('ann-pin').classList.contains('on');
-  c.msgs.push({ann:true,who:'S. Nazarova',dir:'out',t:nowHM(),
-    text:tg.replace(/\n/g,'<br>'),pinned:pin});
+  var body=tg.replace(/\n/g,'<br>');
+  if(bcMode){
+    var n=0;
+    for(var i=0;i<CHATS.length;i++){
+      if(!bcSel[CHATS[i].id])continue;
+      CHATS[i].msgs.push({ann:true,who:'S. Nazarova',dir:'out',t:nowHM(),text:body,pinned:pin,bc:true});
+      n++;
+    }
+    if(!n){toast('Kamida bitta chat tanlang');return}
+    closeOv('ann-overlay');renderMsgs();renderChatList();
+    toast("Ommaviy e'lon "+n+" ta chatga yuborildi"+(pin?' va mahkamlandi':''));
+    return;
+  }
+  var c=CHATS.filter(function(x){return x.id===curChat})[0];
+  c.msgs.push({ann:true,who:'S. Nazarova',dir:'out',t:nowHM(),text:body,pinned:pin});
   closeOv('ann-overlay');
   renderMsgs();renderChatList();
   toast("E'lon yuborildi"+(pin?' va mahkamlandi':'')+" \u2014 ticketga bog'lanmaydi");
