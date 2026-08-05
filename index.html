@@ -115,6 +115,14 @@ body{
 #svc-title{font-family:var(--mono);font-size:15px;font-weight:600}
 #svc-desc{font-size:12px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #legend{display:flex;gap:12px;flex:none}
+.xlink{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 14px;flex:none;
+  border:1px solid var(--line);border-radius:9px;background:var(--panel);
+  font-family:var(--sans);font-size:12px;font-weight:600;color:var(--fg);
+  text-decoration:none;cursor:pointer;white-space:nowrap;transition:all .15s}
+.xlink:hover{border-color:var(--accent);color:var(--accent);background:rgba(90,150,220,.08)}
+.xlink .ar{font-size:13px;opacity:.7}
+#ui-link{margin-left:8px}
+#ui-link.on{border-color:var(--accent);color:var(--accent)}
 .lg{display:flex;align-items:center;gap:5px;font-size:10px;font-family:var(--mono);color:var(--muted)}
 .lg i{width:8px;height:8px;border-radius:2px;display:inline-block}
 /* ===== Canvas ===== */
@@ -307,6 +315,9 @@ body{
       <button id="burger">☰</button>
       <div id="svc-title"></div>
       <div id="svc-desc"></div>
+      <a class="xlink" href="crm-design-spa.html" target="_self" title="Dizayn prototipiga o'tish">
+        UI prototip <span class="ar">↗</span></a>
+      <a class="xlink" id="ui-link" href="crm-design-spa.html" style="display:none"></a>
       <div id="legend">
         <span class="lg"><i style="background:var(--pk)"></i>PK</span>
         <span class="lg"><i style="background:var(--fk)"></i>FK</span>
@@ -1449,12 +1460,38 @@ function selectService(key){
   wrap.scrollTo(0,0);
 }
 
+/* Servis → dizayn prototipi sahifasi */
+const UIMAP={
+  "lead-service":["#leads","Leadlar voronkasi"],
+  "project-service":["#projects","Loyihalar va boardlar"],
+  "contract-service":["#contracts","Shartnomalar"],
+  "support-service":["#tickets","Ticketlar"],
+  "callcenter-service":["#calls","Call center"],
+  "inventory-service":["#inventory","Jihozlar"],
+  "kpi-service":["#kpi","KPI natijalar"],
+  "social-integration":["#botlist","Support botlar"],
+  "hrm":["#home","Xodim profili"],
+  "notification-service":["#home","Bildirishnomalar"]
+};
+function syncUiLink(key){
+  const el=document.getElementById('ui-link');
+  if(!el)return;
+  const m=UIMAP[key];
+  if(m){
+    el.style.display='inline-flex';
+    el.href='crm-design-spa.html'+m[0];
+    el.innerHTML='Dizaynda: '+m[1]+' <span class="ar">↗</span>';
+    el.title=m[1]+' sahifasini dizayn prototipida ochish';
+  }else el.style.display='none';
+}
+
 function render(key){
   canvas.querySelectorAll('.tbl').forEach(t=>t.remove());
   wires.innerHTML='';
   canvas.classList.remove('has-focus');
   canvas.classList.toggle('docmode',!!DB[key].doc);
   const svc=DB[key];
+  syncUiLink(key);
   const VGAP=80,HGAP=72,W=252,PAD=48;
   const availW=wrap.clientWidth-PAD*2;
   const nCols=Math.max(1,Math.min(8,Math.floor((availW+HGAP)/(W+HGAP)))); // ekranga sig'gancha, 8 gacha
