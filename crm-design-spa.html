@@ -3921,8 +3921,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
           <span class="thr" id="hd-owner" style="display:none;margin:0"></span>
           <button class="btn-ann" id="hd-ann" style="height:34px" onclick="openAnnounce()">
             <span class="material-icons-outlined">campaign</span> E'lon yuborish</button>
-          <button class="tb-icon-btn" title="Suhbatni bo'shatish" id="hd-release" style="display:none"
-            onclick="releaseChat()"><span class="material-icons-outlined">lock_open</span></button>
+          <button class="btn-flat" id="hd-release" style="display:none;height:34px;
+            border:1px solid var(--line-2);border-radius:9px;font-size:12.5px"
+            title="Qulfni bo'shatish \u2014 boshqa operator suhbatni olishi mumkin bo'ladi"
+            onclick="releaseChat()">
+            <span class="material-icons-outlined">lock_open</span> Bo'shatish</button>
           <button class="tb-icon-btn" title="Sinxronizatsiya" onclick="syncChat()">
             <span class="material-icons-outlined">sync</span></button>
         </div>
@@ -7071,8 +7074,8 @@ function renderChatList(){
       +'<div class="ib-badges"><span class="ch-type '+chatTypeCls(c.type)+'">'+c.type+'</span>'
       +(c.forum?'<span class="ch-type grp">FORUM</span>':'')
       +(c.type==='PRIVATE'&&c.owner==='other'?'<span class="thr other" style="margin:0">'+c.ownerName+'</span>':'')
-      +(c.type==='PRIVATE'&&c.owner==='free'?'<span class="thr free" style="margin:0">egasiz</span>':'')
-      +(c.type==='PRIVATE'&&c.owner==='me'?'<span class="thr mine" style="margin:0">siz</span>':'')
+      +(c.type==='PRIVATE'&&c.owner==='free'?'<span class="thr free" style="margin:0">Egasiz</span>':'')
+      +(c.type==='PRIVATE'&&c.owner==='me'?'<span class="thr mine" style="margin:0">Siz</span>':'')
       +'</div></div>'
       +(c.unread?'<span class="ib-unread">'+c.unread+'</span>':'')+'</div>';
   }
@@ -7105,9 +7108,9 @@ function renderMsgs(){
       // zanjir belgisi FAQAT guruh chatlarida (shaxsiyda egalik chat darajasida, sarlavhada)
       if(c.type!=='PRIVATE'&&m.tk){
         thr = m.own==='free'
-          ? '<span class="thr free" onclick="claimMsg('+i+')">'+m.tk+' \u00b7 olish</span>'
+          ? '<span class="thr free" onclick="claimMsg('+i+')">'+m.tk+' \u00b7 Olish</span>'
           : '<span class="thr '+(m.own==='me'?'mine':'other')+'">'+m.tk
-            +' \u00b7 '+(m.own==='me'?'siz':m.owner)+'</span>';
+            +' \u00b7 '+(m.own==='me'?'Siz':m.owner)+'</span>';
       }
       out+='<div class="m-who">'+m.who+thr+'</div>';
     }
@@ -7422,10 +7425,10 @@ function openChatItem(id){
   document.getElementById('reply-bar').classList.remove('on');
   var ow=document.getElementById('hd-owner'), rel=document.getElementById('hd-release');
   if(c.type==='PRIVATE'&&c.owner){
-    ow.style.display='';rel.style.display=c.owner==='me'?'':'none';
+    ow.style.display='';rel.style.display=c.owner==='me'?'inline-flex':'none';
     ow.className='thr '+(c.owner==='me'?'mine':(c.owner==='other'?'other':'free'));
-    ow.textContent=c.owner==='me'?'siz javob bermoqdasiz'
-      :(c.owner==='other'?c.ownerName+' javob bermoqda':'egasiz');
+    ow.textContent=c.owner==='me'?'Siz javob bermoqdasiz'
+      :(c.owner==='other'?c.ownerName+' javob bermoqda':'Egasiz');
   }else{ow.style.display='none';rel.style.display='none'}
   renderChatList();renderMsgs();
 }
