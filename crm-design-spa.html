@@ -7100,12 +7100,17 @@ function renderMsgs(){
         +(locked?'':'<button title="Javob berish" onclick="startReply('+i+')"><span class="material-icons-outlined">reply</span></button>')
         +'<button title="Reaksiya" onclick="addReact('+i+')"><span class="material-icons-outlined">add_reaction</span></button>'
       +'</div>';
-    if(m.dir==='in'&&m.who)out+='<div class="m-who">'+m.who
-      +(m.own==='free'
-        ? '<span class="thr free" onclick="claimMsg('+i+')">'+(m.tk||'')+' \u00b7 olish</span>'
-        : '<span class="thr '+(m.own==='me'?'mine':'other')+'">'+(m.tk||'')
-          +' \u00b7 '+(m.own==='me'?'siz':(m.owner||'band'))+'</span>')
-      +'</div>';
+    if(m.dir==='in'&&m.who){
+      var thr='';
+      // zanjir belgisi FAQAT guruh chatlarida (shaxsiyda egalik chat darajasida, sarlavhada)
+      if(c.type!=='PRIVATE'&&m.tk){
+        thr = m.own==='free'
+          ? '<span class="thr free" onclick="claimMsg('+i+')">'+m.tk+' \u00b7 olish</span>'
+          : '<span class="thr '+(m.own==='me'?'mine':'other')+'">'+m.tk
+            +' \u00b7 '+(m.own==='me'?'siz':m.owner)+'</span>';
+      }
+      out+='<div class="m-who">'+m.who+thr+'</div>';
+    }
     if(m.reply)out+='<div class="msg-reply" title="Asl xabarga o\'tish"'
       +(m.reply.idx!==undefined?' onclick="jumpToMsg('+m.reply.idx+')"':'')+'>'
       +'<span class="material-icons-outlined r-jump">north</span>'
