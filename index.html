@@ -1247,14 +1247,13 @@ const DB = {
 
 "support-service":{
  group:"WORK",
- desc:"Support: ticketlar, SLA nazorati va har loyihaning O'Z Telegram boti (webhook + real-time chat shu servisda). ADR-007 CHEGARA: support-service = SUPPORT kanallari (ticket yaratadi), social-integration-service = MARKETING kanallari (lead yaratadi). Telegram support boti bu yerda \u2014 real-time chatda qo'shimcha servis sakrashi kechikish qo'shadi. Kafka orqali faqat hodisalar uzatiladi (ticket.created, sla.breached), xabar oqimi emas. GURUH YOZISH QOIDASI: operator guruhga faqat REPLY sifatida yozadi (har xabar zanjirga tegishli bo'lsin), reply'siz xabar faqat E'LON tugmasi orqali. Zanjir egaligi tickets.operator_assignment_id bilan qulflanadi \u2014 boshqa operator o'sha zanjirga yoza olmaydi, lekin boshqa foydalanuvchining savoliga javob bera oladi. GURUH OYNASI: bot qo'shilgan guruh CRM'da aynan nusxada saqlanadi \u2014 a'zolar, adminlar, mavzular, javob zanjirlari, tahrir va o'chirishlar, fayllar. telegram_updates jadvali xom update'larni saqlaydi (idempotentlik va qayta ishlash kafolati).",
+ desc:"Support: ticketlar, SLA nazorati va har loyihaning O'Z Telegram boti (webhook + real-time chat shu servisda). ADR-007 CHEGARA: support-service = SUPPORT kanallari (ticket yaratadi), social-integration-service = MARKETING kanallari (lead yaratadi). Telegram support boti bu yerda \u2014 real-time chatda qo'shimcha servis sakrashi kechikish qo'shadi. Kafka orqali faqat hodisalar uzatiladi (ticket.created, sla.breached), xabar oqimi emas. GURUH YOZISH QOIDASI: operator guruhga faqat REPLY sifatida yozadi (har xabar zanjirga tegishli bo'lsin), reply'siz xabar faqat E'LON tugmasi orqali. Typing ko'rsatkichi ('kim yozmoqda') BAZADA SAQLANMAYDI \u2014 WebSocket hodisasi yoki Redis TTL kaliti (30s), chunki u o'tkinchi ma'lumot va har harfda UPDATE qilish bazani shishiradi. Zanjir egaligi tickets.operator_assignment_id bilan qulflanadi \u2014 boshqa operator o'sha zanjirga yoza olmaydi, lekin boshqa foydalanuvchining savoliga javob bera oladi. GURUH OYNASI: bot qo'shilgan guruh CRM'da aynan nusxada saqlanadi \u2014 a'zolar, adminlar, mavzular, javob zanjirlari, tahrir va o'chirishlar, fayllar. telegram_updates jadvali xom update'larni saqlaydi (idempotentlik va qayta ishlash kafolati).",
  tables:[
  {name:"ENUM_KATALOG",noaudit:true,desc:"SUPPORT-SERVICE ENUMLARI. Saqlash: varchar(30) + CHECK. UPPER_SNAKE_CASE.",cols:[
   ["TicketCategory","enum","NN","use:ticket_statuses.category \u2192 tickets.status_id orqali butun logika","OPEN / IN_PROGRESS / PENDING_CUSTOMER / RESOLVED / CLOSED \u2014 PLATFORMA enumi. PENDING_CUSTOMER \u2192 SLA pauzasi ochiladi, RESOLVED \u2192 feedback so'raladi, CLOSED \u2192 KPI fakti yoziladi"],
   ["TicketChannel","enum","NN","use:tickets.channel","TELEGRAM / CALL / WEB / EMAIL / MANUAL \u2014 murojaat qaysi kanaldan kelgani"],
   ["AuthorType","enum","NN","use:ticket_comments.author_type, ticket_attachments.uploaded_by_type","OPERATOR / CUSTOMER / SYSTEM \u2014 author_ref qaysi jadvalga ishora qilishini belgilaydi"],
   ["SenderType","enum","NN","use:chat_messages.sender_type","CUSTOMER / OPERATOR / BOT"],
-  ["LockType","enum","NN","use:ticket_locks.lock_type","TYPING / EDITING \u2014 yumshoq qulf turi"],
   ["ChatType","enum","NN","use:telegram_groups.chat_type","GROUP / SUPERGROUP / CHANNEL \u2014 SUPERGROUP'da forum mavzulari bo'lishi mumkin"],
   ["MemberRole","enum","NN","use:telegram_chat_members.member_role","CREATOR / ADMIN / MEMBER / RESTRICTED / LEFT / KICKED \u2014 Telegram chat_member statusidan ko'chiriladi"],
   ["MessageType","enum","NN","use:chat_messages.message_type","TEXT / PHOTO / DOCUMENT / VOICE / VIDEO / AUDIO / STICKER / LOCATION / CONTACT / SYSTEM"],
@@ -1338,13 +1337,7 @@ const DB = {
   ["resumed_at","timestamptz","","","Davom etgan vaqt \u2014 NULL bo'lsa hozir ham pauzada"],
   ["duration_min","int","","","Davomiyligi \u2014 resumed_at qo'yilganda hisoblanadi va tickets.paused_minutes ga qo'shiladi"],
   ["reason","text","","","Nima kutilyapti (masalan: 'mijozdan log fayli')"]]},
- {name:"ticket_locks",desc:"YUMSHOQ QULF \u2014 'hozir kim yozmoqda' ko'rsatkichi (guruh zanjirlarida ham, shaxsiy chatlarda ham). Operator javob maydoniga yozganda ochiladi, har typing eventida uzaytiriladi, expires_at o'tsa avtomatik bo'shaydi. Qat'iy egalik esa tickets.operator_assignment_id da.",cols:[
-  ["id","long","PK","","Identifikator"],
-  ["ticket_id","long","FK,UK,NN","tickets.id","Qaysi ticket \u2014 UK: bir ticketda bitta faol qulf"],
-  ["assignment_id","long","EXT,NN","ext:hrm.assignment","Kim yozmoqda"],
-  ["locked_at","timestamptz","NN","","Boshlangan vaqt"],
-  ["expires_at","timestamptz","NN","","Amal qilish muddati (odatda +30 soniya) \u2014 typing paytida uzaytiriladi"],
-  ["lock_type","enum","NN","","LockType: TYPING / EDITING \u2014 UI'da 'S. Nazarova javob yozmoqda...' ko'rsatiladi"]]},
+
  {name:"ticket_status_history",desc:"Status o'zgarishlari tarixi \u2014 kim, qachon, qaysi statusga. Reopen holatlari va bosqichda turish vaqti shundan.",cols:[
   ["id","long","PK","","Identifikator"],
   ["ticket_id","long","FK,NN","tickets.id","Ticket"],
