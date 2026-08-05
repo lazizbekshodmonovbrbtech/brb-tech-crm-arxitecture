@@ -655,7 +655,8 @@ const DB = {
   ["id","bigint","PK","","Pipeline identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod — tizim logikasi shunga tayanadi. Migration'da seed qilinadi, UPDATE'da o'zgartirish taqiqlangan"],
   ["name","varchar(255)","NN","","Pipeline nomi"],
-  ["is_default","boolean","NN","","Standart pipeline'mi"]]},
+  ["is_default","boolean","NN","","Standart pipeline'mi"],
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
  {name:"pipeline_stages",desc:"Pipeline bosqichlari. ADR-005 (board statuslari bilan bir xil naqsh): NOM ERKIN, KATEGORIYA QAT'IY. Tizim logikasi faqat category bilan ishlaydi \u2014 WON bosqichiga o'tish shartnoma yaratadi, LOST sabab talab qiladi, konversiya OPEN\u2192WON nisbatidan hisoblanadi.",cols:[
   ["id","bigint","PK","","Bosqich identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod \u2014 seed, UPDATE taqiqlangan"],
@@ -710,8 +711,8 @@ const DB = {
   ["lost_comment","text","","","Sabab izohi (reason.requires_comment=true bo'lsa majburiy)"],
   ["closed_at","timestamp","","","WON yoki LOST bo'lgan payt"],
   ["contract_id","bigint","","ext:contract-service.contracts","Yutilganda yaratilgan shartnoma"],
-  ["duplicate_of_id","bigint","FK","leads.id","Dublikat bo'lsa asosiy leadga ishora"],
-  ["external_ref","varchar(255)","","","Tashqi tizim identifikatori (bot, sayt formasi)"]]},
+  ["external_ref","varchar(255)","","","Tashqi tizim identifikatori (bot, sayt formasi)"],
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED. DELETED \u2014 dublikat, spam yoki xato kiritilgan lead: soft delete, hisobotlardan chiqadi lekin audit tarixi qoladi"]]},
  {name:"campaigns",desc:"Marketing kampaniyalari \u2014 byudjet va ROI hisobi. Lead qaysi kampaniyadan kelgani shu orqali kuzatiladi.",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","CMP-014 \u2014 barqaror kod"],
@@ -790,7 +791,21 @@ const DB = {
   ["duration_min","int","","","Davomiyligi (qo'ng'iroq, uchrashuv)"],
   ["source_ref","varchar(100)","","","Manba yozuv: callcenter.calls.id yoki chat_messages.id \u2014 idempotent"],
   ["assignment_id","bigint","","ext:hrm.assignment","Kim bajardi"],
-  ["occurred_at","timestamp","NN","","Qachon bo'lgan"]]}
+  ["occurred_at","timestamp","NN","","Qachon bo'lgan"]]},
+ {name:"outbox_events",desc:"Kafka outbox \u2014 platforma standarti. lead.won eventi contract-service'da shartnoma yaratilishini boshlaydi, pozitsiyalar ham shu payload'da ketadi.",cols:[
+  ["id","bigint","PK","","Identifikator"],
+  ["aggregate_type","varchar(50)","NN","","LEAD / CAMPAIGN / PRODUCT"],
+  ["aggregate_id","bigint","NN","","O'zgargan yozuv id'si"],
+  ["event_type","varchar(100)","NN","","crm.lead.lead.created / .stage_changed / .won / .lost / crm.lead.product.updated"],
+  ["payload","jsonb","NN","","Event tanasi \u2014 envelope'da tenant_id MAJBURIY. lead.won payload'ida lead_items ro'yxati bo'ladi"],
+  ["status","enum","NN","","PublishStatus: NEW / PUBLISHED / FAILED"],
+  ["published_at","timestamp","","","Kafka'ga yuborilgan vaqt"],
+  ["retry_count","int","NN","","Urinishlar soni \u2014 limitdan oshsa DLQ"]]},
+ {name:"processed_events",desc:"Idempotentlik: tashqi eventlar. hrm.assignment.ended \u2192 sotuvchining ochiq leadlarini qayta taqsimlash; customer.updated \u2192 mijoz nomi keshini yangilash; callcenter.call.finished \u2192 lead_activities yozuvi.",cols:[
+  ["id","bigint","PK","","Identifikator"],
+  ["event_id","varchar(100)","UK,NN","","Event unikal identifikatori \u2014 takroriy ishlashni bloklaydi"],
+  ["event_type","varchar(100)","NN","","Event turi"],
+  ["processed_at","timestamp","NN","","Qayta ishlangan vaqt"]]}
 ]},
 
 "social-integration-service":{
