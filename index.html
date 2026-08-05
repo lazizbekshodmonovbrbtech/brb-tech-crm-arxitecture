@@ -1338,7 +1338,7 @@ const DB = {
   ["resumed_at","timestamptz","","","Davom etgan vaqt \u2014 NULL bo'lsa hozir ham pauzada"],
   ["duration_min","int","","","Davomiyligi \u2014 resumed_at qo'yilganda hisoblanadi va tickets.paused_minutes ga qo'shiladi"],
   ["reason","text","","","Nima kutilyapti (masalan: 'mijozdan log fayli')"]]},
- {name:"ticket_locks",desc:"YUMSHOQ QULF \u2014 'hozir kim yozmoqda' ko'rsatkichi. Operator javob maydoniga yozganda ochiladi, har typing eventida uzaytiriladi, expires_at o'tsa avtomatik bo'shaydi. Qat'iy egalik esa tickets.operator_assignment_id da.",cols:[
+ {name:"ticket_locks",desc:"YUMSHOQ QULF \u2014 'hozir kim yozmoqda' ko'rsatkichi (guruh zanjirlarida ham, shaxsiy chatlarda ham). Operator javob maydoniga yozganda ochiladi, har typing eventida uzaytiriladi, expires_at o'tsa avtomatik bo'shaydi. Qat'iy egalik esa tickets.operator_assignment_id da.",cols:[
   ["id","long","PK","","Identifikator"],
   ["ticket_id","long","FK,UK,NN","tickets.id","Qaysi ticket \u2014 UK: bir ticketda bitta faol qulf"],
   ["assignment_id","long","EXT,NN","ext:hrm.assignment","Kim yozmoqda"],
@@ -1401,6 +1401,7 @@ const DB = {
   ["require_reply_in_group","boolean","NN","","GURUH QOIDASI: operator guruhga faqat REPLY sifatida yoza oladi \u2014 har xabar zanjirga (ticketga) tegishli bo'lsin. Reply'siz yuborish faqat E'LON orqali"],
   ["announce_roles","varchar(255)","","","E'lon yubora oladigan rollar (short_code ro'yxati) \u2014 masalan PM,TECH_LEAD. Bo'sh bo'lsa barcha operatorlar"],
   ["thread_window_hours","int","NN","","Shu soat ichida SHU yuboruvchining yangi xabari MAVJUD ochiq ticketga qo'shiladi (odatda 12). Oshsa yangi ticket ochiladi"],
+  ["auto_release_minutes","int","","","Shaxsiy chat egasiz qoladi, agar operator shuncha daqiqa javob bermasa (odatda 30) \u2014 mijoz kutib qolmasin"],
   ["welcome_message","text","","","Avtomatik salomlashish matni"],
   ["status","enum","NN","","BotStatus: ACTIVE / INACTIVE / ERROR \u2014 ERROR: webhook javob bermayapti"]]},
  {name:"telegram_chats",desc:"BARCHA CHATLAR bitta jadvalda \u2014 shaxsiy ham, guruh ham (Telegram API'sida ular bir xil ob'ekt, farqi chat.type). Bot qo'shilgan guruh CRM'da AYNAN NUSXADA saqlanadi: nomi, avatari, a'zolari, mavzulari. Inbox ro'yxati shu jadvaldan bitta so'rov bilan chiqadi.",cols:[
@@ -1419,7 +1420,9 @@ const DB = {
   ["telegram_user_id","long","FK","telegram_users.id","PRIVATE chatda foydalanuvchi yozuvi"],
   ["customer_id","long","EXT","ext:customer-service.customers","Qaysi mijozning chati \u2014 identity reyestri orqali aniqlanadi"],
   ["project_id","long","EXT","ext:project-service.projects","Qaysi loyiha bo'yicha"],
-  ["operator_assignment_id","long","EXT","ext:hrm.assignment","Biriktirilgan operator \u2014 guruhga ham, shaxsiyga ham"],
+  ["operator_assignment_id","long","EXT","ext:hrm.assignment","Biriktirilgan operator. SHAXSIY CHATDA EGALIK QULFI: butun suhbat bitta zanjir, shuning uchun qulf chat darajasida \u2014 atomar UPDATE (WHERE operator_assignment_id IS NULL). Guruhda esa bu faqat 'kurator', qulf ticket darajasida"],
+  ["claimed_at","timestamptz","","","Operator chatni olgan vaqt"],
+  ["auto_release_at","timestamptz","","","Avtomatik bo'shash vaqti \u2014 operator N daqiqa javob bermasa chat navbatga qaytadi (bots.auto_release_minutes)"],
   ["unread_count","int","NN","","O'qilmagan xabarlar \u2014 inbox badge'i"],
   ["last_message_at","timestamptz","","","Oxirgi xabar vaqti \u2014 ro'yxat saralashda"],
   ["bot_can_delete","boolean","NN","","Bot xabar o'chira oladimi"],
