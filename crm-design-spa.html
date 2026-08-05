@@ -581,6 +581,23 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+/* Pipeline forecast */
+.fc-bar{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line-2);
+  border-radius:12px;padding:12px 18px;margin-bottom:14px;flex-wrap:wrap;
+  box-shadow:0 2px 6px rgba(15,23,42,.05)}
+.fc-it{display:flex;flex-direction:column;gap:2px;padding-right:16px;border-right:1px solid var(--line-2)}
+.fc-it:last-child{border-right:none;padding-right:0}
+.fc-l{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#8b9aa9}
+.fc-v{font-family:var(--font-mono);font-size:17px;font-weight:700;color:#182634}
+.fc-v.pos{color:var(--m-pos)}
+.fc-s{font-size:11px;color:#8b9aa9}
+.fc-note{margin-left:auto;font-size:11.5px;color:#8b9aa9;display:flex;align-items:center;gap:6px;
+  max-width:330px;line-height:1.45}
+.fc-note .material-icons-outlined{font-size:16px;color:var(--m-acc);flex-shrink:0}
+.bcol-noprice{padding:0 13px 8px;font-size:10.5px;color:#b6c2d1;font-style:italic}
+.stage-prob{font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:var(--m-acc);
+  background:var(--m-acc-soft);padding:1px 6px;border-radius:4px;margin-left:5px}
+
 /* Lead pozitsiyalari (lead_items) */
 .li-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .li-tbl th{text-align:left;padding:8px 10px;font-size:11px;font-weight:700;letter-spacing:.05em;
@@ -1676,6 +1693,23 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
 <!-- ════════════ LEAD PIPELINE ════════════ -->
 <section class="page-view" id="pv-leads">
+  <div class="fc-bar">
+    <div class="fc-it"><span class="fc-l">Baholangan pipeline</span>
+      <span class="fc-v">270.4 mln</span>
+      <span class="fc-s">taklif chiqqan 3 bosqich</span></div>
+    <div class="fc-it"><span class="fc-l">Vaznlangan prognoz</span>
+      <span class="fc-v pos">118.6 mln</span>
+      <span class="fc-s">bosqich ehtimolligi bo'yicha</span></div>
+    <div class="fc-it"><span class="fc-l">Yopilgan (chorak)</span>
+      <span class="fc-v">84.5 mln</span>
+      <span class="fc-s">shartnoma qiymati · fakt</span></div>
+    <div class="fc-it"><span class="fc-l">Narxsiz leadlar</span>
+      <span class="fc-v">8</span>
+      <span class="fc-s">pozitsiya kiritilmagan</span></div>
+    <span class="fc-note"><span class="material-icons-outlined">info</span>
+      Summa faqat pozitsiyalar kiritilgan leadlarda ko'rsatiladi. Dastlabki bosqichlarda
+      taxminiy narx yozilmaydi — prognoz buzilmasin.</span>
+  </div>
   <div class="stat-strip">
     <div class="stat"><div class="stat-top"><span class="material-icons-outlined">filter_alt</span>Faol leadlar</div>
       <div class="stat-value">14</div><div class="stat-sub">6 bosqichda</div></div>
@@ -1700,17 +1734,17 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="bcol">
       <div class="bcol-h"><span class="bcol-dot" style="background:#94a3b8"></span>
         <span class="bcol-name">Yangi</span><span class="bcol-count">5</span></div>
-      <div style="padding:0 13px 8px" class="bcol-sum">Σ 68.2 mln UZS</div>
+      <div class="bcol-noprice">narx belgilanmagan — 5 lead</div>
       <div class="bcol-body">
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Mobil bank ilovasi</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Ipak Yo'li Bank</div>
-          <div class="lcard-sum">45.0 mln UZS</div>
+          <div style="font-size:11px;color:#b6c2d1;margin-top:5px;font-style:italic">narx kiritilmagan</div>
           <div style="display:flex;gap:5px;margin-top:6px"><span class="ptype custom" style="font-size:9px">MOBILE_DEV</span></div>
           <div class="bcard-foot"><span class="lcard-src">Instagram</span>
             <span class="ava" style="background:#4f7cd1">DS</span></div></div>
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Korporativ sayt + CRM</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Agro Invest MChJ</div>
-          <div class="lcard-sum">18.5 mln UZS</div>
+          <div style="font-size:11px;color:#b6c2d1;margin-top:5px;font-style:italic">narx kiritilmagan</div>
           <div class="bcard-foot"><span class="lcard-src">Telegram bot</span>
             <span class="ava" style="background:#3aa981">BK</span></div></div>
         <div class="bcard" onclick="document.getElementById('lead-overlay').classList.add('open')">
@@ -1727,24 +1761,25 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="bcol">
       <div class="bcol-h"><span class="bcol-dot" style="background:#3b82f6"></span>
         <span class="bcol-name">Aloqa qilindi</span><span class="bcol-count">3</span></div>
-      <div style="padding:0 13px 8px" class="bcol-sum">Σ 92.0 mln UZS</div>
+      <div class="bcol-noprice">narx belgilanmagan — 3 lead</div>
       <div class="bcol-body">
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Logistika platformasi</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Trans Cargo Group</div>
-          <div class="lcard-sum">72.0 mln UZS</div>
+          <div style="font-size:11px;color:#b6c2d1;margin-top:5px;font-style:italic">narx kiritilmagan</div>
           <div class="bcard-foot"><span class="lcard-src">Tavsiya</span>
             <span class="ava" style="background:#c98a3d">AA</span></div></div>
         <div class="bcard"><div class="bcard-title" style="font-weight:600">HR tizimi litsenziyasi</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Samarqand Textile</div>
-          <div class="lcard-sum">20.0 mln UZS</div>
+          <div style="font-size:11px;color:#b6c2d1;margin-top:5px;font-style:italic">narx kiritilmagan</div>
           <div class="bcard-foot"><span class="lcard-src">Instagram</span>
             <span class="ava" style="background:#4f7cd1">DS</span></div></div>
       </div>
     </div>
     <div class="bcol">
       <div class="bcol-h"><span class="bcol-dot" style="background:#8b5cf6"></span>
-        <span class="bcol-name">Taklif yuborildi</span><span class="bcol-count">2</span></div>
-      <div style="padding:0 13px 8px" class="bcol-sum">Σ 58.4 mln UZS</div>
+        <span class="bcol-name">Taklif yuborildi</span><span class="stage-prob">40%</span>
+        <span class="bcol-count">2</span></div>
+      <div style="padding:0 13px 8px" class="bcol-sum">Σ 58.4 mln · vaznli 23.4 mln</div>
       <div class="bcol-body">
         <div class="bcard"><div class="bcard-title" style="font-weight:600">E-commerce integratsiya</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Uzum hamkori</div>
@@ -1760,8 +1795,9 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     </div>
     <div class="bcol">
       <div class="bcol-h"><span class="bcol-dot" style="background:#0ea5e9"></span>
-        <span class="bcol-name">Muzokara</span><span class="bcol-count">1</span></div>
-      <div style="padding:0 13px 8px" class="bcol-sum">Σ 120.0 mln UZS</div>
+        <span class="bcol-name">Muzokara</span><span class="stage-prob">70%</span>
+        <span class="bcol-count">1</span></div>
+      <div style="padding:0 13px 8px" class="bcol-sum">Σ 120.0 mln · vaznli 84.0 mln</div>
       <div class="bcol-body">
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Bank ichki portali</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Ipoteka Bank</div>
@@ -1773,11 +1809,11 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="bcol won">
       <div class="bcol-h"><span class="bcol-dot" style="background:#22c55e"></span>
         <span class="bcol-name">Yutildi</span><span class="bcol-count">2</span></div>
-      <div style="padding:0 13px 8px" class="bcol-sum">Σ 84.5 mln UZS</div>
+      <div style="padding:0 13px 8px" class="bcol-sum" style="color:var(--m-pos)">Shartnoma qiymati: 84.5 mln</div>
       <div class="bcol-body">
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Mobil ilova (MOB)</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Ipak Yo'li Bank</div>
-          <div class="lcard-sum">64.5 mln UZS</div>
+          <div class="lcard-sum" style="color:var(--m-pos)">64.5 mln UZS</div>
           <div class="bcard-foot"><span class="chip soft-pos" style="font-size:10px">Shartnoma #C-118</span></div></div>
         <div class="bcard"><div class="bcard-title" style="font-weight:600">Support paketi</div>
           <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Agro Invest MChJ</div>
