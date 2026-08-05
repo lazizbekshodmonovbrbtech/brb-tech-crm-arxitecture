@@ -557,6 +557,79 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 .fld textarea{height:88px;padding:12px 14px;resize:vertical}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+/* Sozlamalar bo'limi */
+.set-wrap{display:grid;grid-template-columns:212px 1fr;gap:16px;align-items:start}
+.set-nav{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);
+  overflow:hidden;position:sticky;top:0}
+.set-nav-item{display:flex;align-items:center;gap:10px;padding:11px 14px;font-size:13px;
+  font-weight:600;color:var(--ink-2);cursor:pointer;border-bottom:1px solid var(--line-2)}
+.set-nav-item:last-child{border-bottom:none}
+.set-nav-item:hover{background:#f7f8fa}
+.set-nav-item.on{background:var(--primary-soft);color:var(--primary);box-shadow:inset 3px 0 0 var(--primary)}
+.set-nav-item .material-icons-outlined{font-size:18px}
+.set-pane{display:none}
+.set-pane.on{display:block}
+.set-card{background:var(--surface);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);
+  margin-bottom:14px;overflow:hidden}
+.set-card:last-child{margin-bottom:0}
+.set-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.set-head h3{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8b9aa9}
+.set-head .tbl{font-family:var(--font-mono);font-size:10.5px;color:#b6c2d1;
+  background:#f2f5f9;padding:2px 8px;border-radius:5px}
+.set-body{padding:14px 16px}
+.set-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--mline2)}
+.set-row:last-child{border-bottom:none}
+.set-row .lbl{width:190px;flex-shrink:0;font-size:13px;font-weight:600;color:var(--ink-1)}
+.set-row .lbl small{display:block;font-weight:400;font-size:11px;color:#8b9aa9;margin-top:2px}
+.set-row input[type=text],.set-row input[type=number],.set-row select{height:38px;
+  border:1px solid var(--mline);border-radius:9px;padding:0 12px;font-family:var(--font-sans);
+  font-size:13px;color:var(--ink-1);outline:none;background:var(--surface);min-width:170px}
+.set-row input:focus,.set-row select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+.set-row .col-code{font-family:var(--font-mono);font-size:10.5px;color:#b6c2d1;margin-left:auto}
+.sw{position:relative;width:40px;height:22px;border-radius:11px;background:#cfd8e3;cursor:pointer;
+  transition:background .18s;flex-shrink:0}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw.on{background:var(--m-pos)}
+.sw.on::after{transform:translateX(18px)}
+.st-list .st-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--mline2)}
+.st-list .st-item:last-child{border-bottom:none}
+.st-item .grip{color:#cbd5e1;cursor:grab;font-size:18px}
+.st-item .sq{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.st-item .nm{font-size:13.5px;font-weight:600;color:var(--ink-1);min-width:120px}
+.cat-pill{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;
+  background:var(--m-acc-soft);color:var(--m-acc)}
+.cat-pill.todo{background:#eef1f5;color:#5c6e80}
+.cat-pill.block{background:var(--m-warn-soft);color:var(--m-warn)}
+.cat-pill.done{background:var(--m-pos-soft);color:var(--m-pos)}
+.sys-tag{font-size:10px;font-weight:600;color:#8b9aa9;border:1px solid var(--mline);
+  padding:1px 7px;border-radius:5px}
+.perm-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.perm-tbl th{text-align:center;padding:9px 6px;font-weight:600;color:var(--ink-2);
+  border-bottom:1px solid var(--mline);white-space:nowrap}
+.perm-tbl th:first-child{text-align:left;min-width:190px}
+.perm-tbl td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--mline2)}
+.perm-tbl td:first-child{text-align:left;color:var(--ink-1)}
+.perm-tbl td .mono{font-size:10.5px;color:#b6c2d1;display:block}
+.pm{width:22px;height:22px;border-radius:6px;display:inline-grid;place-items:center;cursor:pointer;
+  border:1.5px solid var(--mline);background:var(--surface)}
+.pm.on{background:var(--m-pos);border-color:var(--m-pos)}
+.pm.on::after{content:'✓';color:#fff;font-size:13px;font-weight:700;line-height:1}
+.rule-row{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid var(--mline2);
+  flex-wrap:wrap;font-size:12.5px}
+.rule-row:last-child{border-bottom:none}
+.rule-row .arrow{color:#b6c2d1;font-size:17px}
+.cond-chip{font-family:var(--font-mono);font-size:10px;font-weight:600;padding:2px 8px;
+  border-radius:5px;background:#f2e9d8;color:var(--m-warn)}
+.role-chip{font-size:10.5px;font-weight:600;padding:2px 9px;border-radius:999px;
+  background:var(--m-acc-soft);color:var(--m-acc)}
+.lb-item{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;
+  font-size:12px;font-weight:600;margin:0 7px 7px 0;border:1px solid var(--mline);background:var(--surface)}
+.lb-item .dot{width:9px;height:9px;border-radius:50%}
+.lb-item .x{font-size:14px;color:var(--ink-4);cursor:pointer}
+.set-foot{display:flex;justify-content:flex-end;gap:10px;padding:12px 16px;
+  border-top:1px solid var(--line-2);background:var(--msurface2)}
+
 /* Vazifa detali */
 .id-grid{display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start}
 .id-status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;
@@ -1324,34 +1397,375 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
 
   <!-- TAB: Sozlamalar -->
   <div class="ptab-view" id="pt-settings">
-    <div style="max-width:680px">
-      <div class="desc-card">
-        <div class="dc-head"><h3>Loyiha sozlamalari</h3></div>
-        <div class="dc-body">
-          <div class="kv"><span class="kv-label">Standart board</span><span class="kv-dots"></span>
-            <span class="kv-value">Development</span></div>
-          <div class="kv"><span class="kv-label">point_to_minutes</span><span class="kv-dots"></span>
-            <span class="kv-value mono">480 <span style="color:#8b9aa9;font-family:var(--font-sans)">(1 pt ≈ 1 ish kuni)</span></span></div>
-          <div class="kv"><span class="kv-label">Baholash</span><span class="kv-dots"></span>
-            <span class="kv-value">rejimga qarab: scrum → point, kanban → estimate</span></div>
+    <div class="set-wrap">
+      <div class="set-nav">
+        <div class="set-nav-item on" onclick="setTab(this,'set-general')">
+          <span class="material-icons-outlined">tune</span> Umumiy</div>
+        <div class="set-nav-item" onclick="setTab(this,'set-statuses')">
+          <span class="material-icons-outlined">flag</span> Statuslar</div>
+        <div class="set-nav-item" onclick="setTab(this,'set-workflow')">
+          <span class="material-icons-outlined">rule</span> Workflow qoidalari</div>
+        <div class="set-nav-item" onclick="setTab(this,'set-boards')">
+          <span class="material-icons-outlined">view_kanban</span> Boardlar</div>
+        <div class="set-nav-item" onclick="setTab(this,'set-roles')">
+          <span class="material-icons-outlined">admin_panel_settings</span> Rollar va ruxsatlar</div>
+        <div class="set-nav-item" onclick="setTab(this,'set-types')">
+          <span class="material-icons-outlined">category</span> Turlar va priority</div>
+        <div class="set-nav-item" onclick="setTab(this,'set-labels')">
+          <span class="material-icons-outlined">label</span> Teglar</div>
+      </div>
+
+      <div>
+      <!-- ══ UMUMIY ══ -->
+      <div class="set-pane on" id="set-general">
+        <div class="set-card">
+          <div class="set-head"><h3>Loyiha ma'lumotlari</h3><span class="tbl">projects</span></div>
+          <div class="set-body">
+            <div class="set-row"><span class="lbl">Kod (key)<small>o'zgartirilmaydi — vazifa kodlari shunga bog'liq</small></span>
+              <input type="text" value="MOB" readonly style="background:var(--msurface2);color:#8b9aa9;width:110px">
+              <span class="col-code">key · varchar(10) UK</span></div>
+            <div class="set-row"><span class="lbl">Nomi</span>
+              <input type="text" value="Mobil ilova" style="flex:1">
+              <span class="col-code">name · varchar(255)</span></div>
+            <div class="set-row"><span class="lbl">Tavsif</span>
+              <input type="text" value="Ipak Yo'li Bank uchun mobil bank ilovasi" style="flex:1">
+              <span class="col-code">description · text</span></div>
+            <div class="set-row"><span class="lbl">Status</span>
+              <select><option>Faol (ACTIVE)</option><option>To'xtatilgan (PAUSED)</option>
+                <option>Yakunlangan (COMPLETED)</option><option>Arxiv (ARCHIVED)</option></select>
+              <span class="col-code">status · ProjectStatus</span></div>
+          </div>
+        </div>
+        <div class="set-card">
+          <div class="set-head"><h3>Loyiha sozlamalari</h3><span class="tbl">project_settings</span></div>
+          <div class="set-body">
+            <div class="set-row"><span class="lbl">Standart board<small>yangi vazifa shu boardga tushadi</small></span>
+              <select><option>Development (SCRUM)</option><option>Maintenance (KANBAN)</option></select>
+              <span class="col-code">default_board_id · FK</span></div>
+            <div class="set-row"><span class="lbl">point_to_minutes<small>KPI uchun: 1 point necha daqiqa</small></span>
+              <input type="number" value="480" style="width:110px">
+              <span style="font-size:12px;color:#8b9aa9">1 pt ≈ 1 ish kuni (8 soat)</span>
+              <span class="col-code">point_to_minutes · int NN</span></div>
+          </div>
+          <div class="set-foot"><button class="btn-flat" onclick="toast('Bekor qilindi')">Bekor</button>
+            <button class="btn-primary" onclick="toast('Sozlamalar saqlandi')">
+              <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
         </div>
       </div>
-      <div class="desc-card">
-        <div class="dc-head"><h3>Statuslar</h3><span class="dc-note">nom erkin · category qat'iy</span></div>
-        <div class="dc-body">
-          <div class="kv"><span class="kv-value" style="max-width:none">To Do</span><span class="kv-dots"></span>
-            <span class="score-pill">TO_DO</span></div>
-          <div class="kv"><span class="kv-value" style="max-width:none">In Progress</span><span class="kv-dots"></span>
-            <span class="score-pill hit">IN_PROGRESS</span></div>
-          <div class="kv"><span class="kv-value" style="max-width:none">Code Review</span><span class="kv-dots"></span>
-            <span class="score-pill hit">IN_REVIEW</span></div>
-          <div class="kv"><span class="kv-value" style="max-width:none">QA Testing</span><span class="kv-dots"></span>
-            <span class="score-pill hit">IN_REVIEW</span></div>
-          <div class="kv"><span class="kv-value" style="max-width:none">Blocked</span><span class="kv-dots"></span>
-            <span class="score-pill" style="background:var(--m-warn-soft);color:var(--m-warn)">BLOCK</span></div>
-          <div class="kv"><span class="kv-value" style="max-width:none">Done</span><span class="kv-dots"></span>
-            <span class="score-pill pos">DONE</span></div>
+
+      <!-- ══ STATUSLAR ══ -->
+      <div class="set-pane" id="set-statuses">
+        <div class="set-card">
+          <div class="set-head"><h3>Loyiha statuslari</h3><span class="tbl">project_statuses</span>
+            <button class="btn-flat" style="margin-left:auto;height:32px;font-size:12.5px"
+              onclick="openForm('Yangi status')"><span class="material-icons-outlined" style="font-size:17px">add</span> Status</button></div>
+          <div class="set-body">
+            <div style="font-size:12px;color:#8b9aa9;margin-bottom:10px;line-height:1.5">
+              Nom erkin, <b style="color:var(--m-warn)">kategoriya qat'iy</b> — butun tizim logikasi
+              kategoriyaga tayanadi (KPI fakt = DONE, blocker = BLOCK, handover ochiq = TO_DO/IN_PROGRESS/IN_REVIEW/BLOCK).
+              Tartibni sudrab o'zgartiring.
+            </div>
+            <div class="st-list">
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#94a3b8"></span><span class="nm">To Do</span>
+                <span class="cat-pill todo">TO_DO</span><span class="sys-tag">tizim</span>
+                <span class="col-code" style="margin-left:auto">position 1 · is_active ✓</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#3b82f6"></span><span class="nm">In Progress</span>
+                <span class="cat-pill">IN_PROGRESS</span><span class="sys-tag">tizim</span>
+                <span class="col-code" style="margin-left:auto">position 2 · is_active ✓</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#8b5cf6"></span><span class="nm">Code Review</span>
+                <span class="cat-pill">IN_REVIEW</span>
+                <span class="col-code" style="margin-left:auto">position 3 · is_active ✓</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#0ea5e9"></span><span class="nm">QA Testing</span>
+                <span class="cat-pill">IN_REVIEW</span>
+                <span class="col-code" style="margin-left:auto">position 4 · is_active ✓</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#f59e0b"></span><span class="nm">Blocked</span>
+                <span class="cat-pill block">BLOCK</span><span class="sys-tag">tizim</span>
+                <span class="col-code" style="margin-left:auto">position 5 · is_active ✓</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#22c55e"></span><span class="nm">Done</span>
+                <span class="cat-pill done">DONE</span><span class="sys-tag">tizim</span>
+                <span class="col-code" style="margin-left:auto">position 6 · is_active ✓</span></div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- ══ WORKFLOW ══ -->
+      <div class="set-pane" id="set-workflow">
+        <div class="set-card">
+          <div class="set-head"><h3>O'tish qoidalari</h3><span class="tbl">status_pipeline_rules</span>
+            <button class="btn-flat" style="margin-left:auto;height:32px;font-size:12.5px"
+              onclick="openForm('Yangi workflow qoidasi')"><span class="material-icons-outlined" style="font-size:17px">add</span> Qoida</button></div>
+          <div class="set-body">
+            <div style="font-size:12px;color:#8b9aa9;margin-bottom:8px">
+              Shart <span class="mono">condition</span> (jsonb) kategoriyaga yoziladi, statusning nomiga emas.
+            </div>
+            <div class="rule-row"><span class="cat-pill">IN_PROGRESS</span>
+              <span class="material-icons-outlined arrow">arrow_forward</span>
+              <span class="cat-pill done">DONE</span>
+              <span class="cond-chip">all_subtasks_done</span>
+              <span class="cond-chip">require_estimated_minutes</span>
+              <span style="margin-left:auto;display:flex;gap:5px"><span class="role-chip">DEVELOPER</span>
+                <span class="role-chip">TECH_LEAD</span></span></div>
+            <div class="rule-row"><span class="cat-pill todo">har qanday</span>
+              <span class="material-icons-outlined arrow">arrow_forward</span>
+              <span class="cat-pill block">BLOCK</span>
+              <span class="cond-chip">require_blocker_reason</span>
+              <span style="margin-left:auto;display:flex;gap:5px"><span class="role-chip">hamma</span></span></div>
+            <div class="rule-row"><span class="cat-pill todo">TO_DO</span>
+              <span class="material-icons-outlined arrow">arrow_forward</span>
+              <span class="cat-pill">IN_PROGRESS</span>
+              <span class="cond-chip">require_point</span>
+              <span style="font-size:11.5px;color:#8b9aa9">(faqat SCRUM boardda)</span>
+              <span style="margin-left:auto;display:flex;gap:5px"><span class="role-chip">DEVELOPER</span></span></div>
+            <div class="rule-row"><span class="cat-pill">IN_REVIEW</span>
+              <span class="material-icons-outlined arrow">arrow_forward</span>
+              <span class="cat-pill done">DONE</span>
+              <span class="cond-chip">require_comment</span>
+              <span style="margin-left:auto;display:flex;gap:5px"><span class="role-chip">TECH_LEAD</span>
+                <span class="role-chip">QA</span></span></div>
+          </div>
+          <div class="set-foot"><span style="font-size:11.5px;color:#8b9aa9;margin-right:auto">
+            Rollar <span class="mono">status_rule_roles</span> orqali biriktiriladi</span>
+            <button class="btn-primary" onclick="toast('Qoidalar saqlandi')">
+              <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+        </div>
+      </div>
+
+      <!-- ══ BOARDLAR ══ -->
+      <div class="set-pane" id="set-boards">
+        <div class="set-card">
+          <div class="set-head"><h3>Development</h3><span class="mode-chip scrum">SCRUM</span>
+            <span class="tbl">boards · board_settings</span></div>
+          <div class="set-body">
+            <div class="set-row"><span class="lbl">Sprint davomiyligi</span>
+              <select><option>14 kun</option><option>7 kun</option><option>21 kun</option></select>
+              <span class="col-code">sprint_duration_days · int</span></div>
+            <div class="set-row"><span class="lbl">WIP limit nazorati<small>ustundagi vazifalar sonini cheklash</small></span>
+              <span class="sw on" onclick="this.classList.toggle('on')"></span>
+              <span class="col-code">wip_limit_enabled · boolean NN</span></div>
+            <div style="font-size:12px;font-weight:700;color:#8b9aa9;letter-spacing:.06em;
+              text-transform:uppercase;margin:14px 0 8px;padding-top:12px;border-top:1px solid var(--mline2)">
+              Ustunlar <span class="mono" style="font-weight:400;text-transform:none">board_columns</span></div>
+            <div class="st-list">
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#94a3b8"></span><span class="nm">To Do</span>
+                <span class="cat-pill todo">TO_DO</span>
+                <span style="margin-left:auto;font-size:12px;color:#8b9aa9">WIP: —</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#3b82f6"></span><span class="nm">In Progress</span>
+                <span class="cat-pill">IN_PROGRESS</span>
+                <span style="margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:#8b9aa9">
+                  WIP: <input type="number" value="5" style="width:64px;height:32px"></span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#8b5cf6"></span><span class="nm">Code Review</span>
+                <span class="cat-pill">IN_REVIEW</span>
+                <span style="margin-left:auto;font-size:12px;color:#8b9aa9">WIP: —</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#0ea5e9"></span><span class="nm">QA Testing</span>
+                <span class="cat-pill">IN_REVIEW</span>
+                <span style="margin-left:auto;font-size:12px;color:#8b9aa9">WIP: —</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#f59e0b"></span><span class="nm">Blocked</span>
+                <span class="cat-pill block">BLOCK</span>
+                <span style="margin-left:auto;font-size:12px;color:#8b9aa9">WIP: —</span></div>
+              <div class="st-item"><span class="material-icons-outlined grip">drag_indicator</span>
+                <span class="sq" style="background:#22c55e"></span><span class="nm">Done</span>
+                <span class="cat-pill done">DONE</span>
+                <span style="margin-left:auto;font-size:12px;color:#8b9aa9">WIP: —</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="set-card">
+          <div class="set-head"><h3>Maintenance</h3><span class="mode-chip kanban">KANBAN</span>
+            <span class="tbl">boards · board_settings</span></div>
+          <div class="set-body">
+            <div class="set-row"><span class="lbl">Sprint davomiyligi</span>
+              <span style="font-size:12.5px;color:#8b9aa9">— (kanban rejimida sprint yo'q)</span>
+              <span class="col-code">sprint_duration_days · NULL</span></div>
+            <div class="set-row"><span class="lbl">WIP limit nazorati</span>
+              <span class="sw on" onclick="this.classList.toggle('on')"></span>
+              <span class="col-code">wip_limit_enabled · boolean NN</span></div>
+            <div style="font-size:12.5px;color:#8b9aa9;margin-top:10px">
+              Ustunlar: To Do · In Progress (WIP 3) · Blocked · Done —
+              <span class="mono">IN_REVIEW</span> ustunlari bu boardda yo'q.</div>
+          </div>
+          <div class="set-foot"><button class="btn-primary" onclick="toast('Board sozlamalari saqlandi')">
+            <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+        </div>
+      </div>
+
+      <!-- ══ ROLLAR VA RUXSATLAR ══ -->
+      <div class="set-pane" id="set-roles">
+        <div class="set-card">
+          <div class="set-head"><h3>Ruxsatlar matritsasi</h3>
+            <span class="tbl">project_role_permissions</span></div>
+          <div class="set-body" style="overflow-x:auto">
+            <table class="perm-tbl">
+              <thead><tr><th>Amal <span class="mono" style="font-weight:400;color:#b6c2d1">project_actions</span></th>
+                <th>PM</th><th>TECH_LEAD</th><th>DEVELOPER</th><th>QA</th><th>VIEWER</th></tr></thead>
+              <tbody>
+                <tr><td>Vazifa yaratish<span class="mono">ISSUE_CREATE</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Vazifa tahrirlash<span class="mono">ISSUE_EDIT</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Vazifa o'chirish<span class="mono">ISSUE_DELETE</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Mas'ul biriktirish<span class="mono">ISSUE_ASSIGN</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Status o'zgartirish<span class="mono">STATUS_MOVE</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Baholash o'zgartirish<span class="mono">ESTIMATE_EDIT</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Sprint boshqarish<span class="mono">SPRINT_MANAGE</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Board boshqarish<span class="mono">BOARD_MANAGE</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>A'zolarni boshqarish<span class="mono">MEMBER_MANAGE</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Handover tasdiqlash<span class="mono">HANDOVER_APPROVE</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+                <tr><td>Sozlamalarni tahrirlash<span class="mono">SETTINGS_EDIT</span></td>
+                  <td><span class="pm on" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td>
+                  <td><span class="pm" onclick="this.classList.toggle('on')"></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="set-foot">
+            <span style="font-size:11.5px;color:#8b9aa9;margin-right:auto">
+              Rollar <span class="mono">project_member_roles</span> · katakcha =
+              <span class="mono">project_role_permissions.is_active</span></span>
+            <button class="btn-flat" onclick="openForm('Yangi rol')">
+              <span class="material-icons-outlined" style="font-size:17px">add</span> Rol</button>
+            <button class="btn-primary" onclick="toast('Ruxsatlar saqlandi')">
+              <span class="material-icons-outlined">check_circle</span> SAQLASH</button></div>
+        </div>
+      </div>
+
+      <!-- ══ TURLAR VA PRIORITY ══ -->
+      <div class="set-pane" id="set-types">
+        <div class="set-card">
+          <div class="set-head"><h3>Vazifa turlari</h3><span class="tbl">issue_types</span></div>
+          <div class="set-body">
+            <div class="st-list">
+              <div class="st-item"><span class="material-icons" style="color:#8b5cf6">bolt</span>
+                <span class="nm">Epic</span><span class="cat-pill">EPIC</span>
+                <span style="font-size:12px;color:#8b9aa9">level 0 — parent ololmaydi</span>
+                <span class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></span></div>
+              <div class="st-item"><span class="material-icons" style="color:#22c55e">bookmark</span>
+                <span class="nm">Story</span><span class="cat-pill">STORY</span>
+                <span style="font-size:12px;color:#8b9aa9">level 1</span>
+                <span class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></span></div>
+              <div class="st-item"><span class="material-icons" style="color:#3b82f6">check_box</span>
+                <span class="nm">Task</span><span class="cat-pill">TASK</span>
+                <span style="font-size:12px;color:#8b9aa9">level 1</span>
+                <span class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></span></div>
+              <div class="st-item"><span class="material-icons" style="color:#e0564a">bug_report</span>
+                <span class="nm">Bug</span><span class="cat-pill">BUG</span>
+                <span style="font-size:12px;color:#8b9aa9">level 1</span>
+                <span class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></span></div>
+              <div class="st-item"><span class="material-icons-outlined" style="color:#64748b">subdirectory_arrow_right</span>
+                <span class="nm">Subtask</span><span class="cat-pill">SUBTASK</span>
+                <span style="font-size:12px;color:#8b9aa9">level 2 — parent majburiy</span>
+                <span class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="set-card">
+          <div class="set-head"><h3>Priority darajalari</h3><span class="tbl">priorities</span></div>
+          <div class="set-body">
+            <div class="st-list">
+              <div class="st-item"><span class="sq" style="background:#c81e1e"></span>
+                <span class="nm">Critical</span><span class="cat-pill">CRITICAL</span>
+                <span class="col-code" style="margin-left:auto">position 1</span></div>
+              <div class="st-item"><span class="sq" style="background:#e0564a"></span>
+                <span class="nm">High</span><span class="cat-pill">HIGH</span>
+                <span class="col-code" style="margin-left:auto">position 2</span></div>
+              <div class="st-item"><span class="sq" style="background:#f59e0b"></span>
+                <span class="nm">Medium</span><span class="cat-pill">MEDIUM</span>
+                <span class="col-code" style="margin-left:auto">position 3</span></div>
+              <div class="st-item"><span class="sq" style="background:#94a3b8"></span>
+                <span class="nm">Low</span><span class="cat-pill">LOW</span>
+                <span class="col-code" style="margin-left:auto">position 4</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TEGLAR ══ -->
+      <div class="set-pane" id="set-labels">
+        <div class="set-card">
+          <div class="set-head"><h3>Loyiha teglari</h3><span class="tbl">labels</span>
+            <button class="btn-flat" style="margin-left:auto;height:32px;font-size:12.5px"
+              onclick="openForm('Yangi teg')"><span class="material-icons-outlined" style="font-size:17px">add</span> Teg</button></div>
+          <div class="set-body">
+            <span class="lb-item"><span class="dot" style="background:#2563eb"></span>auth
+              <span class="material-icons-outlined x">close</span></span>
+            <span class="lb-item"><span class="dot" style="background:#22c55e"></span>mobile
+              <span class="material-icons-outlined x">close</span></span>
+            <span class="lb-item"><span class="dot" style="background:#8b5cf6"></span>backend
+              <span class="material-icons-outlined x">close</span></span>
+            <span class="lb-item"><span class="dot" style="background:#f59e0b"></span>ui
+              <span class="material-icons-outlined x">close</span></span>
+            <span class="lb-item"><span class="dot" style="background:#e0564a"></span>tech-debt
+              <span class="material-icons-outlined x">close</span></span>
+            <span class="lb-item"><span class="dot" style="background:#0ea5e9"></span>performance
+              <span class="material-icons-outlined x">close</span></span>
+            <div style="font-size:11.5px;color:#8b9aa9;margin-top:10px">
+              Har teg: <span class="mono">short_code UK</span> · <span class="mono">name</span> ·
+              <span class="mono">color varchar(7)</span> — loyihaga tegishli (project_id).
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -3439,6 +3853,16 @@ document.addEventListener('click',function(e){
 });
 
 /* Modal */
+
+/* Sozlamalar bo'limlari */
+function setTab(el,pane){
+  var items=el.parentElement.querySelectorAll('.set-nav-item');
+  for(var i=0;i<items.length;i++)items[i].classList.remove('on');
+  el.classList.add('on');
+  var panes=document.querySelectorAll('.set-pane');
+  for(var j=0;j<panes.length;j++)panes[j].classList.toggle('on',panes[j].id===pane);
+  document.querySelector('.page').scrollTop=0;
+}
 
 /* Loyiha ichi tablari */
 function projTab(name){
