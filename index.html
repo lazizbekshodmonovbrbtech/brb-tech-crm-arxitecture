@@ -1397,7 +1397,7 @@ const DB = {
   ["logo_file_hash","varchar(255)","EXT","ext:file-service.files","Bot profil rasmi"],
   ["webhook_url","varchar(500)","NN","","Webhook manzili (/webhook/{bot_id})"],
   ["webhook_secret","varchar(100)","NN","","Telegram secret_token \u2014 kelgan so'rovning haqiqiyligini tekshirish"],
-  ["auto_create_ticket","boolean","NN","","Yangi xabar avtomatik ticket ochsinmi yoki operator qo'lda ochadimi"],
+  ["auto_create_ticket","boolean","NN","","Har kelgan xabar avtomatik ticket ochadimi (odatda true). Ticket FOYDALANUVCHI bo'yicha ochiladi (thread_key=USER:{tg_user_id}): bir guruhda uch kishi yozsa uchta alohida ticket. Operator biriktirilmagan holda navbatda turadi"],
   ["require_reply_in_group","boolean","NN","","GURUH QOIDASI: operator guruhga faqat REPLY sifatida yoza oladi \u2014 har xabar zanjirga (ticketga) tegishli bo'lsin. Reply'siz yuborish faqat E'LON orqali"],
   ["announce_roles","varchar(255)","","","E'lon yubora oladigan rollar (short_code ro'yxati) \u2014 masalan PM,TECH_LEAD. Bo'sh bo'lsa barcha operatorlar"],
   ["thread_window_hours","int","NN","","Shu soat ichida SHU yuboruvchining yangi xabari MAVJUD ochiq ticketga qo'shiladi (odatda 12). Oshsa yangi ticket ochiladi"],
