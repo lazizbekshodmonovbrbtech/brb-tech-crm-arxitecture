@@ -1241,7 +1241,7 @@ const DB = {
 ]},
 
 "support-service":{
- group:"Operatsiyalar",
+ group:"CRM yadro",
  desc:"Loyihalar supporti — ticketlar, SLA va har bir loyihaning o'z Telegram boti orqali muloqot.",
  tables:[
  {name:"ticket_priorities",desc:"Service ichki lug'ati — migration'da seed qilinadi (low, medium, high, critical). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
@@ -1332,7 +1332,7 @@ const DB = {
 ]},
 
 "callcenter-service":{
- group:"Operatsiyalar",
+ group:"CRM yadro",
  desc:"Telefoniya — PBX/SIP integratsiyasi, qo'ng'iroqlar va operator holati.",
  tables:[
  {name:"pbx_trunks",desc:"PBX trunk sozlamalari — telefoniya provayderiga ulanish.",cols:[
@@ -1381,7 +1381,7 @@ const DB = {
 ]},
 
 "notification-service":{
- group:"Platforma",
+ group:"CRM yadro",
  desc:"Markazlashtirilgan xabarnomalar — email, SMS, push. Barcha servicelar event orqali foydalanadi.",
  tables:[
  {name:"channel_providers",desc:"Kanal provayderlari — qaysi kanal qaysi provayder orqali yuboriladi.",cols:[
@@ -1417,7 +1417,7 @@ const DB = {
 ]},
 
 "inventory-service":{
- group:"Operatsiyalar",
+ group:"CRM yadro",
  desc:"Kompaniya jihozlari va ombor reyestri. MUHIM: xodimga bog'lanish employee_id orqali — lavozim o'zgarsa ham jihoz xodimda qoladi.",
  tables:[
  {name:"inventory_types",desc:"Service ichki lug'ati — migration'da seed qilinadi (equipment, appliance, consumable). short_code o'zgartirilmaydi, is_system yozuvlar o'chirilmaydi; UI'dan nom/tartib boshqariladi va yangi qiymat qo'shiladi.",cols:[
@@ -1467,7 +1467,7 @@ const DB = {
 ]},
 
 "kpi-service":{
- group:"Operatsiyalar",
+ group:"CRM yadro",
  desc:"Xodimlar KPI hisoblash — har bir lavozim uchun har xil kriteriyalar va vaznlar. Barcha servicelardan event orqali faktlar yig'iladi, davr yopilganda hisoblanadi. Intizom (turniket) hamma uchun majburiy kriteriya.",
  tables:[
  {name:"kpi_criteria",desc:"KPI kriteriyalari lug'ati — seed: TASK_COMPLETION (bajarilgan vazifalar), TICKET_RESOLUTION (yopilgan so'rovlar), CUSTOMER_FEEDBACK (mijoz baholari), CALL_QUALITY (AI qo'ng'iroq scoring), DISCIPLINE (turniket intizomi). UI'dan yangi kriteriya qo'shiladi.",cols:[
