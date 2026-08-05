@@ -109,6 +109,19 @@ a{color:var(--primary);text-decoration:none}
 .nav-item:hover{background:#f3f4f6;color:#1f2937}
 .nav-item.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
 .nav-item.active .material-icons-outlined{color:var(--primary)}
+.nav-item .chev{margin-left:auto;font-size:18px;color:#cbd5e1;transition:transform .2s}
+.nav-item.open .chev{transform:rotate(90deg);color:#94a3b8}
+.nav-item.group.active{background:transparent;color:#4b5563;font-weight:500}
+.nav-item.group.active .material-icons-outlined{color:#64748b}
+.nav-children{display:none;padding:2px 0 6px;margin-left:20px;padding-left:10px;
+  border-left:1.5px solid #e8ecf2}
+.nav-children.open{display:block}
+.nav-child{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 10px;
+  border-radius:7px;font-size:13.5px;font-weight:500;color:#64748b;cursor:pointer;margin-bottom:2px}
+.nav-child .material-icons-outlined{font-size:18px;color:#94a3b8}
+.nav-child:hover{background:#f3f4f6;color:#1f2937}
+.nav-child.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.nav-child.active .material-icons-outlined{color:var(--primary)}
 .menu-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;
   font-size:10.5px;font-weight:700;color:#fff;display:inline-flex;align-items:center;
   justify-content:center;background:linear-gradient(135deg,#ef4444,#dc2626);
@@ -865,9 +878,14 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
     <div class="nav-item" data-page="customers"><span class="material-icons-outlined">groups</span> Mijozlar</div>
     <div class="nav-item" data-page="contracts"><span class="material-icons-outlined">description</span> Shartnomalar</div>
     <div class="sb-section">Loyiha</div>
-    <div class="nav-item" data-page="projects"><span class="material-icons-outlined">folder</span> Loyihalar</div>
-    <div class="nav-item" data-page="handover"><span class="material-icons-outlined">swap_horiz</span> Handover
-      <span class="menu-badge">6</span></div>
+    <div class="nav-item group open" id="nav-tasks" onclick="toggleGroup()">
+      <span class="material-icons-outlined">task_alt</span> Vazifalar boshqaruvi
+      <span class="material-icons-outlined chev">chevron_right</span></div>
+    <div class="nav-children open" id="nav-tasks-children">
+      <div class="nav-child" data-page="projects"><span class="material-icons-outlined">folder</span> Loyihalar</div>
+      <div class="nav-child" data-page="handover"><span class="material-icons-outlined">swap_horiz</span> Handover
+        <span class="menu-badge">6</span></div>
+    </div>
     <div class="sb-section">Support</div>
     <div class="nav-item" data-page="tickets"><span class="material-icons-outlined">confirmation_number</span> Ticketlar</div>
     <div class="nav-item" data-page="inbox"><span class="material-icons-outlined">send</span> Telegram inbox</div>
@@ -3398,10 +3416,10 @@ var TRAIL={
   leads:[['Leadlar',null]],
   customers:[['Mijozlar',null]],
   contracts:[['Shartnomalar',null]],
-  projects:[['Loyihalar',null]],
-  project:[['Loyihalar','projects'],['Mobil ilova',null]],
+  projects:[['Vazifalar boshqaruvi',null],['Loyihalar',null]],
+  project:[['Vazifalar boshqaruvi',null],['Loyihalar','projects'],['Mobil ilova',null]],
   board:[['Loyihalar','projects'],['Mobil ilova','project'],['BOARD',null]],
-  handover:[['Handover',null]],
+  handover:[['Vazifalar boshqaruvi',null],['Handover',null]],
   tickets:[['Ticketlar',null]],
   inbox:[['Telegram inbox',null]],
   calls:[['Call center',null]],
@@ -3429,16 +3447,26 @@ function show(page){
   var el=document.getElementById('pv-'+page);
   if(el)el.classList.add('active');
   var navKey=NAVKEY[page]||page;
-  var items=document.querySelectorAll('.nav-item');
+  var items=document.querySelectorAll('.nav-item[data-page], .nav-child[data-page]');
   for(var j=0;j<items.length;j++){
     items[j].classList.toggle('active',items[j].getAttribute('data-page')===navKey);
+  }
+  // guruh ichidagi sahifa ochilsa, guruh yoyilib turadi
+  var inGroup=document.querySelector('#nav-tasks-children .nav-child.active');
+  if(inGroup){
+    document.getElementById('nav-tasks').classList.add('open');
+    document.getElementById('nav-tasks-children').classList.add('open');
   }
   renderCrumbs(page);
   document.querySelector('.page').scrollTop=0;
   document.getElementById('call-drawer').classList.remove('open');
   requestAnimationFrame(fitBoards);
 }
-var navItems=document.querySelectorAll('.nav-item[data-page]');
+function toggleGroup(){
+  document.getElementById('nav-tasks').classList.toggle('open');
+  document.getElementById('nav-tasks-children').classList.toggle('open');
+}
+var navItems=document.querySelectorAll('.nav-item[data-page], .nav-child[data-page]');
 for(var k=0;k<navItems.length;k++){
   navItems[k].addEventListener('click',function(){show(this.getAttribute('data-page'))});
 }
