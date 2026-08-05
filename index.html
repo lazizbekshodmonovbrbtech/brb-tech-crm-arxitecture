@@ -542,8 +542,7 @@ const DB = {
   ["industry_id","bigint","FK","industries.id","Faoliyat sohasi"],
   ["owner_assignment_id","bigint","","ext:hrm.assignment","Mijozga mas'ul menejer"],
   ["first_won_at","timestamp","","","Birinchi shartnoma sanasi \u2014 mijoz bo'lgan payt"],
-  ["lifetime_value","numeric(18,2)","","","LTV \u2014 barcha shartnomalar yig'indisi (denormalizatsiya, event bilan yangilanadi)"],
-  ["duplicate_of_id","bigint","FK","customers.id","Dublikat bo'lsa asosiy yozuvga ishora. Yozuv O'CHIRILMAYDI: status=INACTIVE bo'ladi, eski shartnoma/ticket havolalari buzilmaydi. Xato bo'lsa NULL qilish yetarli \u2014 orqaga qaytarish oson (shuning uchun merge jadvali kerak emas)"]]},
+  ["lifetime_value","numeric(18,2)","","","LTV \u2014 barcha shartnomalar yig'indisi (denormalizatsiya, event bilan yangilanadi)"]]},
  {name:"industries",desc:"Faoliyat sohalari ma'lumotnomasi \u2014 segmentatsiya va marketing tahlili uchun.",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","BANKING / RETAIL / LOGISTICS / MANUFACTURING / GOV"],
@@ -581,7 +580,7 @@ const DB = {
   ["author_assignment_id","bigint","","ext:hrm.assignment","Muallif"],
   ["content","text","NN","","Eslatma matni"],
   ["is_pinned","boolean","NN","","Yuqoriga mahkamlangan"]]},
- {name:"customer_identities",desc:"MIJOZ IDENTIFIKATORLARI REYESTRI \u2014 dublikatning oldini olish mexanizmi. Har kanal o'z identifikatorini shu yerga yozadi (qo'ng'iroq raqami, telegram ID, email, INN). Yangi lead kelganda lead-service BITTA so'rov bilan mijozni aniqlaydi: POST /identities/resolve \u2192 {customer_id, matched_by, confidence}. ADR-006: merge (birlashtirish) o'rniga PREVENTIV aniqlash \u2014 dublikat yaratilishidan oldin to'xtatiladi, qolgan kam holatlarga customers.duplicate_of_id yetadi.",cols:[
+ {name:"customer_identities",desc:"MIJOZ IDENTIFIKATORLARI REYESTRI \u2014 dublikatning oldini olish mexanizmi. Har kanal o'z identifikatorini shu yerga yozadi (qo'ng'iroq raqami, telegram ID, email, INN). Yangi lead kelganda lead-service BITTA so'rov bilan mijozni aniqlaydi: POST /identities/resolve \u2192 {customer_id, matched_by, confidence}. ADR-006: merge (birlashtirish) jadvali YO'Q \u2014 PREVENTIV aniqlash: dublikat yaratilishidan oldin to'xtatiladi. Kam uchraydigan holatlarda dublikat yozuv status=INACTIVE qilinadi va identifikatorlari asosiy mijozga ko'chiriladi (identity yozuvining customer_id'si o'zgaradi \u2014 tarix buzilmaydi).",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["customer_id","bigint","FK,NN","customers.id","Qaysi mijozga tegishli"],
   ["identity_type","enum","UK,NN","","IdentityType: PHONE / EMAIL / TELEGRAM_ID / TELEGRAM_USERNAME / INSTAGRAM_ID / TAX_ID / CALLER_NUMBER"],
