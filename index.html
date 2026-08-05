@@ -365,7 +365,7 @@ body{
 const DB = {
 
 "hrm-service":{
- group:"Mavjud tizim",
+ group:"CORE",
  desc:"MAVJUD — hrm_service_db. 18 jadval, 24 FK, 34 sequence. Har jadvalda 7 standart audit ustun va soft delete (status). QILINISHI KERAK: outbox_events + processed_events qo'shish (kafka-event-standart naqshi) — assignment.ended/created eventlari CRM handover jarayoni uchun SHART (event-katalog: hrm_service_events).",
  tables:[
  {name:"org_structure",desc:"Tashkilot tuzilmasi (ierarxik). DIQQAT: parent uchun FK constraint e'lon qilinmagan — butunlik faqat ilova darajasida.",cols:[
@@ -1659,7 +1659,7 @@ const DB = {
 ]},
 
 "settings-service":{
- group:"Mavjud tizim",
+ group:"CORE",
  desc:"MAVJUD — settings_service_db. 4 jadval, 2 FK, 8 sequence. Frontend jadval metadatasi va i18n tarjimalar.",
  tables:[
  {name:"i18n_message",desc:"Tarjimalar. UK: (short_code, status) — soft delete bilan birga ishlashi uchun status ham kalitda.",cols:[
@@ -1702,7 +1702,7 @@ const DB = {
 ]},
 
 "global-reference-service":{
- group:"Mavjud tizim",
+ group:"CORE",
  desc:"MAVJUD — global_reference_db. 4 jadval, 1 FK, 8 sequence. Sof ma'lumotnoma servisi.",
  tables:[
  {name:"region",desc:"Viloyat.",cols:[
@@ -1734,7 +1734,7 @@ const DB = {
 ]},
 
 "file-service":{
- group:"Mavjud tizim",
+ group:"CORE",
  desc:"MAVJUD — file_service_db. 1 jadval, 0 FK. Fayllar MinIO'da; tashqi tizimlar faylga id emas, HASH orqali murojaat qiladi.",
  tables:[
  {name:"file_storage",desc:"Fayl metadatasi. Object key formati: {LOCATION}/{YYYY}/{MM}/{DD}/{uuid}.{ext}. QILINISHI KERAK: org_structure_id ustuni + object key'ga tenant prefiksi ({TENANT}/{LOCATION}/...) va hash orqali olishda tenant tekshiruvi (multi-tenant-standart). Audit ustunlari employee/assignment ma'lumotini RestClient orqali hrm-service'dan oladi.",cols:[
@@ -1817,8 +1817,8 @@ const DONE_SERVICES = new Set([
       const isDoc=DB[k].kind==='doc';
       const isDone=DONE_SERVICES.has(k);
       el.className='menu-item'+(isDoc?' doc':'')+(isDone?' done':'');el.dataset.svc=k;
-      if(isDone)el.title = DB[k].group==='Mavjud tizim'
-        ? 'Mavjud tizim \u2014 ishlab turibdi, arxitekturasi tayyor'
+      if(isDone)el.title = DB[k].group==='CORE'
+        ? 'CORE \u2014 ishlab turgan platforma servisi, arxitekturasi tayyor'
         : 'Yakunlangan: enum katalogi, outbox va status standarti bajarilgan';
       el.innerHTML=`<span class="dot">${isDoc?'§':''}</span>${k}<span class="cnt">${isDoc?'doc':DB[k].tables.length}</span>`;
       el.onclick=()=>{selectService(k);if(innerWidth<=820)$('#sidebar').classList.remove('open')};
@@ -1835,7 +1835,7 @@ function selectService(key){
   $('#svc-title').innerHTML=key
     +(isDoc?' <span class="doc-badge">HUJJAT — service emas</span>':'')
     +(DONE_SERVICES.has(key)
-        ? ' <span class="done-badge">\u2713 '+(DB[key].group==='Mavjud tizim'?'MAVJUD \u2014 TAYYOR':'YAKUNLANGAN')+'</span>'
+        ? ' <span class="done-badge">\u2713 '+(DB[key].group==='CORE'?'CORE':'YAKUNLANGAN')+'</span>'
         : '');
   $('#svc-desc').textContent=DB[key].desc;
   wrap.classList.toggle('doc-mode',isDoc);
