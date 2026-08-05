@@ -543,7 +543,7 @@ const DB = {
   ["owner_assignment_id","bigint","","ext:hrm.assignment","Mijozga mas'ul menejer"],
   ["first_won_at","timestamp","","","Birinchi shartnoma sanasi \u2014 mijoz bo'lgan payt"],
   ["lifetime_value","numeric(18,2)","","","LTV \u2014 barcha shartnomalar yig'indisi (denormalizatsiya, event bilan yangilanadi)"],
-  ["duplicate_of_id","bigint","FK","customers.id","Dublikat bo'lsa asosiy yozuvga ishora (merge natijasi)"]]},
+  ["duplicate_of_id","bigint","FK","customers.id","Dublikat bo'lsa asosiy yozuvga ishora. Yozuv O'CHIRILMAYDI: status=INACTIVE bo'ladi, eski shartnoma/ticket havolalari buzilmaydi. Xato bo'lsa NULL qilish yetarli \u2014 orqaga qaytarish oson (shuning uchun merge jadvali kerak emas)"]]},
  {name:"industries",desc:"Faoliyat sohalari ma'lumotnomasi \u2014 segmentatsiya va marketing tahlili uchun.",cols:[
   ["id","bigint","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","BANKING / RETAIL / LOGISTICS / MANUFACTURING / GOV"],
@@ -581,13 +581,16 @@ const DB = {
   ["author_assignment_id","bigint","","ext:hrm.assignment","Muallif"],
   ["content","text","NN","","Eslatma matni"],
   ["is_pinned","boolean","NN","","Yuqoriga mahkamlangan"]]},
- {name:"customer_merges",desc:"Dublikat mijozlarni birlashtirish jurnali \u2014 qaysi yozuv qaysiga qo'shildi, orqaga qaytarish uchun.",cols:[
+ {name:"customer_identities",desc:"MIJOZ IDENTIFIKATORLARI REYESTRI \u2014 dublikatning oldini olish mexanizmi. Har kanal o'z identifikatorini shu yerga yozadi (qo'ng'iroq raqami, telegram ID, email, INN). Yangi lead kelganda lead-service BITTA so'rov bilan mijozni aniqlaydi: POST /identities/resolve \u2192 {customer_id, matched_by, confidence}. ADR-006: merge (birlashtirish) o'rniga PREVENTIV aniqlash \u2014 dublikat yaratilishidan oldin to'xtatiladi, qolgan kam holatlarga customers.duplicate_of_id yetadi.",cols:[
   ["id","bigint","PK","","Identifikator"],
-  ["primary_customer_id","bigint","FK,NN","customers.id","Asosiy (qoladigan) yozuv"],
-  ["merged_customer_id","bigint","FK,NN","customers.id","Qo'shilgan (yopiladigan) yozuv"],
-  ["merged_by","bigint","","ext:hrm.assignment","Kim birlashtirdi"],
-  ["snapshot","jsonb","NN","","Birlashtirishdan oldingi holat \u2014 qaytarish imkoniyati"],
-  ["merged_at","timestamp","NN","","Vaqt"]]}
+  ["customer_id","bigint","FK,NN","customers.id","Qaysi mijozga tegishli"],
+  ["identity_type","enum","UK,NN","","IdentityType: PHONE / EMAIL / TELEGRAM_ID / TELEGRAM_USERNAME / INSTAGRAM_ID / TAX_ID / CALLER_NUMBER"],
+  ["identity_value","varchar(255)","UK,NN","","NORMALLASHTIRILGAN qiymat \u2014 telefon E.164 (+998901234567), email kichik harfda, telegram raqamli ID (username o'zgaradi, ID o'zgarmaydi). Normallashtirmasdan mexanizm ishlamaydi"],
+  ["is_verified","boolean","NN","","Tasdiqlanganmi (SMS/email orqali) yoki taxminiy \u2014 confidence darajasini belgilaydi"],
+  ["source_service","varchar(30)","NN","","Qayerdan qo'shildi: callcenter / social-integration / contract / manual"],
+  ["first_seen_at","timestamp","NN","","Birinchi marta uchragan vaqt"],
+  ["last_seen_at","timestamp","","","Oxirgi marta ishlatilgan"],
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED. UNIQUE (identity_type, identity_value) FAQAT status=ACTIVE bo'lganda (partial unique index) \u2014 eski raqam boshqa mijozga o'tishi mumkin"]]}
 ]},
 
 "lead-service":{
@@ -631,8 +634,13 @@ const DB = {
  {name:"leads",desc:"LEAD AGGREGATE ROOT. Sotuv imkoniyati. Mijoz customer-service'da (mantiqiy ref), summa lead_items'dan HISOBLANADI \u2014 qo'lda kiritilmaydi. Yutilganda contract yaratiladi va pozitsiyalar ko'chadi.",cols:[
   ["id","bigint","PK","","Lead identifikatori"],
   ["number","varchar(20)","UK,NN","","LEAD-0284 \u2014 sequence'dan"],
-  ["customer_id","bigint","","ext:customer-service.customers","Mijoz \u2014 mantiqiy ref (FKsiz, boshqa servis). Yangi mijoz bo'lsa lead yopilganda yaratiladi"],
+  ["customer_id","bigint","","ext:customer-service.customers","Mijoz \u2014 mantiqiy ref. AVTOMATIK ANIQLANADI: lead kelganda customer-service /identities/resolve chaqiriladi (telefon, telegram_id, email bo'yicha). Kuchli mos kelishda avtomatik biriktiriladi, zaif mos kelishda formada TAKLIF ko'rsatiladi (qaror sotuvchida), topilmasa NULL \u2014 mijoz lead yutilganda yaratiladi va identifikatorlari reyestrga yoziladi"],
   ["contact_id","bigint","","ext:customer-service.contacts","Aloqa shaxsi"],
+  ["match_confidence","enum","","","MatchConfidence: STRONG (telefon/telegram_id/INN mos) / WEAK (faqat ism yoki qisman) / NONE. WEAK bo\'lsa customer_id avtomatik QO\'YILMAYDI \u2014 formada taklif ko\'rsatiladi"],
+  ["match_suggestion_id","bigint","","ext:customer-service.customers","Taxminiy mijoz \u2014 sotuvchiga taklif sifatida ko\'rsatiladi. Tasdiqlansa customer_id ga ko\'chadi, rad etilsa NULL bo\'ladi"],
+  ["raw_phone","varchar(20)","","","Lead kelgan xom telefon (normallashtirilmagan) \u2014 mijoz yaratilganda identity reyestriga yoziladi"],
+  ["raw_email","varchar(255)","","","Lead kelgan email \u2014 identity manbai"],
+  ["raw_external_id","varchar(100)","","","Telegram/Instagram ID \u2014 identity manbai"],
   ["pipeline_id","bigint","FK,NN","pipelines.id","Voronka"],
   ["stage_id","bigint","FK,NN","pipeline_stages.id","Joriy bosqich \u2014 holat SHU YERDAN (alohida status ustuni YO'Q)"],
   ["source_id","bigint","FK,NN","lead_sources.id","Manba"],
