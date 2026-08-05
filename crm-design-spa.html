@@ -5956,6 +5956,44 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   </div>
 </div>
 
+
+<!-- ════════════ QABUL QILUVCHILAR MODALI ════════════ -->
+<div class="overlay" id="rec-overlay" onclick="if(event.target===this)closeOv('rec-overlay')">
+  <div class="modal" style="width:min(560px,95vw)">
+    <div class="fm-head">
+      <div class="mh-left">
+        <span class="mark"><span class="material-icons-outlined">groups</span></span>
+        <div class="mh-t"><h1>Qabul qiluvchilar</h1>
+          <div class="mh-id" id="rec-sub">Ommaviy e'lon qaysi chatlarga yuborilsin</div></div>
+      </div>
+      <button class="close-x" onclick="closeOv('rec-overlay')"><span class="material-icons-outlined">close</span></button>
+    </div>
+    <div class="fm-body" style="background:var(--surface);padding:0">
+      <div class="pick-search" style="border-bottom:1px solid var(--mline2);padding:11px 16px">
+        <span class="material-icons-outlined">search</span>
+        <input id="rec-q" placeholder="Chat qidirish..." oninput="recRender()">
+      </div>
+      <div class="bc-head" style="padding:9px 16px">
+        <span id="bc-count">0 ta tanlandi</span>
+        <a style="margin-left:auto" onclick="bcAll(true)">Hammasini tanlash</a>
+        <a onclick="bcAll(false)">tozalash</a>
+      </div>
+      <div class="board-tabs" style="margin:10px 16px 0">
+        <button class="board-tab active" style="flex:1;justify-content:center" onclick="recFilter(this,'all')">Hammasi</button>
+        <button class="board-tab" style="flex:1;justify-content:center" onclick="recFilter(this,'group')">Guruhlar</button>
+        <button class="board-tab" style="flex:1;justify-content:center" onclick="recFilter(this,'private')">Shaxsiy</button>
+      </div>
+      <div id="bc-rows" style="max-height:300px;overflow-y:auto;padding:8px 16px 4px"></div>
+    </div>
+    <div class="fm-foot">
+      <span style="font-size:12px;color:#8b9aa9;margin-right:auto" id="rec-sum">
+        6 ta chatga yuboriladi</span>
+      <button class="btn-flat" onclick="closeOv('rec-overlay')">Bekor qilish</button>
+      <button class="btn-edit" onclick="recApply()">
+        <span class="material-icons-outlined" style="font-size:18px">check_circle</span> Tasdiqlash</button>
+    </div>
+  </div>
+</div>
 <!-- ════════════ E'LON MODALI ════════════ -->
 <div class="overlay" id="ann-overlay" onclick="if(event.target===this)closeOv('ann-overlay')">
   <div class="modal" style="width:min(760px,95vw)">
@@ -6001,19 +6039,15 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         </div>
       </div>
 
-      <!-- Ommaviy rejimda: qabul qiluvchilar -->
+      <!-- Ommaviy rejimda: qabul qiluvchilar tugmasi -->
       <div class="fld" id="bc-block" style="display:none">
         <label>Qabul qiluvchilar <b>*</b></label>
-        <div class="bc-list">
-          <div class="bc-head">
-            <span id="bc-count">0 ta tanlandi</span>
-            <a style="margin-left:auto" onclick="bcAll(true)">Hammasini tanlash</a>
-            <a onclick="bcAll(false)">tozalash</a>
-          </div>
-          <div id="bc-rows"></div>
+        <div class="pick-field" onclick="openRecipients()" style="cursor:pointer">
+          <span class="material-icons-outlined" style="color:var(--ink-4)">groups</span>
+          <span id="bc-field">Barcha chatlar (6)</span>
+          <span class="material-icons-outlined chev">expand_more</span>
         </div>
-        <div class="bc-sum"><span class="material-icons-outlined">info</span>
-          <span id="bc-sum-text">Har chatga alohida yuboriladi \u2014 Telegram limiti: soniyasiga 30 xabar</span></div>
+        <span class="hint">Har chatga alohida yuboriladi \u2014 Telegram limiti: soniyasiga 30 xabar</span>
       </div>
       <div class="fgrid c2" id="ann-scope-block">
         <div class="fld"><label>Qayerga</label>
@@ -6943,6 +6977,7 @@ function openBroadcast(){
   document.getElementById('ann-scope-block').style.display='none';
   bcSel={};
   for(var i=0;i<CHATS.length;i++)bcSel[CHATS[i].id]=true;
+  document.getElementById('bc-field').textContent='Barcha chatlar ('+CHATS.length+')';
   bcRender();
   document.getElementById('ann-target').textContent='Ommaviy \u2014 barcha chatlarga';
   document.querySelector('#ann-overlay .mh-t h1').textContent="Ommaviy e'lon";
@@ -6950,24 +6985,65 @@ function openBroadcast(){
   document.getElementById('ann-overlay').classList.add('open');
   setTimeout(function(){document.getElementById('ann-body').focus()},60);
 }
+var recFilterVal='all';
+function openRecipients(){
+  document.getElementById('rec-q').value='';
+  recFilterVal='all';
+  var tabs=document.querySelectorAll('#rec-overlay .board-tab');
+  for(var i=0;i<tabs.length;i++)tabs[i].classList.toggle('active',i===0);
+  recRender();
+  document.getElementById('rec-overlay').classList.add('open');
+}
+function recFilter(btn,v){
+  var s=btn.parentElement.querySelectorAll('.board-tab');
+  for(var i=0;i<s.length;i++)s[i].classList.remove('active');
+  btn.classList.add('active');recFilterVal=v;recRender();
+}
+function recRender(){bcRender()}
 function bcRender(){
-  var out='',n=0;
+  var q=(document.getElementById('rec-q')?document.getElementById('rec-q').value:'').toLowerCase();
+  var out='',n=0,shown=0;
   for(var i=0;i<CHATS.length;i++){
     var c=CHATS[i], on=!!bcSel[c.id];
     if(on)n++;
+    if(recFilterVal==='group'&&c.type==='PRIVATE')continue;
+    if(recFilterVal==='private'&&c.type!=='PRIVATE')continue;
+    if(q&&c.name.toLowerCase().indexOf(q)===-1)continue;
+    shown++;
     out+='<div class="bc-row'+(on?' on':'')+'" onclick="bcToggle('+c.id+')">'
       +'<span class="cb"></span>'
       +'<span class="ib-ava" style="background:'+c.c+'">'+c.ini+'</span>'
       +'<span style="flex:1;min-width:0">'+c.name+'</span>'
       +'<span class="ch-type '+chatTypeCls(c.type)+'">'+c.type+'</span></div>';
   }
-  document.getElementById('bc-rows').innerHTML=out;
-  document.getElementById('bc-count').textContent=n+' ta tanlandi';
-  document.getElementById('bc-sum-text').textContent=
-    n+' ta chatga alohida yuboriladi \u2014 Telegram limiti: soniyasiga 30 xabar';
+  var rows=document.getElementById('bc-rows');
+  if(rows)rows.innerHTML=out||'<div style="padding:22px;text-align:center;font-size:12.5px;color:var(--ink-4)">Topilmadi</div>';
+  var cnt=document.getElementById('bc-count');
+  if(cnt)cnt.textContent=n+' ta tanlandi';
+  var sum=document.getElementById('rec-sum');
+  if(sum)sum.textContent=n?(n+' ta chatga yuboriladi'):'Hech kim tanlanmagan';
 }
 function bcToggle(id){bcSel[id]=!bcSel[id];bcRender()}
-function bcAll(v){for(var i=0;i<CHATS.length;i++)bcSel[CHATS[i].id]=v;bcRender()}
+function bcAll(v){
+  var q=(document.getElementById('rec-q')?document.getElementById('rec-q').value:'').toLowerCase();
+  for(var i=0;i<CHATS.length;i++){
+    var c=CHATS[i];
+    if(recFilterVal==='group'&&c.type==='PRIVATE')continue;
+    if(recFilterVal==='private'&&c.type!=='PRIVATE')continue;
+    if(q&&c.name.toLowerCase().indexOf(q)===-1)continue;
+    bcSel[c.id]=v;
+  }
+  bcRender();
+}
+function recApply(){
+  var n=0,names=[];
+  for(var i=0;i<CHATS.length;i++)if(bcSel[CHATS[i].id]){n++;names.push(CHATS[i].name)}
+  if(!n){toast('Kamida bitta chat tanlang');return}
+  document.getElementById('bc-field').textContent =
+    n===CHATS.length ? ('Barcha chatlar ('+n+')')
+    : (n===1 ? names[0] : (n+' ta chat: '+names.slice(0,2).join(', ')+(n>2?'...':'')));
+  closeOv('rec-overlay');
+}
 
 function openAnnounce(){
   bcMode=false;
