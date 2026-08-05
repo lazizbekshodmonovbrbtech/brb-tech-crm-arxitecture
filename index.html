@@ -549,11 +549,10 @@ const DB = {
   ["requires_tax_id","boolean","NN","","Yuridik shaxsda INN majburiy \u2014 validatsiya shu ustunga qaraydi"],
   ["sort_order","int","NN","","Tartib"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
- {name:"customer_segments",desc:"Segmentatsiya (A/B/C, VIP, strategik) \u2014 sotuv siyosati va SLA darajasi shunga bog'lanadi.",cols:[
+ {name:"customer_segments",desc:"Segmentatsiya (VIP, strategik, standart) \u2014 sotuv siyosati va SLA darajasini belgilashda ISHLATILADI, lekin SLA qoidasi bu yerda SAQLANMAYDI: support-service.sla_policies.customer_segment_code segmentga ishora qiladi (bir yo'nalishli bog'lanish \u2014 halqa bo'lmasin).",cols:[
   ["id","long","PK","","Identifikator"],
   ["short_code","varchar(30)","UK,NN","","VIP / STRATEGIC / STANDARD / SMALL"],
   ["localized_name","varchar(2000)","NN","","5 tilli JSON"],
-  ["default_sla_policy_ref","varchar(30)","","use:support.sla_policies.short_code","Standart SLA \u2014 mantiqiy ref (FKsiz, boshqa servis)"],
   ["discount_percent","numeric(5,2)","","","Segment bo'yicha standart chegirma"],
   ["sort_order","int","NN","","Tartib"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
@@ -1284,12 +1283,12 @@ const DB = {
   ["sort_order","int","NN","","Tartib raqami"],
   ["is_system","boolean","NN","","Seed yozuvimi \u2014 o'chirish taqiqlangan"],
   ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED"]]},
- {name:"sla_policies",desc:"SLA siyosatlari \u2014 javob va hal qilish muddatlari. Priority + mijoz segmenti kesimida: VIP mijozning HIGH tiketiga qat'iyroq muddat. Ish vaqti kalendari hisobga olinadi (18:00 dan keyin kelgan ticket ertalabdan sanaladi).",cols:[
+ {name:"sla_policies",desc:"SLA siyosatlari \u2014 javob va hal qilish muddatlari. TANLASH QOIDASI: eng aniq moslik yutadi \u2014 avval (priority + mijoz segmenti) bo'yicha qidiriladi, topilmasa (priority + NULL) asosiy siyosat olinadi. Topilgan muddatlar ticket'ga KO'CHIRILADI (snapshot): siyosat keyin o'zgarsa ochiq ticketlar buzilmaydi. Ish vaqti kalendari hisobga olinadi \u2014 17:50 da kelgan 30 daqiqali ticket ertasi 09:20 da tugaydi.",cols:[
   ["id","long","PK","","SLA identifikatori"],
   ["short_code","varchar(30)","UK,NN","","Barqaror kod \u2014 seed qilinadi"],
   ["name","varchar(100)","NN","","Siyosat nomi"],
-  ["priority_id","long","FK,NN","ticket_priorities.id","Qaysi muhimlik darajasi uchun"],
-  ["customer_segment_code","varchar(30)","","use:customer-service.customer_segments.short_code","Mijoz segmenti (VIP/STRATEGIC...) \u2014 NULL bo'lsa barcha segmentlarga"],
+  ["priority_id","long","FK,UK,NN","ticket_priorities.id","Qaysi muhimlik darajasi uchun \u2014 UK tarkibida (customer_segment_code bilan)"],
+  ["customer_segment_code","varchar(30)","UK","use:customer-service.customer_segments.short_code","Mijoz segmenti: VIP / STRATEGIC / STANDARD / SMALL yoki NULL (barcha segmentlar uchun asosiy siyosat). UNIQUE(priority_id, customer_segment_code) WHERE status='ACTIVE' \u2014 bir kesimda ikkita siyosat bo'lmasin"],
   ["first_response_min","int","NN","","Birinchi javob muddati (daqiqa)"],
   ["resolve_min","int","NN","","Hal qilish muddati (daqiqa)"],
   ["business_hours_only","boolean","NN","","Faqat ish vaqtida sanaladimi \u2014 true bo'lsa kechqurun va dam olish kunlari hisobga olinmaydi"],
