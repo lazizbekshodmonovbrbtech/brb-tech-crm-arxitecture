@@ -445,6 +445,30 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
   align-items:center;gap:6px;max-width:62%}
 .kv-value .mini-avatar{margin-right:0}
 
+/* Fayl yuklash */
+.up-zone{display:none;padding:10px 16px;background:var(--msurface2);border-top:1px solid var(--mline)}
+.up-zone.on{display:block}
+.up-drop{border:1.5px dashed var(--mline);border-radius:10px;padding:14px;text-align:center;
+  color:var(--ink-4);font-size:12.5px;cursor:pointer;transition:all .15s;background:var(--surface)}
+.up-drop:hover,.up-drop.drag{border-color:var(--m-acc);color:var(--m-acc);background:var(--m-acc-soft)}
+.up-drop .material-icons-outlined{font-size:24px;display:block;margin-bottom:3px}
+.up-item{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-top:8px;
+  background:var(--surface);border:1px solid var(--mline2);border-radius:9px}
+.up-ic{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;
+  background:var(--m-acc-soft);color:var(--m-acc)}
+.up-ic.err{background:var(--m-neg-soft);color:var(--m-neg)}
+.up-n{font-size:12.5px;font-weight:600;color:#182634;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;max-width:280px}
+.up-s{font-family:var(--font-mono);font-size:10.5px;color:#8b9aa9;margin-top:2px}
+.up-bar{height:4px;border-radius:2px;background:#eef1f5;overflow:hidden;margin-top:5px;width:200px}
+.up-bar i{display:block;height:100%;background:var(--m-acc);transition:width .25s}
+.up-bar.done i{background:var(--m-pos)}
+.up-x{margin-left:auto;color:var(--ink-4);cursor:pointer;font-size:17px}
+.up-x:hover{color:var(--m-neg)}
+.up-err{font-size:11.5px;color:var(--m-neg);margin-top:3px}
+.up-hint{font-size:11px;color:#8b9aa9;margin-top:7px;display:flex;align-items:center;gap:6px}
+.up-hint .material-icons-outlined{font-size:14px}
+
 /* Ommaviy e'lon — qabul qiluvchilar */
 .bc-list{border:1px solid var(--mline);border-radius:10px;max-height:190px;overflow-y:auto;
   background:var(--surface)}
@@ -3893,8 +3917,19 @@ table.dt{width:100%;min-width:max-content;border-collapse:collapse}
         <span id="cl-text">Javob berish uchun xabarni tanlang</span>
         <button class="take" id="cl-take" style="display:none" onclick="claimThread()">Olish</button>
       </div>
+      <div class="up-zone" id="up-zone">
+        <div class="up-drop" id="up-drop" onclick="document.getElementById('up-input').click()">
+          <span class="material-icons-outlined">cloud_upload</span>
+          Faylni bu yerga tashlang yoki tanlang
+        </div>
+        <input type="file" id="up-input" multiple style="display:none" onchange="upPick(this.files)">
+        <div id="up-list"></div>
+        <div class="up-hint"><span class="material-icons-outlined">info</span>
+          Telegram bot cheklovi: bitta fayl <b>50 MB</b> gacha \u2014 kattaroq fayllar
+          file-service havolasi sifatida yuboriladi</div>
+      </div>
       <div class="ib-compose" id="ib-compose">
-        <button class="tb-icon-btn" title="Fayl biriktirish" onclick="attachFile()">
+        <button class="tb-icon-btn" title="Fayl biriktirish" id="up-toggle" onclick="upToggle()">
           <span class="material-icons-outlined">attach_file</span></button>
         <input class="ib-input" id="ib-msg-input" placeholder="Javob yozing..."
           onkeydown="if(event.key==='Enter')sendMsg()">
@@ -7106,23 +7141,108 @@ function toggleReact(i,r){
   else{rx.n++;rx.mine=true}
   renderMsgs();
 }
-function attachFile(){
-  var c=CHATS.filter(function(x){return x.id===curChat})[0];
-  c.msgs.push({who:'S. Nazarova',dir:'out',t:nowHM(),text:'Hujjat yubordim',
-    file:{n:'instruksiya.pdf',s:'88 KB',ic:'description'}});
-  renderMsgs();renderChatList();toast('Fayl yuborildi \u2014 file-service\'ga saqlandi');
+/* ═══════ FAYL YUKLASH (demo) ═══════ */
+var upQueue=[], upSeq=0;
+var TG_LIMIT=50*1024*1024;   // Telegram bot: 50 MB
+function upToggle(){
+  var z=document.getElementById('up-zone');
+  z.classList.toggle('on');
+  document.getElementById('up-toggle').classList.toggle('on');
+  if(z.classList.contains('on'))document.getElementById('msg-list').scrollTop=1e9;
 }
+function fmtSize(b){
+  if(b>=1048576)return (b/1048576).toFixed(1)+' MB';
+  if(b>=1024)return Math.round(b/1024)+' KB';
+  return b+' B';
+}
+function fileIcon(name,type){
+  var e=(name.split('.').pop()||'').toLowerCase();
+  if(/(png|jpe?g|gif|webp|bmp)/.test(e))return 'image';
+  if(/(mp4|mov|avi|mkv)/.test(e))return 'movie';
+  if(/(mp3|wav|ogg|m4a)/.test(e))return 'audiotrack';
+  if(/(pdf)/.test(e))return 'picture_as_pdf';
+  if(/(docx?|rtf)/.test(e))return 'description';
+  if(/(xlsx?|csv)/.test(e))return 'table_chart';
+  if(/(zip|rar|7z|tar|gz)/.test(e))return 'folder_zip';
+  if(/(log|txt|json|xml|sql)/.test(e))return 'article';
+  return 'insert_drive_file';
+}
+function upPick(files){
+  for(var i=0;i<files.length;i++){
+    var f=files[i], id=++upSeq;
+    var item={id:id,name:f.name,size:f.size,ic:fileIcon(f.name,f.type),
+      big:f.size>TG_LIMIT,pct:0};
+    upQueue.push(item);
+    if(!item.big)upSimulate(item);
+  }
+  upRender();
+}
+function upSimulate(item){
+  var step=function(){
+    item.pct+=Math.random()*28+12;
+    if(item.pct>=100){item.pct=100;upRender();
+      toast(item.name+' yuklandi \u2014 file-service\'ga saqlandi');return}
+    upRender();setTimeout(step,180);
+  };
+  setTimeout(step,180);
+}
+function upRender(){
+  var out='';
+  for(var i=0;i<upQueue.length;i++){
+    var u=upQueue[i];
+    out+='<div class="up-item"><span class="up-ic'+(u.big?' err':'')+'">'
+      +'<span class="material-icons-outlined">'+(u.big?'error_outline':u.ic)+'</span></span>'
+      +'<div style="flex:1;min-width:0"><div class="up-n">'+u.name+'</div>'
+      +'<div class="up-s">'+fmtSize(u.size)+(u.big?'':' \u00b7 '+Math.round(u.pct)+'%')+'</div>'
+      +(u.big
+        ? '<div class="up-err">50 MB dan katta \u2014 Telegram bot yubora olmaydi. '
+          +'Havola sifatida yuborilsinmi?</div>'
+        : '<div class="up-bar'+(u.pct>=100?' done':'')+'"><i style="width:'+u.pct+'%"></i></div>')
+      +'</div>'
+      +'<span class="material-icons-outlined up-x" onclick="upRemove('+u.id+')">close</span></div>';
+  }
+  document.getElementById('up-list').innerHTML=out;
+}
+function upRemove(id){
+  upQueue=upQueue.filter(function(u){return u.id!==id});
+  upRender();
+}
+/* Sudrab tashlash */
+(function(){
+  var d=document.getElementById('up-drop');
+  if(!d)return;
+  ['dragenter','dragover'].forEach(function(ev){
+    d.addEventListener(ev,function(e){e.preventDefault();d.classList.add('drag')});
+  });
+  ['dragleave','drop'].forEach(function(ev){
+    d.addEventListener(ev,function(e){e.preventDefault();d.classList.remove('drag')});
+  });
+  d.addEventListener('drop',function(e){
+    if(e.dataTransfer&&e.dataTransfer.files)upPick(e.dataTransfer.files);
+  });
+})();
 function nowHM(){var d=new Date();function p(x){return x<10?'0'+x:x}return p(d.getHours())+':'+p(d.getMinutes())}
 function sendMsg(){
   var inp=document.getElementById('ib-msg-input');
   var txt=inp.value.trim();
-  if(!txt)return;
+  var ready=upQueue.filter(function(u){return !u.big&&u.pct>=100});
+  if(!txt&&!ready.length)return;
   var c=CHATS.filter(function(x){return x.id===curChat})[0];
   var msg={who:'S. Nazarova',dir:'out',t:nowHM(),text:txt};
   if(replyTo!==null){
     var rm=c.msgs[replyTo];
     msg.reply={who:rm.who||'Siz',txt:(rm.text||'').slice(0,50),idx:replyTo};
     msg.tk=rm.tk;msg.own='me';
+  }
+  if(ready.length){
+    msg.text=txt||'';
+    msg.file={n:ready[0].name,s:fmtSize(ready[0].size),ic:ready[0].ic};
+    if(ready.length>1)msg.text=(msg.text?msg.text+'<br>':'')
+      +'<span style="font-size:11.5px;color:var(--ink-4)">+'+(ready.length-1)+' ta fayl</span>';
+    upQueue=upQueue.filter(function(u){return u.big||u.pct<100});
+    upRender();
+    if(!upQueue.length){document.getElementById('up-zone').classList.remove('on');
+      document.getElementById('up-toggle').classList.remove('on')}
   }
   c.msgs.push(msg);
   inp.value='';cancelReply();
