@@ -1611,7 +1611,7 @@ const DB = {
  desc:"Jihozlar reyestri: aktivlar, omborlar, biriktirish, ta'mir va inventarizatsiya. Mavjud BRB Tech Inventory tizimidan ko'chirildi va PLATFORMA STANDARTIGA moslandi \u2014 ADR-008: HRM replikasi, RBAC jadvallari, i18n va fayl blob'lari OLIB TASHLANDI (ular hrm, global-reference va file-service'da). Jihozning joriy joylashuvi harakatlar jurnalidan KELIB CHIQADI, items'dagi ustunlar faqat kesh.",
  tables:[
  {name:"ENUM_KATALOG",noaudit:true,desc:"INVENTORY-SERVICE ENUMLARI. Saqlash: varchar(30) + CHECK. UPPER_SNAKE_CASE. Eski tizimdan farq: DELETED endi item_status ichida EMAS \u2014 u RecordStatus'da (ikki tushuncha aralashmasin).",cols:[
-  ["ItemStatus","enum","NN","use:items.item_status","NEW / IN_STORAGE / IN_USE / IN_REPAIR / WRITTEN_OFF \u2014 jihozning HAYOT SIKLI. Eski tizimda bu enumga DELETED ham kirardi, endi soft delete alohida status ustunida"],
+  ["ItemStatus","enum","NN","use:items.item_status","NEW / IN_STORAGE / IN_USE / IN_REPAIR / WRITTEN_OFF \u2014 jihozning JISMONIY holati. Eski tizimda bu enumga DELETED ham kirardi va ikki tushuncha aralashardi: xato kiritilgan yozuvni o'chirish uchun avval HISOBDAN CHIQARISH kerak bo'lardi, natijada buxgalteriya hisoboti ifloslanardi"],
   ["ItemCondition","enum","NN","use:items.item_condition, inventory_audit_items.found_condition","NEW / GOOD / SATISFACTORY / NEEDS_REPAIR / BROKEN \u2014 jismoniy holati. Ustun nomi 'condition' EMAS (SQL zahiralangan so'zi)"],
   ["MovementType","enum","NN","use:stock_movements.movement_type","RECEIPT / ISSUE / RETURN / TRANSFER / WRITE_OFF \u2014 harakat turi endpoint bilan mos kelishi majburiy (eski tizim darsi: /receipt ga TRANSFER yuborib auditni chalg'itish mumkin edi)"],
   ["AssignmentStatus","enum","NN","use:item_assignments.assignment_status","ACTIVE / RETURNED / TRANSFERRED \u2014 bitta jihozda BITTA ACTIVE (partial unique index)"],
@@ -1667,7 +1667,7 @@ const DB = {
   ["model","varchar(100)","","","Model"],
   ["serial_number","varchar(100)","UK","","Zavod raqami \u2014 UNIQUE WHERE status='ACTIVE'"],
   ["qr_code","varchar(64)","UK","","QR KOD QIYMATI (to'liq URL EMAS). Eski tizim darsi: URL saqlangani uchun frontend manzili o'zgarganda chop etilgan QR kodlar eskirardi \u2014 endi URL ko'rsatishda quriladi"],
-  ["item_status","enum","NN","","ItemStatus: NEW / IN_STORAGE / IN_USE / IN_REPAIR / WRITTEN_OFF \u2014 KESH (stock_movements'dan)"],
+  ["item_status","enum","NN","","ItemStatus: NEW / IN_STORAGE / IN_USE / IN_REPAIR / WRITTEN_OFF \u2014 JISMONIY holat, stock_movements'dan hisoblangan KESH. status ustunidan farqi: bu jihoz qayerda ekanini, status esa yozuv mavjudligini bildiradi"],
   ["item_condition","enum","NN","","ItemCondition: NEW / GOOD / SATISFACTORY / NEEDS_REPAIR / BROKEN"],
   ["warehouse_id","long","FK","warehouses.id","Joriy ombor \u2014 KESH"],
   ["current_assignment_id","long","FK","item_assignments.id","Joriy biriktirish \u2014 KESH (kimda ekanini shu ko'rsatadi)"],
@@ -1682,7 +1682,7 @@ const DB = {
   ["written_off_at","date","","","Hisobdan chiqarilgan sana"],
   ["write_off_reason","text","","","Hisobdan chiqarish sababi"],
   ["description","text","","","Izoh"],
-  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \u2014 soft delete FAQAT WRITTEN_OFF holatdan keyin"]]},
+  ["status","enum","NN","","RecordStatus: ACTIVE / INACTIVE / DELETED \u2014 YOZUV mavjudligi (item_status esa jismoniy holat). O'CHIRISH QOIDASI: DELETED ga o'tish faqat stock_movements va item_assignments BO'SH bo'lganda \u2014 ya'ni xato kiritilgan, muomalaga kirmagan yozuv. Muomalada bo'lgan jihoz HECH QACHON o'chirilmaydi, u WRITTEN_OFF qilinadi va hisobotda qoladi. Shu qoida tufayli ikki ustun zid bo'la olmaydi"]]},
  {name:"item_attachments",desc:"Jihoz hujjatlari \u2014 hisob-faktura, kafolat taloni, foto. Eski tizimda fayl BAZADA bytea sifatida saqlanardi; endi file-service'da (hash orqali), baza shishmaydi.",cols:[
   ["id","long","PK","","Identifikator"],
   ["item_id","long","FK,NN","items.id","Jihoz"],
