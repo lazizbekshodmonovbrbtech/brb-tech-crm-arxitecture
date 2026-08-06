@@ -2120,11 +2120,11 @@ const SCOPE_COLS={
   ["branch_id","long","NN,EXT","ext:hrm.branch.id","Yozuv filiali — yaratuvchining assignment kontekstidan (JWT) avtomatik"],
   ["department_id","long","EXT","ext:hrm.department.id","Yozuv bo'limi — mantiqan mos kelmasa NULL"]],
  tenant:[
-  ["org_structure_id","long","NN,EXT","ext:hrm.org_structure.id","TENANT — qattiq izolyatsiya (RLS). Lug'at/child table: branch/department filtri ota yozuv (aggregate root) orqali"]]
+  ["org_structure_id","long","NN,EXT","ext:hrm.org_structure.id","TENANT — qattiq izolyatsiya (RLS). Lug'at/child table: branch/department filtri ota yozuv (aggregate root) orqali. MUHIM: ma'lumotnomalarda UNIKAL CHEKLOV tenant bilan birga bo'ladi — UNIQUE(org_structure_id, short_code, status). Aks holda ikkinchi tashkilot bir xil kodni (IT_LAPTOP, WH_MAIN) yarata olmaydi"]]
 };
 function scopeKind(svcKey,tbl){
   const svc=DB[svcKey];
-  if(svc.doc||svc.group==='Mavjud tizim'||tbl.noaudit)return null;
+  if(svc.doc||svc.group==='CORE'||tbl.noaudit)return null;
   return SCOPE_FULL.has(tbl.name)?'full':'tenant';
 }
 
@@ -2136,7 +2136,7 @@ let currentSvc=null,focused=null;
 
 /* Yakunlangan (to'liq loyihalangan) servislar — enum katalogi, outbox va status standarti bajarilgan */
 const DONE_SERVICES = new Set([
-  /* Mavjud tizimlar — ishlab turibdi, arxitekturasi tayyor */
+  /* CORE — ishlab turgan platforma servislari, arxitekturasi tayyor */
   "hrm-service",
   "settings-service",
   "global-reference-service",
